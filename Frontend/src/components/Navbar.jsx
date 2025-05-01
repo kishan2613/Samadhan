@@ -14,7 +14,7 @@ function Navbar() {
           <li><Link to="/" className="hover:text-orange-600 transition">Home</Link></li>
           <li><Link to="/about" className="hover:text-orange-600 transition">About Us</Link></li>
           <li><Link to="/login" className="hover:text-orange-600 transition">Login</Link></li>
-          <li><Link to="/signup" className="hover:text-orange-600 transition">Sign Up</Link></li>
+          <li><Link to="/signup" className="hover:text-orange-600 transition">Sin Up</Link></li>
         </ul>
 
         {/* Mobile Menu Toggle */}
