@@ -6,10 +6,12 @@ import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import Lobby from "./pages/Lobby";
 import RoomPage from "./pages/Room";
+import Navbar from "./components/common/Navbar";
 
 function App() {
   return (
     <Router>
+      <Navbar/> 
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
