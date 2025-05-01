@@ -1,5 +1,16 @@
-function Home() {
-    return <h1>Welcome to Home Page</h1>;
-  }
-  export default Home;
-  
+import React from "react";
+import Navbar from "../components/common/Navbar";
+import Herosection from "../components/Herosection";
+import Categories from "../components/Categories";
+
+const Home = () => {
+  return (
+    <div>
+      <Navbar/>
+      <Herosection/>
+      <Categories/>
+    </div>
+  );
+};
+
+export default Home;
