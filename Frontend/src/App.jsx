@@ -4,6 +4,8 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
+import Lobby from "./pages/Lobby";
+import RoomPage from "./pages/Room";
 
 function App() {
   return (
@@ -13,6 +15,8 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/signup" element={< SignUp />} />
         <Route path="/login" element={< Login />} />
+        <Route path="/VideoCall" element={< Lobby />} />
+        <Route path="/VideoCall/:roomid" element={< RoomPage />} />
       </Routes>
     </Router>
   );
