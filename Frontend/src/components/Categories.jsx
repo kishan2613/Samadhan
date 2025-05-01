@@ -26,7 +26,7 @@ export default function Categories(){
   ];
 
   return (
-    <div className="bg-[#f5f0eb] py-16 px-4 md:px-20 text-center">
+    <div className="bg-gradient-to-r from-[#f5f0eb] via-[#e8dfd6] to-[#d6c6b8] py-16 px-4 md:px-20 text-center">
       <div className="rounded-[20px] p-[10px] bg-white">
       <h2 className="text-2xl md:text-3xl font-serif font-semibold mb-12">
         The virtue of justice consists in <br className="hidden md:block" />
