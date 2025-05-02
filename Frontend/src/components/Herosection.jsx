@@ -2,7 +2,7 @@ import React from "react";
 
 const Herosection = () => {
   return (
-    <div className="bg-[#f5f0eb] text-[#2b2b2b] relative">
+    <div className="bg-gradient-to-r from-[#f5f0eb] via-[#e8dfd6] to-[#d6c6b8] text-[#2b2b2b] relative">
       {/* Hero Section */}
       <section className="flex flex-col md:flex-row items-center justify-between px-8 md:px-16 py-6 gap-0 relative overflow-hidden">
         {/* Left Content */}
@@ -22,7 +22,7 @@ const Herosection = () => {
         {/* Right Side with Statue */}
         <div className="flex-1 relative flex items-center justify-between min-h-[500px] z-0">
           {/* "Our lawyers" text in top right */}
-          <p className="absolute top-13 right-[-50px] text-s text-gray-700 px-4 py-10 rounded-bl-lg max-w-xs z-20">
+          <p className="absolute top-13 right-[-50px] text-s text-gray-900 px-4 py-10 rounded-bl-lg max-w-xs z-20">
             Our mediators have decades of combined experience in conflict resolution.<br />
             Trusted in family, business, and civil disputes.
           </p>
