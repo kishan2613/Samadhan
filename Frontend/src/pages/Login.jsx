@@ -1,5 +1,13 @@
 function Login() {
-    return <h1>Login Page</h1>;
+    return (
+      <div>
+        <img
+        src="/assets/images/Bhasha-Bandhu.png"
+        alt="Login"
+        />
+      </div>
+    );
+
   }
   export default Login;
   

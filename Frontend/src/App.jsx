@@ -7,6 +7,8 @@ import Login from "./pages/Login";
 import Lobby from "./pages/Lobby";
 import RoomPage from "./pages/Room";
 import Navbar from "./components/common/Navbar";
+import Footer from "./components/common/Footer";
+import Assistant from "./pages/Assistant";
 
 function App() {
   return (
@@ -19,7 +21,9 @@ function App() {
         <Route path="/login" element={< Login />} />
         <Route path="/VideoCall" element={< Lobby />} />
         <Route path="/VideoCall/:roomid" element={< RoomPage />} />
+        <Route path="/assistant" element={<Assistant/>} />
       </Routes>
+      <Footer/>
     </Router>
   );
 }
