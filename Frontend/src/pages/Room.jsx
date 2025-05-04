@@ -2,6 +2,11 @@ import React, { useEffect, useCallback, useState, useRef } from "react";
 import ReactPlayer from "react-player";
 import peer from "../service/peer";
 import { useSocket } from "../context/SocketProvider";
+import { Send } from "lucide-react";
+import { Mic, MicOff } from "lucide-react";
+import { Video, VideoOff } from "lucide-react";
+import { PhoneOff } from "lucide-react";
+import { Volume2 } from "lucide-react";
 
 const RoomPage = () => {
   const socket = useSocket();
@@ -184,12 +189,20 @@ const RoomPage = () => {
     }
   };
 
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+const handleSpeak = () => {
+  const utterance = new SpeechSynthesisUtterance(receivedTranscript);
+
+  utterance.onstart = () => setIsSpeaking(true);
+  utterance.onend = () => setIsSpeaking(false);
+
+  speechSynthesis.speak(utterance);
+};
+
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
-      <div className="max-w-4xl mx-auto bg-white shadow-xl rounded-xl p-6 space-y-6">
-        <h1 className="text-3xl font-bold text-center text-gray-800">
-          Room Page
-        </h1>
+    <div className="min-h-screen top-20  py-16">
+      <div className="max-w mx-auto bg-gradient-to-br from-gray-900 via-black to-gray-800 rounded-xl p-6 space-y-6">
         <p className="text-center text-lg">
           {remoteSocketId ? (
             <span className="text-green-600 font-medium">Connected</span>
@@ -198,37 +211,77 @@ const RoomPage = () => {
           )}
         </p>
 
+      {/* Stream Div */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {myStream && (
+            <div className="flex flex-col rounded-xl shadow-lg border-4 border-white items-center">
+              {/* <h2 className="text-xl text-white font-semibold mb-2">My Stream</h2> */}
+              <ReactPlayer
+                playing
+                muted
+                height="350px"
+                width="100%"
+                url={myStream}
+                className="rounded-xl bordershadow"
+              />
+            </div>
+          )}
+          {remoteStream && (
+            <div className="flex flex-col rounded-xl shadow-lg border-4 border-white items-center">
+              {/* <h2 className="text-xl text-white font-semibold mb-2">Remote Stream</h2> */}
+              <ReactPlayer
+                playing
+                muted
+                height="350px"
+                width="100%"
+                url={remoteStream}
+                className="rounded-lg shadow"
+              />
+            </div>
+          )}
+        </div>
+      {/* Stream Div Ends */}
         <div className="flex flex-wrap justify-center items-center gap-4">
           {myStream && (
             <>
-              <button
-                onClick={sendStreams}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow"
+            <button
+             onClick={sendStreams}
+              title="Send Stream"
+              className="bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow"
               >
-                Send Stream
+             <Send className="w-5 h-5" />
               </button>
+
               <button
                 onClick={toggleMic}
+                title={micOn ? "Turn off microphone (CTRL + D)" : "Turn on microphone (CTRL + D)"}
                 className={`${
-                  micOn ? "bg-yellow-500" : "bg-gray-400"
-                } text-white px-4 py-2 rounded-lg shadow`}
+                  micOn ? "bg-gray-700 hover:bg-gray-600" : "bg-red-600 hover:bg-red-500"
+                } text-white p-2 rounded-full shadow transition`}
               >
-                {micOn ? "Mute Mic" : "Unmute Mic"}
+                {micOn ? <Mic className="w-5 h-5" /> : <MicOff className="w-5 h-5" />}
               </button>
+
               <button
                 onClick={toggleCamera}
+                title={cameraOn ? "Turn off camera (CTRL + E)" : "Turn on camera (CTRL + E)"}
                 className={`${
-                  cameraOn ? "bg-purple-500" : "bg-gray-400"
-                } text-white px-4 py-2 rounded-lg shadow`}
+                  cameraOn ? "bg-gray-700 hover:bg-gray-600" : "bg-red-600 hover:bg-red-500"
+                } text-white p-2 rounded-full shadow transition`}
               >
-                {cameraOn ? "Turn Off Camera" : "Turn On Camera"}
+                {cameraOn ? <Video className="w-5 h-5" /> : <VideoOff className="w-5 h-5" />}
               </button>
+
+
+              
               <button
                 onClick={endCall}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg shadow"
+                title="End Call (CTRL + Q)"
+                className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-full shadow transition"
               >
-                End Call
+                <PhoneOff className="w-5 h-5" />
               </button>
+
               <button
                 onClick={isRecording ? pauseRecording : startRecording}
                 className={`${
@@ -239,22 +292,19 @@ const RoomPage = () => {
               </button>
             </>
           )}
-          {receivedTranscript && (
-            <div className="flex items-center mt-4 space-x-2">
-              <button
-                onClick={() => {
-                  const utterance = new SpeechSynthesisUtterance(
-                    receivedTranscript
-                  );
-                  speechSynthesis.speak(utterance);
-                }}
-                className="p-2 rounded-full bg-blue-500 hover:bg-blue-600 text-white shadow"
-              >
-                🎤
-              </button>
-              <p className="text-gray-700 italic">New message received</p>
-            </div>
-          )}
+        
+
+
+{receivedTranscript && (
+  <button
+    onClick={handleSpeak}
+    title="Play Received Message"
+    className={`bg-green-600 text-white p-2 rounded-full shadow transition 
+      ${isSpeaking ? "ring-4 ring-green-300 shadow-lg" : "hover:bg-green-700"}`}
+  >
+    <Volume2 className="w-5 h-5" />
+  </button>
+)}
 
           {remoteSocketId && !myStream && (
             <button
@@ -263,35 +313,6 @@ const RoomPage = () => {
             >
               Call
             </button>
-          )}
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {myStream && (
-            <div className="flex flex-col items-center">
-              <h2 className="text-xl font-semibold mb-2">My Stream</h2>
-              <ReactPlayer
-                playing
-                muted
-                height="240px"
-                width="100%"
-                url={myStream}
-                className="rounded-lg shadow"
-              />
-            </div>
-          )}
-          {remoteStream && (
-            <div className="flex flex-col items-center">
-              <h2 className="text-xl font-semibold mb-2">Remote Stream</h2>
-              <ReactPlayer
-                playing
-                muted
-                height="240px"
-                width="100%"
-                url={remoteStream}
-                className="rounded-lg shadow"
-              />
-            </div>
           )}
         </div>
       </div>

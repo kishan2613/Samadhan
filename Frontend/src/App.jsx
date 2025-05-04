@@ -14,6 +14,8 @@ import Notification from "./components/Notification";
 import Proposal from "./components/CreateProposal";
 import ActiveProposal from "./pages/Proposal/activeProposal";
 import ChatRooms from "./pages/ChatRoom/Rooms";
+import Footer from "./components/common/Footer";
+import Assistant from "./pages/Assistant";
 
 function App() {
   return (
@@ -33,7 +35,9 @@ function App() {
         <Route path="/active-proposal" element={< ActiveProposal />} />
         <Route path="/VideoCall/:roomid" element={< RoomPage />} />
         <Route path="/mediator/:id" element={<MediatorDetails />} />
+        <Route path="/assistant" element={<Assistant/>} />
       </Routes>
+      <Footer/>
     </Router>
   );
 }
