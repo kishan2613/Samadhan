@@ -16,6 +16,7 @@ import ActiveProposal from "./pages/Proposal/activeProposal";
 import ChatRooms from "./pages/ChatRoom/Rooms";
 import Footer from "./components/common/Footer";
 import Assistant from "./pages/Assistant";
+import Chat from "./pages/ChatRoom/Chat";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/proposal" element={< Proposal />} />
         <Route path="/notify" element={< Notification />} />
         <Route path="/Chat" element={< ChatRooms />} />
+        <Route path="/chat/:roomId" element={<Chat />} />
         <Route path="/active-proposal" element={< ActiveProposal />} />
         <Route path="/VideoCall/:roomid" element={< RoomPage />} />
         <Route path="/mediator/:id" element={<MediatorDetails />} />

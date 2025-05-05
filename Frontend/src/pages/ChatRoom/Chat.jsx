@@ -1,52 +1,106 @@
-// components/Chat.js
+// Chat.jsx
 import React, { useState, useEffect, useRef } from 'react';
-import io from 'socket.io-client';
 import axios from 'axios';
+import io from 'socket.io-client';
+import { useParams } from 'react-router-dom';
 
-const socket = io('http://localhost:5000'); // replace with your backend
+const SERVER_URL = 'http://localhost:5000';
 
-const Chat = ({ roomId, userId }) => {
+export default function Chat() {
+  const { roomId } = useParams();
+  const storedUser = localStorage.getItem('user');
+  const user = storedUser ? JSON.parse(storedUser) : null;
+
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const messagesEndRef = useRef(null);
 
-  // Join the room on mount
+  // 1) Create socket and join room on connect
+  const socketRef = useRef();
   useEffect(() => {
-    socket.emit('joinRoom', roomId);
-    fetchMessages();
+    socketRef.current = io(SERVER_URL, { transports: ['websocket'] });
 
-    socket.on('receiveMessage', (msg) => {
-      setMessages((prev) => [...prev, msg]);
+    socketRef.current.on('connect', () => {
+      console.log('Socket connected, joining room', roomId);
+      socketRef.current.emit('joinRoom', roomId);
     });
 
     return () => {
-      socket.disconnect();
+      socketRef.current.disconnect();
     };
   }, [roomId]);
 
-  // Fetch message history from backend
-  const fetchMessages = async () => {
-    try {
-      const res = await axios.get(`http://localhost:5000/api/messages/${roomId}`);
-      setMessages(res.data);
-    } catch (error) {
-      console.error('Error fetching messages:', error);
-    }
-  };
+  // 2) After join, fetch history & listen
+  useEffect(() => {
+    if (!socketRef.current || !socketRef.current.connected) {
+      // Wait for socket to connect
+      const onConnect = () => {
+        socketRef.current.emit('joinRoom', roomId);
 
-  // Auto scroll
+        // fetch after join
+        axios
+          .post(`${SERVER_URL}/api/chat/${roomId}`, { userId: user._id })
+          .then(res => setMessages(res.data.messages || []))
+          .catch(console.error);
+
+        socketRef.current.on('receiveMessage', handleReceive);
+      };
+      socketRef.current.on('connect', onConnect);
+      return () => {
+        socketRef.current.off('connect', onConnect);
+      };
+    }
+
+    // Already connected
+    axios
+      .post(`${SERVER_URL}/api/chat/${roomId}`, { userId: user._id })
+      .then(res => setMessages(res.data.messages || []))
+      .catch(console.error);
+
+    socketRef.current.on('receiveMessage', handleReceive);
+    return () => {
+      socketRef.current.off('receiveMessage', handleReceive);
+    };
+  }, [roomId, user._id]);
+
+  function handleReceive(msg) {
+    setMessages(prev => [...prev, msg]);
+  }
+
+  // 3) Auto‐scroll
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const handleSend = () => {
+  // 4) Send
+  const handleSend = async () => {
     if (!message.trim()) return;
+    const tempId = Date.now().toString();
+    const optimistic = {
+      _id: tempId,
+      sender: user,
+      content: message,
+      timestamp: new Date().toISOString(),
+    };
+    setMessages(prev => [...prev, optimistic]);
 
-    socket.emit('sendMessage', {
+    socketRef.current.emit('sendMessage', {
       roomId,
-      senderId: userId,
-      content: message
+      senderId: user._id,
+      content: message,
     });
+
+    try {
+      const res = await axios.post(
+        `${SERVER_URL}/api/chat/${roomId}/message`,
+        { content: message, userId: user._id }
+      );
+      setMessages(prev =>
+        prev.map(m => (m._id === tempId ? { ...m, _id: res.data._id } : m))
+      );
+    } catch (err) {
+      console.error('Save error', err);
+    }
 
     setMessage('');
   };
@@ -54,23 +108,28 @@ const Chat = ({ roomId, userId }) => {
   return (
     <div className="max-w-2xl mx-auto mt-10 p-4 border rounded shadow bg-white h-[500px] flex flex-col">
       <div className="flex-1 overflow-y-auto mb-2">
-        {messages.map((msg) => (
-          <div key={msg._id} className={`mb-2 ${msg.sender === userId ? 'text-right' : 'text-left'}`}>
-            <div className={`inline-block px-4 py-2 rounded-lg ${msg.sender === userId ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}>
-              {msg.content}
+        {messages.map(msg => {
+          const isMe = msg.sender._id === user._id;
+          return (
+            <div
+              key={msg._id}
+              className={`mb-2 p-2 rounded ${
+                isMe ? 'bg-blue-100 text-right' : 'bg-gray-100 text-left'
+              }`}
+            >
+              <div className="font-semibold text-sm">{msg.sender.name}</div>
+              <div>{msg.content}</div>
             </div>
-          </div>
-        ))}
+          );
+        })}
         <div ref={messagesEndRef} />
       </div>
-
       <div className="flex items-center">
         <input
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Type your message..."
           className="flex-1 border px-4 py-2 rounded-l focus:outline-none"
+          value={message}
+          onChange={e => setMessage(e.target.value)}
+          placeholder="Type your message..."
         />
         <button
           onClick={handleSend}
@@ -81,6 +140,4 @@ const Chat = ({ roomId, userId }) => {
       </div>
     </div>
   );
-};
-
-export default Chat;
+}
