@@ -44,41 +44,17 @@ router.post('/:roomId', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
-// POST /:roomId/message
+
+// 3. Post a message (HTTP) - persist then broadcast
+// persist only
 router.post('/:roomId/message', async (req, res) => {
   const { content, userId } = req.body;
-  const { roomId } = req.params;
-  const io = req.app.get('io');            // grab io
-
-  try {
-    const chat = await ChatRoom.findById(roomId);
-    if (!chat) return res.status(404).json({ msg: 'Chat room not found' });
-    if (!chat.members.includes(userId))
-      return res.status(403).json({ msg: 'Access denied' });
-
-    const newMessage = {
-      sender: userId,
-      content,
-      timestamp: new Date()
-    };
-
-    chat.messages.push(newMessage);
-    await chat.save();
-
-    // Broadcast it:
-    io.to(roomId).emit('receiveMessage', {
-      _id: newMessage._id,
-      sender: { _id: userId },  // optionally populate on client
-      content: newMessage.content,
-      timestamp: newMessage.timestamp
-    });
-
-    res.status(201).json(newMessage);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server error');
-  }
+  const chat = await ChatRoom.findById(req.params.roomId);
+  chat.messages.push({ sender: userId, content, timestamp: new Date() });
+  const saved = await chat.save();
+  res.status(201).json(saved.messages.pop());
 });
+
 // 4. (Optional) Create a new chat room
 router.post('/create', auth, async (req, res) => {
   const { members, proposalId } = req.body;
