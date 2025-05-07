@@ -7,7 +7,7 @@ require('dotenv').config();
 
 connectToMongo();
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
@@ -30,42 +30,57 @@ const io = new Server(server, {
   }
 });
 
-// Socket.IO logic
-io.on('connection', (socket) => {
-  console.log('A user connected:', socket.id);
+// Make io available in routes
+app.set('io', io);
 
-  socket.on('joinRoom', (roomId) => {
+// Socket.IO logic: only broadcasting here (persistence in HTTP route)
+io.on('connection', socket => {
+  console.log('user connected', socket.id);
+
+  // handle join and notify others
+  socket.on('joinRoom', ({ roomId, userId, userName }) => {
+    // store on socket for later
+    socket.data.userId = userId;
+    socket.data.userName = userName;
     socket.join(roomId);
-    console.log(`User ${socket.id} joined room ${roomId}`);
+    // notify other members
+    socket.to(roomId).emit('userJoined', { userId, userName });
   });
 
-  socket.on('sendMessage', async ({ roomId, senderId, content }) => {
+  // message logic unchanged
+  socket.on('sendMessage', async ({ roomId, senderId, content, tempId }) => {
     try {
-      const ChatRoom = require('./models/ChatRoom');
-      const chatRoom = await ChatRoom.findById(roomId);
-      if (!chatRoom) return;
+      const ChatRoom = require('../Models/Chatroom');
+      const chat = await ChatRoom.findById(roomId);
+      const newMessage = { sender: senderId, content, timestamp: new Date() };
+      chat.messages.push(newMessage);
+      await chat.save();
 
-      const newMessage = {
-        sender: senderId,
+      socket.broadcast.to(roomId).emit('receiveMessage', {
+        _id: newMessage._id,
+        sender: { _id: senderId },
         content,
-        timestamp: new Date()
-      };
-
-      chatRoom.messages.push(newMessage);
-      await chatRoom.save();
-
-      io.to(roomId).emit('receiveMessage', newMessage);
-    } catch (error) {
-      console.error('Error handling message:', error);
+        timestamp: newMessage.timestamp,
+        tempId
+      });
+      socket.emit('messageSaved', { _id: newMessage._id, tempId });
+    } catch (err) {
+      console.error(err);
     }
   });
 
-  socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
+  // before fully disconnecting, notify rooms
+  socket.on('disconnecting', () => {
+    const rooms = Array.from(socket.rooms).filter(r => r !== socket.id);
+    rooms.forEach(roomId => {
+      socket.to(roomId).emit('userLeft', {
+        userId: socket.data.userId,
+        userName: socket.data.userName
+      });
+    });
   });
+
+  socket.on('disconnect', reason => console.log('user disconnected', socket.id, reason));
 });
 
-// Start both HTTP and WebSocket server
-server.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
+server.listen(port, () => console.log(`listening on ${port}`));

@@ -4,23 +4,29 @@ const auth = require('../Middleware/Auth');
 const router = express.Router();
 
 // 1. Fetch all chat rooms of a particular user
-router.get('/myRooms', async (req, res) => {
+router.post('/myRooms', async (req, res) => {
   try {
-    const {userId} = req.body;
-    const rooms = await ChatRoom.find({ members: userId })
+    const { userId } = req.body;
+
+    if (!userId || typeof userId !== 'string') {
+      return res.status(400).json({ message: 'Invalid user ID' });
+    }
+
+    const rooms = await ChatRoom.find({ members: userId }) // exact string match
       .populate('members')
       .populate('proposal');
 
     res.json(rooms);
   } catch (err) {
-    console.error(err);
+    console.error('Error fetching chat rooms:', err);
     res.status(500).send('Server error');
   }
 });
 
 // 2. Get full chat history of a room (including messages)
-router.get('/:roomId', auth, async (req, res) => {
+router.post('/:roomId', async (req, res) => {
   try {
+    const { userId } = req.body;
     const chat = await ChatRoom.findById(req.params.roomId)
       .populate('members', 'name email')
       .populate('messages.sender', 'name email');
@@ -28,7 +34,7 @@ router.get('/:roomId', auth, async (req, res) => {
     if (!chat) return res.status(404).json({ msg: 'Chat room not found' });
 
     // Only allow access if user is part of the room
-    if (!chat.members.some(member => member._id.toString() === req.user.id)) {
+    if (!chat.members.some(member => member._id.toString() === userId)) {
       return res.status(403).json({ msg: 'Access denied' });
     }
 
@@ -39,31 +45,14 @@ router.get('/:roomId', auth, async (req, res) => {
   }
 });
 
-// 3. Fallback: Post a new message to the chat room
-router.post('/:roomId/message', auth, async (req, res) => {
-  const { content } = req.body;
-  try {
-    const chat = await ChatRoom.findById(req.params.roomId);
-    if (!chat) return res.status(404).json({ msg: 'Chat room not found' });
-
-    if (!chat.members.includes(req.user.id)) {
-      return res.status(403).json({ msg: 'Access denied' });
-    }
-
-    const newMessage = {
-      sender: req.user.id,
-      content,
-      timestamp: new Date()
-    };
-
-    chat.messages.push(newMessage);
-    await chat.save();
-
-    res.status(201).json(newMessage);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server error');
-  }
+// 3. Post a message (HTTP) - persist then broadcast
+// persist only
+router.post('/:roomId/message', async (req, res) => {
+  const { content, userId } = req.body;
+  const chat = await ChatRoom.findById(req.params.roomId);
+  chat.messages.push({ sender: userId, content, timestamp: new Date() });
+  const saved = await chat.save();
+  res.status(201).json(saved.messages.pop());
 });
 
 // 4. (Optional) Create a new chat room
