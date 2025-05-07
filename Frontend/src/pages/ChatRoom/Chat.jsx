@@ -62,13 +62,14 @@ export default function Chat() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-4 border rounded shadow bg-white h-[500px] flex flex-col">
-      <div className="flex-1 overflow-y-auto mb-2">
+    <div className="max-w-2xl mx-auto mt-10 p-4 border rounded flex flex-col h-[80vh]">
+      {/* Scrollable message area */}
+      <div className="flex-1 overflow-y-auto space-y-2 pr-2">
         {messages.map(msg => {
           const isMe = msg.sender._id === user._id;
           const style = isMe ? 'bg-blue-100 text-right' : 'bg-gray-100 text-left';
           return (
-            <div key={msg._id} className={`mb-2 p-2 rounded ${style}`}>              
+            <div key={msg._id} className={`mb-2 p-2 rounded ${style}`}>
               <div className="font-semibold text-sm">{msg.sender.name}</div>
               <div>{msg.content}</div>
             </div>
@@ -76,10 +77,23 @@ export default function Chat() {
         })}
         <div ref={endRef} />
       </div>
-      <div className="flex items-center">
-        <input value={message} onChange={e => setMessage(e.target.value)} placeholder="Type your message..." className="flex-1 border px-4 py-2 rounded-l focus:outline-none" />
-        <button onClick={handleSend} className="bg-blue-600 text-white px-4 py-2 rounded-r hover:bg-blue-700">Send</button>
+  
+      {/* Input box */}
+      <div className="flex items-center mt-4">
+        <input
+          value={message}
+          onChange={e => setMessage(e.target.value)}
+          placeholder="Type your message..."
+          className="flex-1 border px-4 py-2 rounded-l focus:outline-none"
+        />
+        <button
+          onClick={handleSend}
+          className="bg-blue-600 text-white px-4 py-2 rounded-r hover:bg-blue-700"
+        >
+          Send
+        </button>
       </div>
     </div>
   );
+  
 }

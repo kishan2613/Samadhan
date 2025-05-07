@@ -38,78 +38,59 @@ const ChatRooms = () => {
     );
   }
 
+  if (chatRooms.length === 0) {
+    return (
+      <p className="text-center text-gray-500 mt-10">
+        You are not part of any chat rooms yet.
+      </p>
+    );
+  }
+
   return (
-    <div className="max-w-6xl mx-auto p-4">
-      <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">
-        Your Chat Rooms
-      </h2>
+    <div className="max-w-4xl mx-auto mt-10 space-y-6 p-4">
+      {chatRooms.map((room) => {
+        const mediator = room.members.find((member) => member.role === "mediator");
+        const parties = room.members.filter((member) => member.role !== "mediator");
 
-      {chatRooms.length === 0 ? (
-        <p className="text-center text-gray-500">
-          You are not part of any chat rooms yet.
-        </p>
-      ) : (
-        <div className="grid gap-8">
-          {chatRooms.map((room) => (
-            <div
-              key={room._id}
-              className="bg-white shadow-lg rounded-2xl p-6 transition-transform hover:scale-[1.01]"
-            >
-              <h3 className="text-xl font-semibold text-gray-800 mb-4">
-                Room ID: <span className="text-blue-700">{room._id}</span>
-              </h3>
+        if (!mediator || parties.length < 2) return null;
 
-              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
-                {room.members.map((member) => (
-                  <div
-                    key={member._id}
-                    className="bg-gray-50 p-4 rounded-lg border hover:border-blue-500 transition"
-                  >
-                    <div className="flex items-center space-x-4">
-                      <img
-                        src={
-                          member.image
-                            ? member.image
-                            : "https://via.placeholder.com/64x64?text=User"
-                        }
-                        alt={member.name}
-                        className="w-14 h-14 rounded-full object-cover border"
-                      />
-                      <div>
-                        <h4 className="text-md font-semibold">{member.name}</h4>
-                        <p className="text-sm text-gray-600">{member.email}</p>
-                        <span
-                          className={`inline-block mt-1 px-2 py-1 text-xs font-medium rounded-full ${
-                            member.role === "mediator"
-                              ? "bg-green-100 text-green-700"
-                              : "bg-purple-100 text-purple-700"
-                          }`}
-                        >
-                          {member.role.charAt(0).toUpperCase() +
-                            member.role.slice(1)}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+        const partyNames = parties.map((p) => {
+          if (p._id === user._id) {
+            return "You";
+          }
+          return p.name;
+        });
 
-              <div className="mt-6 text-center">
-                <button
-                  className="px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-                  onClick={() =>
-                    navigate(`/chat/${room._id}`, {
-                      state: { roomId: room._id, userId: user._id },
-                    })
-                  }
-                >
-                  Open Chat
-                </button>
+        const roomTitle = `Chat room with ${partyNames.join(" and ")}`;
+
+        return (
+          <div
+            key={room._id}
+            className="flex items-center justify-between border rounded-lg p-4 shadow bg-white cursor-pointer hover:shadow-md transition"
+            onClick={() =>
+              navigate(`/chat/${room._id}`, {
+                state: { roomId: room._id, userId: user._id },
+              })
+            }
+          >
+            <div className="flex items-center">
+              <img
+                src={
+                  mediator.image
+                    ? mediator.image
+                    : "https://t3.ftcdn.net/jpg/06/33/54/78/360_F_633547842_AugYzexTpMJ9z1YcpTKUBoqBF0CUCk10.jpg"
+                }
+                alt={mediator.name}
+                className="w-20 h-20 rounded-lg object-cover mr-4"
+              />
+              <div>
+                <h2 className="text-lg font-semibold">{roomTitle}</h2>
+                <p className="text-sm text-green-700">Mediator: {mediator.name}</p>
               </div>
             </div>
-          ))}
-        </div>
-      )}
+          </div>
+        );
+      })}
     </div>
   );
 };
