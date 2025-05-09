@@ -15,6 +15,7 @@ import Proposal from "./components/CreateProposal";
 import ActiveProposal from "./pages/Proposal/activeProposal";
 import ChatRooms from "./pages/ChatRoom/Rooms";
 import Footer from "./components/common/Footer";
+import VideoCall from "./pages/VideoCall/VideoCall";
 import Assistant from "./pages/Assistant";
 import Chat from "./pages/ChatRoom/Chat";
 import Groups from "./pages/ChatRoom/Group";
@@ -40,6 +41,7 @@ function App() {
         <Route path="/VideoCall/:roomid" element={< RoomPage />} />
         <Route path="/mediator/:id" element={<MediatorDetails />} />
         <Route path="/assistant" element={<Assistant/>} />
+        <Route path="/call/:roomId" element={<VideoCall />} />
       </Routes>
       <Footer/>
     </Router>
