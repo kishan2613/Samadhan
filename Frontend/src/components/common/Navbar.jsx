@@ -59,7 +59,7 @@ const Navbar = () => {
       />
       <div className="relative px-6 md:px-8 py-4 flex items-center justify-between font-sans">
         {/* Logo */}
-        <Link to="/" className="text-2xl font-bold text-black">
+        <Link to="/" className="text-2xl  font-bold text-black">
           SamaDhan
         </Link>
 
@@ -73,6 +73,11 @@ const Navbar = () => {
 
         {/* Right Side */}
         <div className="flex items-center space-x-5 relative" ref={dropdownRef}>
+          <img
+            src="/assets/images/Bhashini.png"
+            alt="Bhashini Logo"
+            className="h-8 hidden md:block"
+          />
           {/* Notification Icon */}
           <Link to="/notify" className="text-black hover:text-[#C1440E]">
             <Bell size={22} className="hover:scale-110 transition-transform duration-200" />
