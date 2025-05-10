@@ -5,7 +5,7 @@ import About from "./pages/About";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
 import Lobby from "./pages/Lobby";
-import RoomPage from "./pages/Room";
+// import RoomPage from "./pages/Room";
 import Navbar from "./components/common/Navbar";
 import MediatorDetailsForm from "./pages/UserAdditional";
 import MediatorConnect from "./pages/MediatorConnect/page";
@@ -19,6 +19,7 @@ import VideoCall from "./pages/VideoCall/VideoCall";
 import Assistant from "./pages/Assistant";
 import Chat from "./pages/ChatRoom/Chat";
 import Groups from "./pages/ChatRoom/Group";
+import Meet from "./service/Meet";
 
 function App() {
   return (
@@ -38,10 +39,11 @@ function App() {
         <Route path="/Groups" element={< Groups />} /> 
         <Route path="/chat/:roomId" element={<Groups />} />
         <Route path="/active-proposal" element={< ActiveProposal />} />
-        <Route path="/VideoCall/:roomid" element={< RoomPage />} />
+        {/* <Route path="/VideoCall/:roomid" element={< RoomPage />} /> */}
         <Route path="/mediator/:id" element={<MediatorDetails />} />
         <Route path="/assistant" element={<Assistant/>} />
-        <Route path="/call/:roomId" element={<VideoCall />} />
+        {/* <Route path="/call/:roomId" element={<VideoCall />} /> */}
+        <Route path="/samadhan-meet" element={<Meet/>} />
       </Routes>
       <Footer/>
     </Router>
