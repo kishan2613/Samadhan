@@ -7,8 +7,7 @@ import Learning from "../components/Learning";
 
 const Home = () => {
   return (
-    <div>
-       
+    <div>      
       <Herosection/>
       <Categories/>
       <Learning/>
