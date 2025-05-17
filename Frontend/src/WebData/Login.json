@@ -1,0 +1,25 @@
+{
+    "title": "Log In",
+    "fields": {
+      "email": {
+        "placeholder": "Email Address"
+      },
+      "password": {
+        "placeholder": "Password"
+      }
+    },
+    "buttons": {
+      "login": "Log In",
+      "loggingIn": "Logging in..."
+    },
+    "link": {
+      "prefix": "New User?",
+      "text": "Register here",
+      "to": "/SignUp"
+    },
+    "alerts": {
+      "invalid": "Invalid credentials",
+      "serverError": "Server error"
+    }
+  }
+  

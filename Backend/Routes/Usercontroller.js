@@ -5,6 +5,7 @@ const User = require('../Models/User');
 const router = express.Router();
 const auth = require('../Middleware/Auth');
 const Mediator = require('../Models/Mediator');
+const { translateJsonWithRawResponse } = require('../utility/Translate');
 
 // Register
 router.post('/register', async (req, res) => {
@@ -42,7 +43,7 @@ router.post('/login', async (req, res) => {
     const payload = { id: user.id, role: user.role };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' });
 
-    res.json({ token });
+    res.json({ token,user });
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');
@@ -100,15 +101,59 @@ router.post('/update-mediator', auth, async (req, res) => {
   }
 });
 
+// GET /api/get-mediators?page_no=1&targetLang=hi
 router.get('/get-mediators', async (req, res) => {
+  const { targetLang, page_no } = req.query;
+  const page = Math.max(parseInt(page_no, 10) || 1, 1);
+  const pageSize = 12;
+
   try {
-    const mediators = await User.find({ role: 'mediator' }).select('-password');
-    res.json(mediators);
+    // 1. Count total for pagination metadata
+    const totalCount = await User.countDocuments({ role: 'mediator' });
+
+    // 2. Fetch only the slice for this page
+    const mediators = await User.find({ role: 'mediator' })
+      .select('-password')
+      .skip((page - 1) * pageSize)
+      .limit(pageSize)
+      .lean();
+
+    // 3. If no translation requested, return raw data with paging info
+    if (!targetLang) {
+      return res.json({
+        mediators,
+        page,
+        pageSize,
+        totalCount,
+        totalPages: Math.ceil(totalCount / pageSize),
+      });
+    }
+
+    // 4. Otherwise translate each mediator in parallel
+    const tasks = mediators.map(m =>
+      translateJsonWithRawResponse(m, targetLang)
+    );
+    const results = await Promise.all(tasks);
+
+    // 5. Extract pipelineResponses and translatedJson arrays
+    const pipelineResponses = results.map(r => r.pipelineResponse);
+    const translatedMediators = results.map(r => r.translatedJson);
+
+    // 6. Return everything plus pagination metadata
+    res.json({
+      pipelineResponse: pipelineResponses,
+      mediators: translatedMediators,
+      page,
+      pageSize,
+      totalCount,
+      totalPages: Math.ceil(totalCount / pageSize),
+    });
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Server error');
+    console.error('Error fetching/translating mediators:', err);
+    res.status(500).json({ error: 'Server error' });
   }
 });
+
 
 // Route to get mediator details by user ID
 router.post('/get-mediator-by-id', async (req, res) => {

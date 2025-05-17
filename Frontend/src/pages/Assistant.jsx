@@ -1,18 +1,26 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Mic, Square, Volume2, Loader, ChevronDown } from "lucide-react";
+import AssistantData from "../WebData/Assistant.json"
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
 
 /**
  * AI Voice Assistant Component
  * A multilingual voice interface for interacting with an AI assistant.
  */
+
+const assistantcache = {};
+
 const VoiceAssistant = () => {
   // =============== STATE MANAGEMENT ===============
   const [activeSession, setActiveSession] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState("en");
+  const target_lang = localStorage.getItem("preferredLanguage");
+  const [AssistantDataMock, setAssistantData] = useState(AssistantData)
   const [recording, setRecording] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [error, setError] = useState(null);
+  const [Loading, setLoading] = useState(false);
 
   // =============== REFS ===============
   const mediaRecorderRef = useRef(null);
@@ -20,31 +28,84 @@ const VoiceAssistant = () => {
   const audioStreamRef = useRef(null);
   const audioPlayerRef = useRef(new Audio());
 
-  // =============== LANGUAGE OPTIONS ===============
-  const languages = {
-    en: "English",
-    as: "Assamese",
-    brx: "Bodo",
-    gu: "Gujarati",
-    hi: "Hindi",
-    kn: "Kannada",
-    ml: "Malayalam",
-    mni: "Manipuri",
-    mr: "Marathi",
-    or: "Oriya",
-    pa: "Punjabi",
-    ta: "Tamil",
-    te: "Telugu"
-  };
-
   // =============== WELCOME MESSAGE ===============
+
+  useEffect(() => {
+    
+    const preferredLanguage = localStorage.getItem("preferredLanguage");
+    if (!preferredLanguage) return;
+
+    if (assistantcache[preferredLanguage]) {
+      setAssistantData(assistantcache[preferredLanguage]);
+      return;
+    }
+
+    if (preferredLanguage) {
+      const translateContent = async () => {
+        setLoading(true);
+        try {
+          const response = await fetch(
+            "http://localhost:5000/translate/translate",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                jsonObject: AssistantData,
+                targetLang: preferredLanguage,
+              }),
+            }
+          );
+
+          const data = await response.json();
+
+          if (data?.pipelineResponse?.[0]?.output) {
+            const translations = data.pipelineResponse[0].output;
+            const translationMap = {};
+
+            // Map all source -> target pairs
+            translations.forEach(({ source, target }) => {
+              translationMap[source] = target;
+            });
+
+            // Recursively replace matching strings in content
+            const translateJSON = (obj) => {
+              if (typeof obj === "string") {
+                return translationMap[obj] || obj;
+              } else if (Array.isArray(obj)) {
+                return obj.map(translateJSON);
+              } else if (typeof obj === "object" && obj !== null) {
+                const newObj = {};
+                for (let key in obj) {
+                  newObj[key] = translateJSON(obj[key]);
+                }
+                return newObj;
+              }
+              return obj;
+            };
+
+            const newTranslatedContent = translateJSON(AssistantData);
+            assistantcache[preferredLanguage] = newTranslatedContent;
+            setAssistantData(newTranslatedContent);
+          }
+        } catch (err) {
+          console.error("Translation API error:", err);
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      translateContent();
+    }
+  }, []);
+
   useEffect(() => {
     if (activeSession) {
-      const welcomeMessage = 
-        "Hello, I am Samadhan, your AI assistant. Please select your preferred language and click the microphone button to ask your question.";
+      const welcomeMessage = AssistantDataMock.welcomeMessage
       
       // Small delay to ensure speech synthesis is ready
-      setTimeout(() => speakText(welcomeMessage, "en"), 300);
+      setTimeout(() => speakText(welcomeMessage), 300);
     }
   }, [activeSession]);
 
@@ -58,7 +119,7 @@ const VoiceAssistant = () => {
     player.onpause = () => setPlaying(false);
     player.onerror = () => {
       setPlaying(false);
-      showError("Failed to play the response audio");
+      // showError(AssistantDataMock.processingErrors.No_Audio);
     };
 
     return () => {
@@ -100,19 +161,37 @@ const VoiceAssistant = () => {
   };
 
   // =============== TEXT-TO-SPEECH FUNCTION ===============
-  const speakText = (text, language = selectedLanguage) => {
+  const speakText = (text, language = target_lang) => {
     // Check if speech synthesis is supported
     if (!window.speechSynthesis) {
-      showError("Text-to-speech is not supported in your browser");
+      showError(AssistantDataMock.errorFallback);
       return;
     }
+
+    // Map your internal codes to real BCP-47 voice locales
+  const localeMap = {
+    en:   "en-US",
+    hi:   "hi-IN",
+    ta:   "ta-IN",
+    te:   "te-IN",
+    bn:   "bn-IN",
+    gu:   "gu-IN",
+    pa:   "pa-IN",
+    kn:   "kn-IN",
+    ml:   "ml-IN",
+    mr:   "mr-IN",
+    or:   "or-IN",
+    as:   "as-IN",
+    brx:  "brx-IN",
+    mni:  "mni-IN"
+  };
 
     // Cancel any ongoing speech
     window.speechSynthesis.cancel();
     
     // Create a new utterance
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = language;
+    utterance.lang = localeMap[language] || language;
     
     // Speak the text
     window.speechSynthesis.speak(utterance);
@@ -156,7 +235,7 @@ const VoiceAssistant = () => {
         if (audioChunksRef.current.length > 0) {
           processRecording();
         } else {
-          showError("No audio was recorded. Please try again.");
+          showError(AssistantDataMock.processingErrors.noAudio);
           setRecording(false);
         }
       };
@@ -164,7 +243,7 @@ const VoiceAssistant = () => {
       // Handle recording errors
       recorder.onerror = (event) => {
         console.error("Recording error:", event.error);
-        showError(`Recording error: ${event.error.message || "unknown error"}`);
+        showError(AssistantDataMock.processingErrors.recording);
         setRecording(false);
         
         // Clean up stream
@@ -182,12 +261,12 @@ const VoiceAssistant = () => {
     } catch (error) {
       console.error("Error accessing microphone:", error);
       
-      let errorMessage = "Could not access microphone. ";
+      let errorMessage = AssistantDataMock.microphoneError.notFound;
       
       if (error.name === "NotAllowedError") {
-        errorMessage += "Please allow microphone access.";
+        errorMessage += AssistantDataMock.microphoneError.notAllowed;
       } else if (error.name === "NotFoundError") {
-        errorMessage += "No microphone found.";
+        errorMessage += AssistantDataMock.microphoneError.unknown;
       } else {
         errorMessage += error.message || "Unknown error.";
       }
@@ -207,7 +286,7 @@ const VoiceAssistant = () => {
       }
     } catch (error) {
       console.error("Error stopping recording:", error);
-      showError("Error stopping recording");
+      showError(AssistantDataMock.processingErrors.audio);
       
       // Force cleanup
       setRecording(false);
@@ -228,7 +307,7 @@ const VoiceAssistant = () => {
       const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
       
       if (audioBlob.size === 0) {
-        throw new Error("Empty audio recording");
+        throw new Error(AssistantDataMock.processingErrors.audio);
       }
       
       // Create form data
@@ -237,7 +316,7 @@ const VoiceAssistant = () => {
       
       // Send to server
       const response = await fetch(
-        `http://localhost:5000/audio?lang=${selectedLanguage}`,
+        `http://localhost:5000/audio?lang=${target_lang}`,
         {
           method: "POST",
           body: formData
@@ -252,7 +331,7 @@ const VoiceAssistant = () => {
       const audioData = await response.arrayBuffer();
       
       if (!audioData || audioData.byteLength === 0) {
-        throw new Error("Server returned empty audio response");
+        throw new Error(AssistantDataMock.processingErrors.emptyResponse);
       }
       
       // Get content type or default to audio/mpeg
@@ -277,7 +356,7 @@ const VoiceAssistant = () => {
       
       player.play().catch(error => {
         console.error("Error playing audio:", error);
-        showError("Could not play audio response");
+        showError(AssistantDataMock.processingErrors.audio);
         URL.revokeObjectURL(audioUrl);
       });
       
@@ -285,7 +364,7 @@ const VoiceAssistant = () => {
       
     } catch (error) {
       console.error("Error processing recording:", error);
-      showError(error.message || "Error processing your request");
+      showError(AssistantDataMock.processingErrors.generic);
     } finally {
       setProcessing(false);
       setRecording(false);
@@ -330,12 +409,28 @@ const VoiceAssistant = () => {
     setError(null);
   };
 
+
+  if (Loading) {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '80vh'
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
   // =============== RENDER COMPONENT ===============
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 to-black p-6">
       <div className="flex flex-col items-center max-w-md w-full gap-6">
         {/* Title */}
-        <h1 className="text-2xl font-bold text-white mb-2">Samadhan AI Assistant</h1>
+        <h1 className="text-2xl font-bold text-white mb-2">{AssistantDataMock.heading}</h1>
         
         {/* Error Message Display */}
         {error && (
@@ -350,30 +445,13 @@ const VoiceAssistant = () => {
             onClick={() => setActiveSession(true)}
             className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full text-lg shadow-lg transition"
           >
-            Start Conversation
+            {AssistantDataMock.buttons.startConversation}
           </button>
         )}
         
         {activeSession && (
           <>
-            {/* Language Selector */}
-            <div className="relative w-full">
-              <select
-                value={selectedLanguage}
-                onChange={(e) => setSelectedLanguage(e.target.value)}
-                disabled={recording || processing || playing}
-                className="w-full bg-gray-800 text-white border border-gray-700 rounded-lg py-3 px-4 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                {Object.entries(languages).map(([code, name]) => (
-                  <option key={code} value={code}>
-                    {name}
-                  </option>
-                ))}
-              </select>
-              <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                <ChevronDown className="text-gray-400" size={20} />
-              </div>
-            </div>
+            
             
             {/* Assistant Avatar */}
             <div className="relative w-48 h-48 my-6">
@@ -394,7 +472,7 @@ const VoiceAssistant = () => {
               <div className="absolute inset-2 rounded-full overflow-hidden bg-gray-800 flex items-center justify-center">
                 <img
                   src="/assets/images/assistant.png"
-                  alt="AI Assistant"
+                  alt={AssistantDataMock.AiAlt}
                   className="w-full h-full object-cover"
                   onError={(e) => {
                     e.target.src = "https://via.placeholder.com/200?text=AI+Assistant";
@@ -424,7 +502,7 @@ const VoiceAssistant = () => {
               <button
                 onClick={recording ? stopRecording : startRecording}
                 disabled={processing || playing}
-                aria-label={recording ? "Stop recording" : "Start recording"}
+                aria-label={recording ? AssistantDataMock.stopRecording : AssistantDataMock.startRecording}
                 className={`w-16 h-16 rounded-full flex items-center justify-center shadow-lg transition-colors ${
                   recording
                     ? "bg-red-600 hover:bg-red-700"
@@ -439,7 +517,7 @@ const VoiceAssistant = () => {
               {/* Emergency Stop Button */}
               <button
                 onClick={stopEverything}
-                aria-label="Stop all activities"
+                aria-label={AssistantDataMock.stopAll}
                 className="w-16 h-16 rounded-full bg-gray-800 hover:bg-gray-700 flex items-center justify-center shadow-lg transition-colors"
               >
                 <Square size={24} className="text-white" />
@@ -449,12 +527,12 @@ const VoiceAssistant = () => {
             {/* Status Text */}
             <div className="text-gray-300 text-center mt-4">
               {recording
-                ? "Listening... Click mic to stop"
+                ? AssistantDataMock.statusMessages.listening
                 : processing
-                ? "Processing your request..."
+                ? AssistantDataMock.statusMessages.processing
                 : playing
-                ? "Playing response..."
-                : "Click mic to speak"}
+                ? AssistantDataMock.statusMessages.playing
+                : AssistantDataMock.statusMessages.idle}
             </div>
           </>
         )}
