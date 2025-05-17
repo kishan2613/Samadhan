@@ -67,7 +67,7 @@ const ChatRooms = () => {
           <div
             key={room._id}
             className="flex items-center justify-between border rounded-lg p-4 shadow bg-white cursor-pointer hover:shadow-md transition"
-            onClick={() =>
+            onClick={() => 
               navigate(`/chat/${room._id}`, {
                 state: { roomId: room._id, userId: user._id },
               })
