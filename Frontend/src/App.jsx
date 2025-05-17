@@ -1,5 +1,6 @@
+// App.jsx
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
 import Home from "./pages/Home";
 import About from "./pages/About";
 import SignUp from "./pages/SignUp";
@@ -19,31 +20,48 @@ import VideoCall from "./pages/VideoCall/VideoCall";
 import Assistant from "./pages/Assistant";
 import Chat from "./pages/ChatRoom/Chat";
 import Groups from "./pages/ChatRoom/Group";
+import LanguageSelector from "./pages/AskLang/view";
 
 function App() {
+  const [languageSet, setLanguageSet] = useState(false);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('preferredLanguage');
+    if (stored) setLanguageSet(true);
+  }, []);
+
+  // Pass setLanguageSet down so selector can update parent state
+  if (!languageSet) {
+    return (
+      <Router>
+        <LanguageSelector onSelect={() => setLanguageSet(true)} />
+      </Router>
+    );
+  }
+
   return (
     <Router>
-      <Navbar/> 
+      <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/mediator-details" element={<MediatorDetailsForm />} />
         <Route path="/mediator-connect" element={<MediatorConnect />} />
-        <Route path="/signup" element={< SignUp />} />
-        <Route path="/login" element={< Login />} />
-        <Route path="/VideoCall" element={< Lobby />} />
-        <Route path="/proposal" element={< Proposal />} />
-        <Route path="/notify" element={< Notification />} />
-        <Route path="/Chat" element={< ChatRooms />} />
-        <Route path="/Groups" element={< Groups />} /> 
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/VideoCall" element={<Lobby />} />
+        <Route path="/proposal" element={<Proposal />} />
+        <Route path="/notify" element={<Notification />} />
+        <Route path="/Chat" element={<ChatRooms />} />
+        <Route path="/Groups" element={<Groups />} />
         <Route path="/chat/:roomId" element={<Groups />} />
-        <Route path="/active-proposal" element={< ActiveProposal />} />
-        <Route path="/VideoCall/:roomid" element={< RoomPage />} />
+        <Route path="/active-proposal" element={<ActiveProposal />} />
+        <Route path="/VideoCall/:roomid" element={<RoomPage />} />
         <Route path="/mediator/:id" element={<MediatorDetails />} />
-        <Route path="/assistant" element={<Assistant/>} />
+        <Route path="/Ask-Samadhan" element={<Assistant />} />
         <Route path="/call/:roomId" element={<VideoCall />} />
       </Routes>
-      <Footer/>
+      <Footer />
     </Router>
   );
 }

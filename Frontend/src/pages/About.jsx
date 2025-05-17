@@ -1,13 +1,64 @@
+import { useState, useEffect } from "react";
+import AboutusDataMock from "../WebData/About.json";
+
+// A cache that survives component unmounts/re-mounts:
+const aboutCache = {};
+
 function About() {
-    return (
-      <div className="bg-gradient-to-br from-[#f5f0eb] to-[#f9f6f2] text-[#2b2b2b] min-h-screen">
+  const [AboutusData, setAboutusData] = useState(AboutusDataMock);
+  const lang = localStorage.getItem("preferredLanguage");
+
+  useEffect(() => {
+    if (!lang) return;
+
+    // 1. If we already translated for this lang, re-use it:
+    if (aboutCache[lang]) {
+      setAboutusData(aboutCache[lang]);
+      return;
+    }
+
+    // 2. Otherwise, call the API once, then store in the cache:
+    (async () => {
+      try {
+        const res = await fetch("http://localhost:5000/translate/translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ jsonObject: AboutusDataMock, targetLang: lang })
+        });
+        const { pipelineResponse } = await res.json();
+        const map = {};
+        pipelineResponse[0].output.forEach(({ source, target }) => {
+          map[source] = target;
+        });
+        function translateJSON(obj) {
+          if (typeof obj === "string") return map[obj] || obj;
+          if (Array.isArray(obj)) return obj.map(translateJSON);
+          if (obj && typeof obj === "object") {
+            return Object.fromEntries(
+              Object.entries(obj).map(([k, v]) => [k, translateJSON(v)])
+            );
+          }
+          return obj;
+        }
+        const translated = translateJSON(AboutusDataMock);
+        aboutCache[lang] = translated;      // ← store in module cache
+        setAboutusData(translated);
+      } catch (err) {
+        console.error(err);
+      }
+    })();
+  }, [lang]);
+
+
+  return (
+    <div className="bg-gradient-to-br from-[#f5f0eb] to-[#f9f6f2] text-[#2b2b2b] min-h-screen">
       {/* Hero Section */}
       <section className="px-6 md:px-20 py-0 flex flex-col md:flex-row items-center gap-12">
         {/* Image Placeholder */}
         <div className="w-full md:w-1/2">
           <img
             src="/assets/images/About-Hero.png"
-            alt="Mediation illustration"
+            alt={AboutusData.hero.altText}
             className="rounded-xl w-full object-cover"
           />
         </div>
@@ -15,10 +66,10 @@ function About() {
         {/* Text Content */}
         <div className="w-full md:w-1/2 space-y-6 text-center md:text-left">
           <h1 className="text-4xl md:text-5xl font-serif font-bold leading-tight">
-            Building Bridges Through Dialogue
+            {AboutusData.hero.heading}
           </h1>
           <p className="text-gray-700 text-lg leading-relaxed">
-            Samadhan is your trusted platform for resolving conflicts with empathy, expertise, and cultural sensitivity.
+            {AboutusData.hero.description}
           </p>
         </div>
       </section>
@@ -26,9 +77,11 @@ function About() {
       {/* Mission Section */}
       <section className="px-6 md:px-20 py-12 bg-white">
         <div className="max-w-4xl mx-auto text-center space-y-4">
-          <h2 className="text-3xl font-bold font-serif">Our Mission</h2>
+          <h2 className="text-3xl font-bold font-serif">
+            {AboutusData.mission.heading}
+          </h2>
           <p className="text-gray-700 text-base leading-relaxed">
-            We believe every conflict deserves a peaceful solution. Our mission is to simplify access to professional mediators, enable multilingual guidance through AI, and provide legal clarity to individuals and organizations across India.
+            {AboutusData.mission.description}
           </p>
         </div>
       </section>
@@ -38,12 +91,15 @@ function About() {
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
           {/* Text */}
           <div className="space-y-6">
-            <h2 className="text-3xl font-bold font-serif">What We Do</h2>
+            <h2 className="text-3xl font-bold font-serif">
+              {AboutusData.whatWeDo.heading}
+            </h2>
             <ul className="list-disc list-inside text-gray-700 space-y-2">
-              <li>Connect users with certified mediators in various fields.</li>
-              <li>Offer AI chatbot support in multiple regional languages.</li>
-              <li>Provide downloadable legal documents and guides.</li>
-              <li>Host community forums for shared stories and support.</li>
+              <ul>
+                {AboutusData.whatWeDo.items.map((item, idx) => (
+                  <li key={idx}>{item}</li>
+                ))}
+              </ul>
             </ul>
           </div>
 
@@ -51,7 +107,7 @@ function About() {
           <div>
             <img
               src="/assets/images/Bhasha-Bandhu.png"
-              alt="What we do"
+              alt={AboutusData.whatWeDo.altText}
               className="rounded-xl  w-full object-cover"
             />
           </div>
@@ -61,39 +117,23 @@ function About() {
       {/* Why Choose Us Cards */}
       <section className="px-6 md:px-20 py-16 bg-white">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold font-serif">Why Choose Samadhan?</h2>
+          <h2 className="text-3xl font-bold font-serif">
+            {AboutusData.whyChoose.heading}
+          </h2>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {[
-            {
-              title: "Confidential & Affordable",
-              desc: "Ensuring privacy and affordability for all users.",
-            },
-            {
-              title: "Multilingual Support",
-              desc: "Guided mediation available in your language.",
-            },
-            {
-              title: "Human + AI Assistance",
-              desc: "Smart AI bots + certified human mediators.",
-            },
-            {
-              title: "Nationwide Network",
-              desc: "Reach mediators from every region and specialty.",
-            },
-          ].map((item, idx) => (
+          {AboutusData.whyChoose.cards.map((item, idx) => (
             <div
               key={idx}
               className="bg-[#f9f6f2] p-6 rounded-xl shadow hover:shadow-lg transition"
             >
               <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
-              <p className="text-sm text-gray-700">{item.desc}</p>
+              <p className="text-sm text-gray-700">{item.description}</p>
             </div>
           ))}
         </div>
       </section>
     </div>
-    );
-  }
-  export default About;
-  
+  );
+}
+export default About;

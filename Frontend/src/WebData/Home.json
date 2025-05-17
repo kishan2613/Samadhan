@@ -1,0 +1,39 @@
+{
+  "hero": {
+    "heading": [
+      "Resolving Conflicts",
+      "Through Dialogue & Understanding"
+    ],
+    "subheading": "Our mediators have decades of combined experience in conflict resolution. Trusted in family, business, and civil disputes.",
+    "button": "Get Started",
+    "paragraph": "We help individuals and organizations resolve disputes peacefully. Explore affordable, confidential, and legally supported mediation solutions."
+  },
+  "quote": {
+    "text": "The virtue of justice consists in moderation as regulated by wisdom"
+  },
+  "laws": [
+    {
+      "key": "business",
+      "title": "Business Law",
+      "description": "There are various forms of legal business entities ranging from the sole trader.",
+      "icon": "/assets/images/business.png"
+    },
+    {
+      "key": "criminal",
+      "title": "Criminal Law",
+      "description": "Criminal law is the body of law that relates to crime. Conduct perceived as threatening, harmful.",
+      "icon": "/assets/images/criminal.png"
+    },
+    {
+      "key": "family",
+      "title": "Family Law",
+      "description": "Family law is a legal practice area that focuses on issues involving family relationships.",
+      "icon": "/assets/images/family.png"
+    }
+  ],
+  "learning": {
+    "heading": "Begin Your Journey in Mediation",
+    "paragraph": "Learn how to mediate conflicts and create meaningful resolutions. Our self-paced modules are perfect for beginners and professionals alike.",
+    "button": "Start Learning"
+  }
+}

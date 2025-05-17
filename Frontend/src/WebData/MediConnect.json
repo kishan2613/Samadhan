@@ -1,0 +1,31 @@
+{
+"loadingMessage": "Loading mediators...",
+"errorMessage": "Failed to fetch mediator data",
+"pageTitle": "Connect with Mediators",
+"searchPlaceholder": "Search by mediator name...",
+"noResults": "No mediators found.",
+"labels": {
+"location": "Location:",
+"languages": "Languages:",
+"experience": "Experience:",
+"yearsSuffix": "yrs",
+"areasOfExpertiseBg": "",
+"opponentEmailLabel": "Opponent's Email",
+"suggestmediator": "Suggest this Mediator"
+},
+"buttons": {
+"contact": "Contact",
+"suggest": "Suggest",
+"cancel": "Cancel",
+"submit": "Submit"
+},
+"status": {
+"notLoggedIn": "You must be logged in to suggest",
+"success": "Suggestion Sent Successfully",
+"failed": "Failed to send suggestion",
+"networkError": "Network error, please try again"
+},
+"pagination": {
+"ariaLabel": "mediator pagination"
+}
+}

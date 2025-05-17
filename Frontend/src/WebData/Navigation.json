@@ -1,0 +1,14 @@
+{
+  "brand": "SamaDhan",
+  "labels": {
+    "home": "Home",
+    "askSamadhan": "Ask Samadhan",
+    "mediatorConnect": "Mediator Connect",
+    "aboutUs": "About Us",
+    "login": "Login",
+    "chatRooms": "Chat Rooms",
+    "proposals": "Proposals",
+    "suggestions": "Suggestions",
+    "logout": "Log Out"
+  }
+}
