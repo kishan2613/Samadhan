@@ -16,6 +16,7 @@
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2",
     "@mui/material": "^7.0.2",
+    "@zegocloud/zego-uikit-prebuilt": "^2.14.3-beta",
     "axios": "^1.9.0",
     "dot-env": "^0.0.1",
     "framer-motion": "^12.9.4",
