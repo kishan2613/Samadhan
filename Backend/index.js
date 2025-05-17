@@ -1,49 +1,39 @@
+const express = require("express");
+const http = require("http");
 const { Server } = require("socket.io");
+const cors = require("cors");
 
-const io = new Server(8000, {
-  cors: true,
+const app = express();
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: "*", // Allow all origins for dev; tighten this for production
+    methods: ["GET", "POST"],
+  },
 });
 
-const emailToSocketIdMap = new Map();
-const socketidToEmailMap = new Map();
+app.use(cors());
 
 io.on("connection", (socket) => {
-  console.log(`Socket Connected`, socket.id);
+  console.log("User connected:", socket.id);
 
-  socket.on("room:join", (data) => {
-    const { email, room } = data;
-    emailToSocketIdMap.set(email, socket.id);
-    socketidToEmailMap.set(socket.id, email);
-    io.to(room).emit("user:joined", { email, id: socket.id });
-    socket.join(room);
-    io.to(socket.id).emit("room:join", data);
+  // Join specific room
+  socket.on("speech", ({ roomId, text, language, gender, from }) => {
+    socket.to(roomId).emit("speech-message", { from, text });
+  });
+  // Let client join a room
+  socket.on("join-room", ({ roomId, username }) => {
+    socket.join(roomId);
+    socket.data.username = username; // store username on socket
+    console.log(`${username} (${socket.id}) joined room ${roomId}`);
   });
 
-  socket.on("user:call", ({ to, offer }) => {
-    io.to(to).emit("incomming:call", { from: socket.id, offer });
+  socket.on("disconnect", () => {
+    console.log("User disconnected:", socket.id);
   });
+});
 
-  socket.on("call:accepted", ({ to, ans }) => {
-    io.to(to).emit("call:accepted", { from: socket.id, ans });
-  });
-
-  socket.on("peer:nego:needed", ({ to, offer }) => {
-    console.log("peer:nego:needed", offer);
-    io.to(to).emit("peer:nego:needed", { from: socket.id, offer });
-  });
-
-  socket.on("peer:nego:done", ({ to, ans }) => {
-    console.log("peer:nego:done", ans);
-    io.to(to).emit("peer:nego:final", { from: socket.id, ans });
-  });
-
-  socket.on("call:end", ({ to }) => {
-    io.to(to).emit("call:ended");
-  });
-
-  // 🔊 Speech Transcript Sharing Feature
-  socket.on("send-transcript", ({ to, transcript }) => {
-    console.log(`Transcript sent to ${to}: ${transcript}`);
-    io.to(to).emit("receive-transcript", { from: socket.id, transcript });
-  });
+server.listen(3001, () => {
+  console.log("Server running on http://localhost:3001");
 });
