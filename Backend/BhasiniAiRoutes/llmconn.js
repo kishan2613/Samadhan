@@ -4,7 +4,7 @@ const axios   = require("axios");
 const router  = express.Router();
 
 const FLASK_FAISS_URL  = "http://localhost:5001/ask";
-const GEMINI_API_KEY   = "AIzaSyChz49v4j96SIOqL3_kAbWi6RJgTyuzIfI";    // set in your env  
+const GEMINI_API_KEY   = "AIzaSyCQs64UYsU2XdNf3vB6U1JVNSPRL28rWIs";    // set in your env  
 
 // POST /ask
 router.post("/", async (req, res) => {
