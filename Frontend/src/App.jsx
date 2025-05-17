@@ -5,8 +5,8 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
-import Lobby from "./pages/Lobby";
-import RoomPage from "./pages/Room";
+// import Lobby from "./pages/Lobby";
+// import RoomPage from "./pages/Room";
 import Navbar from "./components/common/Navbar";
 import MediatorDetailsForm from "./pages/UserAdditional";
 import MediatorConnect from "./pages/MediatorConnect/page";
@@ -16,11 +16,16 @@ import Proposal from "./components/CreateProposal";
 import ActiveProposal from "./pages/Proposal/activeProposal";
 import ChatRooms from "./pages/ChatRoom/Rooms";
 import Footer from "./components/common/Footer";
-import VideoCall from "./pages/VideoCall/VideoCall";
+// import VideoCall from "./pages/VideoCall/VideoCall";
 import Assistant from "./pages/Assistant";
 import Chat from "./pages/ChatRoom/Chat";
 import Groups from "./pages/ChatRoom/Group";
+
 import LanguageSelector from "./pages/AskLang/view";
+
+// import Smeet from "./service/Smeet";
+import VideoConference from "../src/pages/ChatRoom/VideoConference";
+
 
 function App() {
   const [languageSet, setLanguageSet] = useState(false);
@@ -60,6 +65,8 @@ function App() {
         <Route path="/mediator/:id" element={<MediatorDetails />} />
         <Route path="/Ask-Samadhan" element={<Assistant />} />
         <Route path="/call/:roomId" element={<VideoCall />} />
+         <Route path="/samadhan-meet/:roomId" element={<Groups/>} />
+
       </Routes>
       <Footer />
     </Router>
