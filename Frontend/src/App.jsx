@@ -54,17 +54,17 @@ function App() {
         <Route path="/mediator-connect" element={<MediatorConnect />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/VideoCall" element={<Lobby />} />
+        {/* <Route path="/VideoCall" element={<Lobby />} /> */}
         <Route path="/proposal" element={<Proposal />} />
         <Route path="/notify" element={<Notification />} />
         <Route path="/Chat" element={<ChatRooms />} />
         <Route path="/Groups" element={<Groups />} />
         <Route path="/chat/:roomId" element={<Groups />} />
         <Route path="/active-proposal" element={<ActiveProposal />} />
-        <Route path="/VideoCall/:roomid" element={<RoomPage />} />
+        {/* <Route path="/VideoCall/:roomid" element={<RoomPage />} /> */}
         <Route path="/mediator/:id" element={<MediatorDetails />} />
         <Route path="/Ask-Samadhan" element={<Assistant />} />
-        <Route path="/call/:roomId" element={<VideoCall />} />
+        {/* <Route path="/call/:roomId" element={<VideoCall />} /> */}
          <Route path="/samadhan-meet/:roomId" element={<Groups/>} />
 
       </Routes>
