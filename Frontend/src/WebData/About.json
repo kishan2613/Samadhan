@@ -1,0 +1,42 @@
+{
+    "hero": {
+    "heading": "Building Bridges Through Dialogue",
+    "description": "Samadhan is your trusted platform for resolving conflicts with empathy, expertise, and cultural sensitivity.",
+    "altText": "Mediation illustration"
+    },
+    "mission": {
+    "heading": "Our Mission",
+    "description": "We believe every conflict deserves a peaceful solution. Our mission is to simplify access to professional mediators, enable multilingual guidance through AI, and provide legal clarity to individuals and organizations across India."
+    },
+    "whatWeDo": {
+    "heading": "What We Do",
+    "items": [
+    "Connect users with certified mediators in various fields.",
+    "Offer AI chatbot support in multiple regional languages.",
+    "Provide downloadable legal documents and guides.",
+    "Host community forums for shared stories and support."
+    ],
+    "altText": "What we do"
+    },
+    "whyChoose": {
+    "heading": "Why Choose Samadhan?",
+    "cards": [
+    {
+    "title": "Confidential & Affordable",
+    "description": "Ensuring privacy and affordability for all users."
+    },
+    {
+    "title": "Multilingual Support",
+    "description": "Guided mediation available in your language."
+    },
+    {
+    "title": "Human + AI Assistance",
+    "description": "Smart AI bots + certified human mediators."
+    },
+    {
+    "title": "Nationwide Network",
+    "description": "Reach mediators from every region and specialty."
+    }
+    ]
+    }
+    }

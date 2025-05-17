@@ -1,0 +1,35 @@
+{
+    "title": "Sign Up",
+    "fields": {
+      "name": {
+        "placeholder": "Full Name"
+      },
+      "email": {
+        "placeholder": "Email Address"
+      },
+      "password": {
+        "placeholder": "Password"
+      },
+      "confirmPassword": {
+        "placeholder": "Confirm Password"
+      },
+      "role": {
+        "placeholder": "Select Role",
+        "options": [
+          { "value": "party", "label": "Party" },
+          { "value": "mediator", "label": "Mediator" }
+        ]
+      }
+    },
+    "buttons": {
+      "submit": "Sign Up",
+      "submitting": "Registering..."
+    },
+    "alerts": {
+      "passwordMismatch": "Passwords do not match!",
+      "registrationFailed": "Registration failed",
+      "serverError": "Server error",
+      "success": "User registered successfully!"
+    }
+  }
+  

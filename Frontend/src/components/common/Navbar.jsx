@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { User, Bell, ChevronDown, Menu, X } from "lucide-react";
+import NavigationText from "../../WebData/Navigation.json"
+
+const navCache = {};
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -10,11 +13,63 @@ const Navbar = () => {
   const [token, setToken] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [Navigation, setNavigation] = useState(NavigationText);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const preferredLanguage = localStorage.getItem("preferredLanguage");
+    if (!preferredLanguage) return;
+
+    // If cached, use it
+    if (navCache[preferredLanguage]) {
+      setNavigation(navCache[preferredLanguage]);
+      return;
+    }
+
+    // Otherwise fetch & translate
+    (async () => {
+      try {
+        const res = await fetch(
+          "http://localhost:5000/translate/translate",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              jsonObject: NavigationText,
+              targetLang: preferredLanguage,
+            }),
+          }
+        );
+        const data = await res.json();
+        const outputs = data.pipelineResponse?.[0]?.output || [];
+        const map = {};
+        outputs.forEach(({ source, target }) => {
+          map[source] = target;
+        });
+
+        const translateJSON = (obj) => {
+          if (typeof obj === "string") return map[obj] || obj;
+          if (Array.isArray(obj)) return obj.map(translateJSON);
+          if (obj && typeof obj === "object") {
+            return Object.fromEntries(
+              Object.entries(obj).map(([k, v]) => [k, translateJSON(v)])
+            );
+          }
+          return obj;
+        };
+
+        const translated = translateJSON(NavigationText);
+        navCache[preferredLanguage] = translated;
+        setNavigation(translated);
+      } catch (err) {
+        console.error("Navbar translation error:", err);
+      }
+    })();
   }, []);
 
   useEffect(() => {
@@ -65,10 +120,10 @@ const Navbar = () => {
 
         {/* Desktop Navigation Links */}
         <ul className="hidden md:flex space-x-8 text-sm font-medium text-[#1C1C1C]">
-          <li><Link to="/" className="hover:text-[#C1440E]">Home</Link></li>
-          <li><Link to="/Ask-Samadhan" className="hover:text-[#C1440E]">Ask Samadhan</Link></li>
-          <li><Link to="/mediator-connect" className="hover:text-[#C1440E]">Mediator Connect</Link></li>
-          <li><Link to="/about" className="hover:text-[#C1440E]">About Us</Link></li>
+          <li><Link to="/" className="hover:text-[#C1440E]">{Navigation.labels.home}</Link></li>
+          <li><Link to="/Ask-Samadhan" className="hover:text-[#C1440E]">{Navigation.labels.askSamadhan}</Link></li>
+          <li><Link to="/mediator-connect" className="hover:text-[#C1440E]">{Navigation.labels.mediatorConnect}</Link></li>
+          <li><Link to="/about" className="hover:text-[#C1440E]">{Navigation.labels.aboutUs}</Link></li>
         </ul>
 
         {/* Right Side */}
@@ -100,9 +155,9 @@ const Navbar = () => {
           ) : (
             <button
               className="relative bg-black text-white px-6 py-2 rounded-full font-semibold text-sm shadow-md hover:scale-105 transition-transform"
-              onClick={() => navigate("/SignUp")}
+              onClick={() => navigate("/login")}
             >
-              Login
+              {Navigation.labels.login}
               <span className="absolute top-[-8px] left-[-10px] w-full h-full bg-black rounded-full -z-10 blur-sm opacity-20" />
             </button>
           )}
@@ -115,7 +170,7 @@ const Navbar = () => {
                 className="block px-4 py-3 hover:bg-gray-100 transition-colors"
                 onClick={() => setDropdownOpen(false)}
               >
-                Chat Rooms
+                {Navigation.labels.chatRooms}
               </Link>
 
               {user.role === "mediator" ? (
@@ -124,7 +179,7 @@ const Navbar = () => {
                   className="block px-4 py-3 hover:bg-gray-100 transition-colors"
                   onClick={() => setDropdownOpen(false)}
                 >
-                  Proposals
+                  {Navigation.labels.proposals}
                 </Link>
               ) : (
                 <Link
@@ -132,7 +187,7 @@ const Navbar = () => {
                   className="block px-4 py-3 hover:bg-gray-100 transition-colors"
                   onClick={() => setDropdownOpen(false)}
                 >
-                  Suggestions
+                  {Navigation.labels.suggestions}
                 </Link>
               )}
 
@@ -140,7 +195,7 @@ const Navbar = () => {
                 onClick={handleLogout}
                 className="w-full text-left px-4 py-3 hover:bg-gray-100 transition-colors"
               >
-                Log Out
+                {Navigation.labels.logout}
               </button>
             </div>
           )}
@@ -163,10 +218,10 @@ const Navbar = () => {
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden px-6 pb-4 bg-[#f5f0eb] space-y-4 text-sm font-medium text-[#1C1C1C]">
-          <Link to="/" onClick={toggleMobileMenu} className="block hover:text-[#C1440E]">Home</Link>
-          <Link to="/Ask-Samadhan" onClick={toggleMobileMenu} className="block hover:text-[#C1440E]">Ask Samadhan</Link>
-          <Link to="/mediator-connect" onClick={toggleMobileMenu} className="block hover:text-[#C1440E]">Mediator Connect</Link>
-          <Link to="/about" onClick={toggleMobileMenu} className="block hover:text-[#C1440E]">About Us</Link>
+          <Link to="/" onClick={toggleMobileMenu} className="block hover:text-[#C1440E]">{Navigation.labels.home}</Link>
+          <Link to="/Ask-Samadhan" onClick={toggleMobileMenu} className="block hover:text-[#C1440E]">{Navigation.labels.askSamadhan}</Link>
+          <Link to="/mediator-connect" onClick={toggleMobileMenu} className="block hover:text-[#C1440E]">{Navigation.labels.mediatorConnect}</Link>
+          <Link to="/about" onClick={toggleMobileMenu} className="block hover:text-[#C1440E]">{Navigation.labels.aboutUs}</Link>
         </div>
       )}
     </nav>

@@ -18,6 +18,10 @@ app.use('/api/suggestions', require('../Routes/SuggestionController'));
 app.use('/api/proposals', require('../Routes/ProposalController'));
 app.use('/api/mediator', require('../Routes/MediatorController'));
 app.use('/api/chat', require('../Routes/ChatController'));
+app.use("/ask", require('../BhasiniAiRoutes/llmconn'));
+app.use("/audio",require("../BhasiniAiRoutes/bhasiniconv"));
+app.use("/translate",require("../BhasiniAiRoutes/Translate"))
+
 
 // Create HTTP server for Socket.IO to hook into
 const server = http.createServer(app);
