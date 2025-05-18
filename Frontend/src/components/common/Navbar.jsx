@@ -81,7 +81,7 @@ const Navbar = () => {
       setUser(storedUser);
     }
   }, []);
-
+  // console.log(user);
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {

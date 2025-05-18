@@ -18,7 +18,7 @@ import ChatRooms from "./pages/ChatRoom/Rooms";
 import Footer from "./components/common/Footer";
 // import VideoCall from "./pages/VideoCall/VideoCall";
 import Assistant from "./pages/Assistant";
-import Chat from "./pages/ChatRoom/Chat";
+import Community from "./pages/Community/Community";
 import Groups from "./pages/ChatRoom/Group";
 
 import LanguageSelector from "./pages/AskLang/view";
@@ -66,7 +66,7 @@ function App() {
         <Route path="/Ask-Samadhan" element={<Assistant />} />
         {/* <Route path="/call/:roomId" element={<VideoCall />} /> */}
          <Route path="/samadhan-meet/:roomId" element={<Groups/>} />
-
+         <Route path="/samadhan-community" element={<Community/>} />
       </Routes>
       <Footer />
     </Router>
