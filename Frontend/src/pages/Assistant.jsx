@@ -427,7 +427,7 @@ const VoiceAssistant = () => {
 
   // =============== RENDER COMPONENT ===============
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 to-black p-6">
+    <div className="min-h-screen mt-4 flex flex-col items-center justify-center bg-gradient-to-br from-gray-900 to-black p-6">
       <div className="flex flex-col items-center max-w-md w-full gap-6">
         {/* Title */}
         <h1 className="text-2xl font-bold text-white mb-2">{AssistantDataMock.heading}</h1>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const ChatRooms = () => {
+const ChatRooms = ({setRoomTitle}) => {
   const [chatRooms, setChatRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
@@ -47,52 +47,47 @@ const ChatRooms = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto mt-10 space-y-6 p-4">
+  <div className="w-full h-full mt-16 mb-4 pt-2 ">
+    <div className="max-w-md mx-auto  ">
       {chatRooms.map((room) => {
         const mediator = room.members.find((member) => member.role === "mediator");
         const parties = room.members.filter((member) => member.role !== "mediator");
 
         if (!mediator || parties.length < 2) return null;
 
-        const partyNames = parties.map((p) => {
-          if (p._id === user._id) {
-            return "You";
-          }
-          return p.name;
-        });
-
-        const roomTitle = `Chat room with ${partyNames.join(" and ")}`;
+        const partyNames = parties.map((p) => (p._id === user._id ? "You" : p.name));
+        const roomTitle = `${partyNames.join(" and ")}`;
 
         return (
           <div
             key={room._id}
-            className="flex items-center justify-between border rounded-lg p-4 shadow bg-white cursor-pointer hover:shadow-md transition"
-            onClick={() => 
+            className="flex items-center px-4 py-3 rounded-xl m-2 bg-white hover:bg-[#ebebeb] border-b cursor-pointer transition"
+            onClick={() =>
               navigate(`/chat/${room._id}`, {
-                state: { roomId: room._id, userId: user._id },
+                state: { Title: roomTitle, roomId: room._id, userId: user._id },
               })
             }
           >
-            <div className="flex items-center">
-              <img
-                src={
-                  mediator.image
-                    ? mediator.image
-                    : "https://t3.ftcdn.net/jpg/06/33/54/78/360_F_633547842_AugYzexTpMJ9z1YcpTKUBoqBF0CUCk10.jpg"
-                }
-                alt={mediator.name}
-                className="w-20 h-20 rounded-lg object-cover mr-4"
-              />
-              <div>
-                <h2 className="text-lg font-semibold">{roomTitle}</h2>
-                <p className="text-sm text-green-700">Mediator: {mediator.name}</p>
-              </div>
+            <img
+              src={
+                mediator.image
+                  ? mediator.image
+                  : "https://t3.ftcdn.net/jpg/06/33/54/78/360_F_633547842_AugYzexTpMJ9z1YcpTKUBoqBF0CUCk10.jpg"
+              }
+              alt={mediator.name}
+              className="w-12 h-12 rounded-full object-cover mr-4"
+            />
+            <div className="flex-1 border-b border-gray-100 pb-2">
+              <h2 className="text-[15px] font-medium text-gray-800">{roomTitle}</h2>
+              <p className="text-xs text-gray-500">Mediator: {mediator.name}</p>
             </div>
           </div>
         );
       })}
     </div>
-  );
+  </div>
+);
+
 };
 
 export default ChatRooms;
