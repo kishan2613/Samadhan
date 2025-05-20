@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import ConsentFormModal from "./ConsentFormModal"; 
-import { Video,User } from "lucide-react";// Import the modal at the top
+import ConsentFormModal from "./ConsentFormModal";
 
 const SERVER_URL = "http://localhost:5000";
 
@@ -16,6 +15,7 @@ export default function Chat({ callroomID, setUsernamenew }) {
   const endRef = useRef(null);
   const hasAnnouncedCall = useRef(false);
   const [isConsentOpen, setConsentOpen] = useState(false);
+  const navigate = useNavigate();
 
   // Load previous chat history
   useEffect(() => {
@@ -57,7 +57,6 @@ export default function Chat({ callroomID, setUsernamenew }) {
         },
       ]);
     });
-    setUsernamenew(user.name);
 
     socket.on("userLeft", ({ userName }) => {
       setMessages((prev) => [
@@ -71,12 +70,14 @@ export default function Chat({ callroomID, setUsernamenew }) {
       ]);
     });
 
+    setUsernamenew(user.name);
+
     return () => {
       socket.disconnect();
     };
   }, [roomId, user._id, user.name]);
 
-  // Announce video call once if callroomID is available
+  // Announce video call
   useEffect(() => {
     if (!callroomID || hasAnnouncedCall.current || !socketRef.current) return;
 
@@ -86,7 +87,7 @@ export default function Chat({ callroomID, setUsernamenew }) {
     const content = `${user.name} started a video call with room ID: ${callroomID}`;
 
     const messagePayload = {
-      roomId, // send to room that users joined
+      roomId,
       senderId: user._id,
       content,
       tempId,
@@ -108,7 +109,7 @@ export default function Chat({ callroomID, setUsernamenew }) {
     });
   }, [callroomID, roomId, user._id, user.name]);
 
-  // Auto scroll to bottom
+  // Auto-scroll
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -136,15 +137,13 @@ export default function Chat({ callroomID, setUsernamenew }) {
     setMessage("");
   };
 
-  const navigate = useNavigate();
-
   const startMeeting = () => {
     navigate(`/samadhan-meet/${roomId}`);
   };
 
   return (
     <div className="max-w-2xl mx-auto mt-10 p-4 border rounded flex flex-col h-[80vh]">
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-4 gap-2">
         <h2 className="text-lg font-semibold">Chat</h2>
         <button
           onClick={startMeeting}
@@ -159,12 +158,14 @@ export default function Chat({ callroomID, setUsernamenew }) {
           Consent Form
         </button>
       </div>
+
       <ConsentFormModal
         isOpen={isConsentOpen}
         onClose={() => setConsentOpen(false)}
         roomId={roomId}
         userId={user._id}
       />
+
       <div className="flex-1 overflow-y-auto space-y-2 pr-2">
         {messages.map((msg, index) => {
           const isMe = msg.sender?._id === user._id;
@@ -179,52 +180,43 @@ export default function Chat({ callroomID, setUsernamenew }) {
             <div key={messageKey} className={`mb-2 p-2 rounded ${style}`}>
               <div className="font-semibold text-sm">{msg.sender.name}</div>
               <div>
-                <div>
-                  {msg.content}
-                  {msg.content.includes("started a video call") &&
-                    msg.sender._id !== user._id && (
-                      <button
-                        className="ml-2 text-blue-600 underline hover:text-blue-800"
-                        onClick={() => {
-                          const roomMatch = msg.content.match(/room ID: (\w+)/);
-                          const joinRoomId = roomMatch ? roomMatch[1] : null;
-                          if (joinRoomId) {
-                            navigate(
-                              `/samadhan-meet/${roomId}?roomID=${joinRoomId}`
-                            );
-                          }
-                        }}
-                      >
-                        Join Call
-                      </button>
-                    )}
-                </div>
+                {msg.content}
+                {msg.content.includes("started a video call") &&
+                  msg.sender._id !== user._id && (
+                    <button
+                      className="ml-2 text-blue-600 underline hover:text-blue-800"
+                      onClick={() => {
+                        const roomMatch = msg.content.match(/room ID: (\w+)/);
+                        const joinRoomId = roomMatch ? roomMatch[1] : null;
+                        if (joinRoomId) {
+                          navigate(`/samadhan-meet/${roomId}?roomID=${joinRoomId}`);
+                        }
+                      }}
+                    >
+                      Join Call
+                    </button>
+                  )}
               </div>
             </div>
-          </div>
-        );
-      })}
-      <div ref={endRef} />
-    </div>
+          );
+        })}
+        <div ref={endRef} />
+      </div>
 
-    {/* Input area */}
-    <div className="flex items-center p-3 bg-[#bb5b45] border-t">
-      <input
-        type="text"
-        placeholder="Type a message"
-        className="flex-1 px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-1 focus:ring-green-500 bg-white"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && handleSend()}
-      />
-      <button
-        onClick={handleSend}
-        className="ml-2 bg-[#d1a76e] hover:bg-green-600 text-black px-4 py-2 rounded-full"
-      >
-        Send
-      </button>
+      <div className="flex items-center mt-4">
+        <input
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Type your message..."
+          className="flex-1 border px-4 py-2 rounded-l focus:outline-none"
+        />
+        <button
+          onClick={handleSend}
+          className="bg-blue-600 text-white px-4 py-2 rounded-r hover:bg-blue-700"
+        >
+          Send
+        </button>
+      </div>
     </div>
-  </div>
-);
-
+  );
 }
