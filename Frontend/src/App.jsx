@@ -21,6 +21,7 @@ import Footer from "./components/common/Footer";
 import Assistant from "./pages/Assistant";
 import Community from "./pages/Community/Community";
 import Groups from "./pages/ChatRoom/Group";
+import Guide from "./components/common/Guide";
 
 // import LanguageSelector from "./pages/AskLang/view";
 
@@ -47,9 +48,14 @@ function App() {
 
   return (
     <Router>
-      <Navbar />
-      <Box sx={{ minHeight: '100vh',padding: 0 }}>
-        <Routes>
+      <Navbar />                      
+ <Box
+        sx={{
+          
+          minHeight: "100vh",
+        }}
+      >       
+       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/mediator-details" element={<MediatorDetailsForm />} />
@@ -70,8 +76,10 @@ function App() {
          <Route path="/samadhan-meet/:roomId" element={<Groups/>} />
          <Route path="/samadhan-community" element={<Community/>} />
       </Routes>
-      </Box>    
+      </Box> 
       <Footer />
+            <Guide/>
+
     </Router>
   );
 }

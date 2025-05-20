@@ -88,105 +88,51 @@ const Notification = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 px-4 py-10">
-      <h1 className="text-3xl font-bold text-center mb-8 text-blue-800">
-        Notifications
-      </h1>
+<div className="max-w-screen-xl h-[100vh] mt-16 md:0  mx-auto bg-white rounded-xl shadow-md flex ">
+  {/* Left side with fixed width */}
+  <div className="w-1/2 bg-[#f5f0eb]  flex flex-col hidden md:block">
+    <img
+      src="/assets/images/Notification.png"
+      alt="Notifications"
+      className="w-45 h-45 object-contain "
+    />
+    <p className="italic text-center text-[#bb5b45] p-2 mt-4">
+      "In the middle of every conflict lies an opportunity — mediation turns that opportunity into resolution."
+    </p>
+  </div>
 
-      {suggestions.length === 0 ? (
-        <div className="text-center text-gray-500 text-lg">
-          No suggestions at the moment.
-        </div>
-      ) : (
-        <div className="space-y-6 max-w-4xl mx-auto">
-          {suggestions.map((s) => (
-            <div
-              key={s._id}
-              className="bg-white shadow-md rounded-xl flex items-center justify-between p-5 hover:shadow-lg transition"
-            >
-              <div className="flex items-center gap-4">
-                <img
-                  src={s.mediator.image}
-                  alt={s.mediator.name}
-                  className="w-16 h-16 rounded-full border-2 border-blue-500 object-cover"
-                />
-                <div>
-                  <p className="text-gray-800 font-semibold">
-                    {s.fromParty?.name || 'Someone'} suggested{' '}
-                    <span className="text-blue-700">{s.mediator.name}</span> to you.
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Please review and respond.
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={() => handleViewDetails(s)}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
-              >
-                View Details
-              </button>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Modal */}
-      {modalOpen && selectedSuggestion && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
-          <div className="bg-white rounded-lg p-6 max-w-lg w-full relative shadow-xl">
-            <button
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-xl"
-              onClick={() => setModalOpen(false)}
-            >
-              &times;
-            </button>
-
-            {/* Mediator Full Details */}
-            <div className="text-center">
-              <img
-                src={selectedSuggestion.mediator.image}
-                alt={selectedSuggestion.mediator.name}
-                className="w-24 h-24 mx-auto rounded-full border-2 border-blue-600 mb-4 object-cover"
-              />
-              <h2 className="text-2xl font-bold text-gray-800 mb-1">
-                {selectedSuggestion.mediator.name}
-              </h2>
-              <p className="text-gray-500 mb-4">{selectedSuggestion.mediator.email}</p>
-
-              <div className="text-left space-y-2 mb-4">
-                <p><strong>Location:</strong> {selectedSuggestion.mediator.location}</p>
-                <p><strong>Qualification:</strong> {selectedSuggestion.mediator.qualification}</p>
-                <p><strong>Experience:</strong> {selectedSuggestion.mediator.yearsOfExperience} years</p>
-                <p><strong>Expertise:</strong> {selectedSuggestion.mediator.areasOfExpertise}</p>
-                <p><strong>Languages Known:</strong> {selectedSuggestion.mediator.languagesKnown}</p>
-                <p><strong>Last Position:</strong> {selectedSuggestion.mediator.lastHeldPosition}</p>
-                <p className="italic">"{selectedSuggestion.mediator.chronicles}"</p>
-              </div>
-
-              <p className="text-gray-700 mb-6">
-                If you agree with this suggestion, accept to create a proposal so the recruiter can view your case.
-              </p>
-
-              <div className="flex justify-center gap-4">
-                <button
-                  onClick={() => handleAction('accepted')}
-                  className="bg-green-600 text-white px-5 py-2 rounded-lg hover:bg-green-700"
-                >
-                  Accept & Create Proposal
-                </button>
-                <button
-                  onClick={() => handleAction('declined')}
-                  className="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600"
-                >
-                  Reject
-                </button>
-              </div>
-            </div>
+  {/* Right side with internal scrolling */}
+  <div className="flex-1 bg-[#bb5b45]  h-full overflow-y-auto p-6 space-y-6">
+    {suggestions.map((s) => (
+      <div
+        key={s._id}
+        className="bg-white shadow-md rounded-xl flex items-center justify-between p-4 hover:shadow-lg transition"
+      >
+        <div className="flex items-center gap-4">
+          <img
+            src={s.mediator.image}
+            alt={s.mediator.name}
+            className="w-14 h-14 rounded-full border-2 border-blue-500 object-cover"
+          />
+          <div>
+            <p className="text-gray-800 font-semibold">
+              {s.fromParty?.name || 'Someone'} suggested{' '}
+              <span className="text-blue-700">{s.mediator.name}</span> to you.
+            </p>
+            <p className="text-sm text-gray-500">Please review and respond.</p>
           </div>
         </div>
-      )}
-    </div>
+        <button
+          onClick={() => handleViewDetails(s)}
+          className="bg-[#d1a76e] text-black px-2 py-2 rounded-lg hover:bg-blue-700"
+        >
+          View Details
+        </button>
+      </div>
+    ))}
+  </div>
+</div>
+
   );
 };
 
