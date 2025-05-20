@@ -236,7 +236,7 @@ const MediatorConnect = () => {
                       onClick={() => navigate(`/mediator/${mediator._id}`)}
                       className="w-1/2 py-[1.8vw] md:py-2 rounded-lg bg-[#d1a76e] hover:bg-gradient-to-r hover:from-yellow-500 hover:to-orange-500 text-white text-xs md:text-sm transition"
                     >
-                      {MediatorPag.buttons.contact}
+                      {MediatorPag.buttons.Knowmore}
                     </button>
                     <button
                       onClick={() => openSuggestModal(mediator._id)}

@@ -104,7 +104,7 @@ const Navbar = () => {
           ) : (
             <button
               className="relative bg-black text-white px-6 py-2 rounded-full font-semibold text-sm shadow-md hover:scale-105 transition-transform"
-              onClick={() => navigate("/SignUp")}
+              onClick={() => navigate("/Login")}
             >
               Login
               <span className="absolute top-[-8px] left-[-10px] w-full h-full bg-black rounded-full -z-10 blur-sm opacity-20" />
