@@ -20,13 +20,16 @@ io.on("connection", (socket) => {
 
   // Join specific room
   socket.on("speech", ({ roomId, text, language, gender, from }) => {
+    console.log(
+      `Room: ${roomId} | User: ${from} | Lang: ${language} | Gender: ${gender} | Text: ${text}`
+    );
     socket.to(roomId).emit("speech-message", { from, text });
   });
+
   // Let client join a room
   socket.on("join-room", ({ roomId, username }) => {
     socket.join(roomId);
-    socket.data.username = username; // store username on socket
-    console.log(`${username} (${socket.id}) joined room ${roomId}`);
+    console.log(`User ${socket.id} (${username}) joined room ${roomId}`);
   });
 
   socket.on("disconnect", () => {

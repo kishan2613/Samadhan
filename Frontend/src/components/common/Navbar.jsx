@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { User, Bell, ChevronDown, Menu, X } from "lucide-react";
 
 const Navbar = () => {
+  // const [query, setQuery] = useState("");
   const navigate = useNavigate();
   const dropdownRef = useRef();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -10,6 +11,9 @@ const Navbar = () => {
   const [token, setToken] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+   
+  
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
@@ -26,7 +30,7 @@ const Navbar = () => {
       setUser(storedUser);
     }
   }, []);
-
+  // console.log(user);
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -100,7 +104,7 @@ const Navbar = () => {
           ) : (
             <button
               className="relative bg-black text-white px-6 py-2 rounded-full font-semibold text-sm shadow-md hover:scale-105 transition-transform"
-              onClick={() => navigate("/SignUp")}
+              onClick={() => navigate("/Login")}
             >
               Login
               <span className="absolute top-[-8px] left-[-10px] w-full h-full bg-black rounded-full -z-10 blur-sm opacity-20" />
@@ -110,13 +114,24 @@ const Navbar = () => {
           {/* Dropdown */}
           {dropdownOpen && token && user && (
             <div className="absolute right-0 top-14 bg-white shadow-lg rounded-lg overflow-hidden w-48 text-sm font-medium text-gray-800 z-50">
-              <Link
-                to="/Chat"
-                className="block px-4 py-3 hover:bg-gray-100 transition-colors"
-                onClick={() => setDropdownOpen(false)}
-              >
-                Chat Rooms
-              </Link>
+
+            <Link
+              to="#" // prevent default behavior; we'll handle navigation manually
+              className="block px-4 py-3 hover:bg-gray-100 transition-colors"
+              onClick={(e) => {
+                e.preventDefault();
+                setDropdownOpen(false);
+
+                if (window.innerWidth < 768) {
+                  navigate('/Chat');
+                } else {
+                  navigate('/Groups');
+                }
+              }}
+            >
+              Chat Rooms
+            </Link>
+
 
               {user.role === "mediator" ? (
                 <Link

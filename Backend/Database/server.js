@@ -13,11 +13,18 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use("/api/auth", require("../Routes/Usercontroller"));
-app.use("/api/suggestions", require("../Routes/SuggestionController"));
-app.use("/api/proposals", require("../Routes/ProposalController"));
-app.use("/api/mediator", require("../Routes/MediatorController"));
-app.use("/api/chat", require("../Routes/ChatController"));
+app.use('/api/auth', require('../Routes/Usercontroller'));
+app.use('/api/suggestions', require('../Routes/SuggestionController'));
+app.use('/api/proposals', require('../Routes/ProposalController'));
+app.use('/api/mediator', require('../Routes/MediatorController'));
+app.use('/api/chat', require('../Routes/ChatController'));
+app.use("/ask", require('../BhasiniAiRoutes/llmconn'));
+app.use("/audio",require("../BhasiniAiRoutes/bhasiniconv"));
+app.use("/translate",require("../BhasiniAiRoutes/Translate"))
+app.use("/api/community", require("../Routes/Community"));
+app.use("/api/comments", require("../Routes/Comment"));
+ 
+
 
 // Create HTTP server for Socket.IO to hook into
 const server = http.createServer(app);

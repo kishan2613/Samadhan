@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom'; // 👈 Import useNavigate
+import SignUp from "../WebData/Signup.json"
+
+const SignUpCache = {};
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -10,6 +13,59 @@ const Signup = () => {
     confirmPassword: '',
     role: '',
   });
+
+  const [SignupData, setSignupData] = useState(SignUp);
+
+  useEffect(() => {
+    const preferredLanguage = localStorage.getItem("preferredLanguage");
+    if (!preferredLanguage) return;
+
+    // If cached, use it
+    if (SignUpCache[preferredLanguage]) {
+      setSignupData(SignUpCache[preferredLanguage]);
+      return;
+    }
+
+    // Otherwise fetch & translate
+    (async () => {
+      try {
+        const res = await fetch(
+          "http://localhost:5000/translate/translate",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              jsonObject: SignUp,
+              targetLang: preferredLanguage,
+            }),
+          }
+        );
+        const data = await res.json();
+        const outputs = data.pipelineResponse?.[0]?.output || [];
+        const map = {};
+        outputs.forEach(({ source, target }) => {
+          map[source] = target;
+        });
+
+        const translateJSON = (obj) => {
+          if (typeof obj === "string") return map[obj] || obj;
+          if (Array.isArray(obj)) return obj.map(translateJSON);
+          if (obj && typeof obj === "object") {
+            return Object.fromEntries(
+              Object.entries(obj).map(([k, v]) => [k, translateJSON(v)])
+            );
+          }
+          return obj;
+        };
+
+        const translated = translateJSON(SignUp);
+        SignUpCache[preferredLanguage] = translated;
+        setSignupData(translated);
+      } catch (err) {
+        console.error("Navbar translation error:", err);
+      }
+    })();
+  }, []);
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -30,7 +86,7 @@ const Signup = () => {
     e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match!');
+      alert(SignupData.alerts.passwordMismatch);
       return;
     }
 
@@ -52,7 +108,7 @@ const Signup = () => {
       if (response.ok) {
         localStorage.setItem('token', data.token);
         localStorage.setItem('user', JSON.stringify(data.user));
-        alert('User registered successfully!');
+        alert(SignupData.alerts.success);
 
         // ✅ Redirect based on role
         if (data.user.role === 'party') {
@@ -61,11 +117,11 @@ const Signup = () => {
           navigate('/mediator-details');
         }
       } else {
-        alert(data.msg || 'Registration failed');
+        alert(SignupData.alerts.registrationFailed);
       }
     } catch (err) {
       console.error(err);
-      alert('Server error');
+      alert(SignupData.alerts.serverError);
     } finally {
       setLoading(false);
     }
@@ -74,12 +130,12 @@ const Signup = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
+        <h2 className="text-2xl font-bold mb-6 text-center">{SignupData.title}</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
             name="name"
-            placeholder="Full Name"
+            placeholder={SignupData.fields.name.placeholder}
             value={formData.name}
             onChange={handleChange}
             required
@@ -88,7 +144,7 @@ const Signup = () => {
           <input
             type="email"
             name="email"
-            placeholder="Email Address"
+            placeholder={SignupData.fields.email.placeholder}
             value={formData.email}
             onChange={handleChange}
             required
@@ -99,7 +155,7 @@ const Signup = () => {
             <input
               type={showPassword ? 'text' : 'password'}
               name="password"
-              placeholder="Password"
+              placeholder={SignupData.fields.password.placeholder}
               value={formData.password}
               onChange={handleChange}
               required
@@ -117,7 +173,7 @@ const Signup = () => {
             <input
               type={showPassword ? 'text' : 'password'}
               name="confirmPassword"
-              placeholder="Confirm Password"
+              placeholder={SignupData.fields.confirmPassword.placeholder}
               value={formData.confirmPassword}
               onChange={handleChange}
               required
@@ -138,9 +194,9 @@ const Signup = () => {
             required
             className="w-full p-2 border border-gray-300 rounded"
           >
-            <option value="">Select Role</option>
-            <option value="party">Party</option>
-            <option value="mediator">Mediator</option>
+            <option value="">{SignupData.fields.role.placeholder}</option>
+            <option value="party">{SignupData.fields.role.options[0].label}</option>
+            <option value="mediator">{SignupData.fields.role.options[1].label}</option>
           </select>
 
           <button
@@ -148,7 +204,7 @@ const Signup = () => {
             disabled={loading}
             className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
           >
-            {loading ? 'Registering...' : 'Sign Up'}
+            {loading ? SignupData.buttons.submitting : SignupData.buttons.submit}
           </button>
         </form>
       </div>

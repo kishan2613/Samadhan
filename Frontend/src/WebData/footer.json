@@ -1,0 +1,43 @@
+{
+    "branding": {
+      "title": "Samadhan",
+      "description": "Empowering communities and institutions with the tools and knowledge to resolve disputes effectively through mediation, as envisioned in the Mediation Act, 2023."
+    },
+    "solutions": {
+      "heading": "SOLUTIONS",
+      "items": {
+        "chatbot": "Mediation Chatbot",
+        "guides": "Interactive Guides",
+        "assistant": "Virtual Assistant",
+        "caseStudies": "Case Studies",
+        "regionalGuides": "Regional Language Guides"
+      }
+    },
+    "resources": {
+      "heading": "RESOURCES",
+      "items": {
+        "about": "About Mediation",
+        "misconceptions": "Addressing Misconceptions",
+        "connect": "Connect with Mediators",
+        "downloads": "Downloadable Documents",
+        "gamification": "Gamification & Storytelling"
+      }
+    },
+    "contact": {
+      "heading": "CONTACT US",
+      "lines": {
+        "initiative": "Samadhan Initiative",
+        "location": "New Delhi, India",
+        "phone": "Tel: (+91) 123-456-7890",
+        "emailPrefix": "Email:",
+        "emailAddress": "info@samadhan.in"
+      }
+    },
+    "copyright": {
+      "text": "Samadhan. All rights reserved."
+    },
+    "altText": {
+      "ladyJustice": "Lady Justice"
+    }
+  }
+  

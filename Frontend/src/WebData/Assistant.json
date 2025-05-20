@@ -1,0 +1,31 @@
+{
+    "heading": "Samadhan AI Assistant",
+    "buttons": {
+    "startConversation": "Start Conversation",
+    "startRecording": "Start recording",
+    "stopRecording": "Stop recording",
+    "stopAll": "Stop all activities",
+    "AiAlt": "AI Assistant"
+    },
+    "statusMessages": {
+    "listening": "Listening... Click mic to stop",
+    "processing": "Processing your request...",
+    "playing": "Playing response...",
+    "idle": "Click mic to speak"
+    },
+    "welcomeMessage": "Hello, I am Samadhan, your AI assistant. Please click the microphone button to ask your question.",
+    "errorFallback": "Text-to-speech is not supported in your browser",
+    "microphoneError": {
+    "notAllowed": "Please allow microphone access.",
+    "notFound": "No microphone found.",
+    "unknown": "Could not access microphone."
+    },
+    "processingErrors": {
+    "noAudio": "No audio was recorded. Please try again.",
+    "emptyResponse": "Server returned empty audio response",
+    "generic": "Error processing your request",
+    "audio": "Could not play audio response",
+    "recording": "Error while recording",
+    "No_Audio" : "Start the Conversation"
+    }
+    }
