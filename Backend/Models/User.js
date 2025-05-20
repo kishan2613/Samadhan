@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   role: { type: String, enum: ['party', 'mediator'], default: 'party' },
   createdAt: { type: Date, default: Date.now },
-  
+  signature: { type: String, default: '' },
   // Add the optional mediator profile fields
   image: { type: String, default: '' },
   location: { type: String, default: '' },

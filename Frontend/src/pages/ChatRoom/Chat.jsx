@@ -2,10 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import ConsentFormModal from "./ConsentFormModal"; // Import the modal at the top
 
 const SERVER_URL = "http://localhost:5000";
 
-export default function Chat({ callroomID , setUsernamenew }) {
+export default function Chat({ callroomID, setUsernamenew }) {
   const { roomId } = useParams();
   const user = JSON.parse(localStorage.getItem("user"));
   const [message, setMessage] = useState("");
@@ -13,6 +14,7 @@ export default function Chat({ callroomID , setUsernamenew }) {
   const socketRef = useRef(null);
   const endRef = useRef(null);
   const hasAnnouncedCall = useRef(false);
+  const [isConsentOpen, setConsentOpen] = useState(false);
 
   // Load previous chat history
   useEffect(() => {
@@ -54,7 +56,7 @@ export default function Chat({ callroomID , setUsernamenew }) {
         },
       ]);
     });
-   setUsernamenew(user.name);
+    setUsernamenew(user.name);
 
     socket.on("userLeft", ({ userName }) => {
       setMessages((prev) => [
@@ -81,7 +83,7 @@ export default function Chat({ callroomID , setUsernamenew }) {
 
     const tempId = `call-${Date.now()}`;
     const content = `${user.name} started a video call with room ID: ${callroomID}`;
-   
+
     const messagePayload = {
       roomId, // send to room that users joined
       senderId: user._id,
@@ -149,7 +151,19 @@ export default function Chat({ callroomID , setUsernamenew }) {
         >
           Start Meeting
         </button>
+        <button
+          onClick={() => setConsentOpen(true)}
+          className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+        >
+          Consent Form
+        </button>
       </div>
+      <ConsentFormModal
+        isOpen={isConsentOpen}
+        onClose={() => setConsentOpen(false)}
+        roomId={roomId}
+        userId={user._id}
+      />
       <div className="flex-1 overflow-y-auto space-y-2 pr-2">
         {messages.map((msg, index) => {
           const isMe = msg.sender?._id === user._id;
