@@ -1,0 +1,21 @@
+{
+  "page": {
+    "title": "Legal Community",
+    "subTitle": "Join our legal community to connect with certified mediators and find peaceful solutions.",
+    "search": {
+      "placeholder": "Search legal topics...",
+      "buttonText": "Search"
+    },
+    "topics": [
+      "Crime",
+      "Family Law",
+      "Civil Disputes",
+      "Property",
+      "Cyber Law",
+      "Divorce",
+      "Contracts",
+      "Harassment",
+      "Employment"
+    ]
+  }
+}

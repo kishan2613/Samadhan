@@ -60,13 +60,14 @@ export default function LanguageSelector({ onSelect }) {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+    <div className="max-w-2xl mt-3 mx-auto p-6 bg-[url('/assets/images/LanguageSelectBG.png')] bg-cover rounded-lg shadow-lg">
+       
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">Samadhan</h1>
+        {/* <h1 className="text-3xl font-bold text-gray-800 mb-4">Samadhan</h1> */}
         
         {/* Welcome messages with audio */}
         <div className="space-y-4">
-          <div className="bg-blue-50 p-4 rounded-lg">
+          {/* <div className="bg-blue-50 p-4 rounded-lg">
             <div className="flex items-center">
               <p className="text-lg text-gray-800">{welcomeMessages.en}</p>
               <button 
@@ -78,9 +79,9 @@ export default function LanguageSelector({ onSelect }) {
                 <Volume2 size={20} />
               </button>
             </div>
-          </div>
+          </div> */}
           
-          <div className="bg-blue-50 p-4 rounded-lg">
+          {/* <div className="bg-blue-50 p-4 rounded-lg">
             <div className="flex items-center">
               <p className="text-lg text-gray-800 font-hindi">{welcomeMessages.hi}</p>
               <button 
@@ -92,19 +93,20 @@ export default function LanguageSelector({ onSelect }) {
                 <Volume2 size={20} />
               </button>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
       
       <div className="mt-6">
+       
         <h2 className="text-xl font-semibold text-gray-700 mb-4 text-center">Select Your Language</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {Object.values(languages).map((lang) => (
             <button
               key={lang.code}
               onClick={() => handleLanguageSelect(lang.code)}
-              className={`p-4 rounded-lg transition-colors hover:bg-blue-50 flex flex-col items-center justify-center min-h-24 ${
-                selectedLanguage === lang.code ? 'bg-blue-100 ring-2 ring-blue-500' : 'bg-gray-50'
+              className={`p-4 rounded-lg transition-colors  hover:bg-blue-50 shadow-sm flex flex-col items-center justify-center min-h-24 ${
+                selectedLanguage === lang.code ? 'bg-blue-100 ring-2 ring-blue-500' : 'bg-white'
               }`}
             >
               <span className="text-lg font-semibold mb-1">{lang.nativeName}</span>
@@ -114,7 +116,7 @@ export default function LanguageSelector({ onSelect }) {
         </div>
       </div>
       
-      {selectedLanguage && (
+      {/* {selectedLanguage && (
         <div className="mt-8 text-center">
           <p className="text-green-600 font-medium">
             {selectedLanguage === 'en' ? 
@@ -122,7 +124,7 @@ export default function LanguageSelector({ onSelect }) {
               'भाषा सफलतापूर्वक सेट की गई!'}
           </p>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

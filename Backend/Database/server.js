@@ -1,9 +1,9 @@
-const connectToMongo = require('./db');
-const express = require('express');
-const cors = require('cors');
-const http = require('http');
-const { Server } = require('socket.io');
-require('dotenv').config();
+const connectToMongo = require("./db");
+const express = require("express");
+const cors = require("cors");
+const http = require("http");
+const { Server } = require("socket.io");
+require("dotenv").config();
 
 connectToMongo();
 const app = express();
@@ -21,6 +21,9 @@ app.use('/api/chat', require('../Routes/ChatController'));
 app.use("/ask", require('../BhasiniAiRoutes/llmconn'));
 app.use("/audio",require("../BhasiniAiRoutes/bhasiniconv"));
 app.use("/translate",require("../BhasiniAiRoutes/Translate"))
+app.use("/api/community", require("../Routes/Community"));
+app.use("/api/comments", require("../Routes/Comment"));
+ 
 
 
 // Create HTTP server for Socket.IO to hook into
@@ -29,62 +32,67 @@ const server = http.createServer(app);
 // Setup Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: '*',
-    methods: ['GET', 'POST']
-  }
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
 });
 
 // Make io available in routes
-app.set('io', io);
+app.set("io", io);
 
 // Socket.IO logic: only broadcasting here (persistence in HTTP route)
-io.on('connection', socket => {
-  console.log('user connected', socket.id);
+io.on("connection", (socket) => {
+  console.log("user connected", socket.id);
 
   // handle join and notify others
-  socket.on('joinRoom', ({ roomId, userId, userName }) => {
+  socket.on("joinRoom", ({ roomId, userId, userName }) => {
     // store on socket for later
     socket.data.userId = userId;
     socket.data.userName = userName;
     socket.join(roomId);
     // notify other members
-    socket.to(roomId).emit('userJoined', { userId, userName });
+    socket.to(roomId).emit("userJoined", { userId, userName });
   });
 
   // message logic unchanged
-  socket.on('sendMessage', async ({ roomId, senderId, content, tempId }) => {
+  socket.on("sendMessage", async ({ roomId, senderId, content, tempId }) => {
     try {
-      const ChatRoom = require('../Models/Chatroom');
+      const ChatRoom = require("../Models/Chatroom");
       const chat = await ChatRoom.findById(roomId);
       const newMessage = { sender: senderId, content, timestamp: new Date() };
       chat.messages.push(newMessage);
       await chat.save();
 
-      socket.broadcast.to(roomId).emit('receiveMessage', {
+      // Send to everyone in the room including sender
+      io.to(roomId).emit("receiveMessage", {
         _id: newMessage._id,
         sender: { _id: senderId },
         content,
         timestamp: newMessage.timestamp,
-        tempId
+        tempId,
       });
-      socket.emit('messageSaved', { _id: newMessage._id, tempId });
+
+      // Notify sender separately about persistence confirmation
+      socket.emit("messageSaved", { _id: newMessage._id, tempId });
     } catch (err) {
       console.error(err);
     }
   });
 
   // before fully disconnecting, notify rooms
-  socket.on('disconnecting', () => {
-    const rooms = Array.from(socket.rooms).filter(r => r !== socket.id);
-    rooms.forEach(roomId => {
-      socket.to(roomId).emit('userLeft', {
+  socket.on("disconnecting", () => {
+    const rooms = Array.from(socket.rooms).filter((r) => r !== socket.id);
+    rooms.forEach((roomId) => {
+      socket.to(roomId).emit("userLeft", {
         userId: socket.data.userId,
-        userName: socket.data.userName
+        userName: socket.data.userName,
       });
     });
   });
 
-  socket.on('disconnect', reason => console.log('user disconnected', socket.id, reason));
+  socket.on("disconnect", (reason) =>
+    console.log("user disconnected", socket.id, reason)
+  );
 });
 
 server.listen(port, () => console.log(`listening on ${port}`));

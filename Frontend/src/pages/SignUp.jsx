@@ -135,7 +135,7 @@ const Signup = () => {
           <input
             type="text"
             name="name"
-            placeholder={SignupData.fields.name}
+            placeholder={SignupData.fields.name.placeholder}
             value={formData.name}
             onChange={handleChange}
             required
@@ -144,7 +144,7 @@ const Signup = () => {
           <input
             type="email"
             name="email"
-            placeholder={SignupData.fields.email}
+            placeholder={SignupData.fields.email.placeholder}
             value={formData.email}
             onChange={handleChange}
             required
@@ -155,7 +155,7 @@ const Signup = () => {
             <input
               type={showPassword ? 'text' : 'password'}
               name="password"
-              placeholder={SignupData.fields.password}
+              placeholder={SignupData.fields.password.placeholder}
               value={formData.password}
               onChange={handleChange}
               required
@@ -173,7 +173,7 @@ const Signup = () => {
             <input
               type={showPassword ? 'text' : 'password'}
               name="confirmPassword"
-              placeholder={SignupData.fields.confirmPassword}
+              placeholder={SignupData.fields.confirmPassword.placeholder}
               value={formData.confirmPassword}
               onChange={handleChange}
               required

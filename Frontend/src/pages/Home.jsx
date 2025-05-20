@@ -5,10 +5,31 @@ import content from "../WebData/Home.json";
 import businessIcon from "/assets/images/business.png"; 
 import criminalIcon from "/assets/images/criminal.png";
 import familyIcon from "/assets/images/business.png";
+import LanguageSelector from "../pages/AskLang/view";
 
 const homeCache = {};
 
 const Home = () => {
+
+  //Language selector
+   const [languageSet, setLanguageSet] = useState(false);
+   const [showLangModal, setShowLangModal] = useState(false);
+  
+    useEffect(() => {
+    const stored = localStorage.getItem('preferredLanguage');
+    if (stored) {
+      setLanguageSet(true);
+    } else {
+      setShowLangModal(true);
+    }
+  }, []);
+
+  const handleLanguageSelected = () => {
+    setLanguageSet(true);
+    setShowLangModal(false);
+  };
+
+
   const location = useLocation();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
@@ -75,6 +96,14 @@ const Home = () => {
 
   return (
     <div>
+       {/* ✅ Language Selector Modal */}
+      {showLangModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-md z-50 flex justify-center items-center">
+          <div >
+            <LanguageSelector onLanguageSelected={handleLanguageSelected} />
+          </div>
+        </div>
+      )}
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-[#f5f0eb] via-[#e8dfd6] to-[#d6c6b8] text-[#2b2b2b] relative">
         {/* Hero Section */}
