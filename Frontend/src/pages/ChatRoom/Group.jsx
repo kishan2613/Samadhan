@@ -9,20 +9,21 @@ export default function Groups() {
   const { roomId } = useParams();
   const [callroomID, setCallroomID] = useState("");
   const [usernamenew, setUsernamenew] = useState("");
+  const [roomTitle, setRoomTitle] = useState("");
   const location = useLocation();
   const isMeetingRoute = location.pathname === `/samadhan-meet/${roomId}`;
- 
+  const {Title} = location.state || {};
    
 
   return (
-    <div className="relative flex pt-20 bg-white border-[2px] min-h-screen">
+    <div className="relative flex pt-0  min-h-screen bg-cover border-[2px] ">
       {/* Main Content */}
       <div className={`flex w-full ${isMeetingRoute ? "blur-sm pointer-events-none" : ""}`}>
-        <div className="w-1/3">
-          <ChatRooms />
+        <div className="w-6/12 hidden md:block">
+          <ChatRooms  />
         </div>
-        <div className="w-2/3">
-          <Chat callroomID={callroomID} setUsernamenew={setUsernamenew} />
+        <div className="w-full ">
+          <Chat callroomID={callroomID} setUsernamenew={setUsernamenew} roomTitle={Title} />
         </div>
       </div>
 

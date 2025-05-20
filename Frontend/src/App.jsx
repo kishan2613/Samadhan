@@ -1,5 +1,6 @@
 // App.jsx
 import React, { useState, useEffect } from "react";
+import { Box } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import About from "./pages/About";
@@ -21,33 +22,34 @@ import Assistant from "./pages/Assistant";
 import Community from "./pages/Community/Community";
 import Groups from "./pages/ChatRoom/Group";
 
-import LanguageSelector from "./pages/AskLang/view";
+// import LanguageSelector from "./pages/AskLang/view";
 
 // import Smeet from "./service/Smeet";
 import VideoConference from "../src/pages/ChatRoom/VideoConference";
 
 
 function App() {
-  const [languageSet, setLanguageSet] = useState(false);
+  // const [languageSet, setLanguageSet] = useState(false);
 
-  useEffect(() => {
-    const stored = localStorage.getItem('preferredLanguage');
-    if (stored) setLanguageSet(true);
-  }, []);
+  // useEffect(() => {
+  //   const stored = localStorage.getItem('preferredLanguage');
+  //   if (stored) setLanguageSet(true);
+  // }, []);
 
-  // Pass setLanguageSet down so selector can update parent state
-  if (!languageSet) {
-    return (
-      <Router>
-        <LanguageSelector onSelect={() => setLanguageSet(true)} />
-      </Router>
-    );
-  }
+  // // Pass setLanguageSet down so selector can update parent state
+  // if (!languageSet) {
+  //   return (
+  //     <Router>
+  //       <LanguageSelector onSelect={() => setLanguageSet(true)} />
+  //     </Router>
+  //   );
+  // }
 
   return (
     <Router>
       <Navbar />
-      <Routes>
+      <Box sx={{ minHeight: '100vh',padding: 0 }}>
+        <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/mediator-details" element={<MediatorDetailsForm />} />
@@ -68,6 +70,7 @@ function App() {
          <Route path="/samadhan-meet/:roomId" element={<Groups/>} />
          <Route path="/samadhan-community" element={<Community/>} />
       </Routes>
+      </Box>    
       <Footer />
     </Router>
   );

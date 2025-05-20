@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import ConsentFormModal from "./ConsentFormModal"; // Import the modal at the top
+import ConsentFormModal from "./ConsentFormModal"; 
+import { Video,User } from "lucide-react";// Import the modal at the top
 
 const SERVER_URL = "http://localhost:5000";
 
@@ -200,25 +201,30 @@ export default function Chat({ callroomID, setUsernamenew }) {
                 </div>
               </div>
             </div>
-          );
-        })}
-        <div ref={endRef} />
-      </div>
-
-      <div className="flex items-center mt-4">
-        <input
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Type your message..."
-          className="flex-1 border px-4 py-2 rounded-l focus:outline-none"
-        />
-        <button
-          onClick={handleSend}
-          className="bg-blue-600 text-white px-4 py-2 rounded-r hover:bg-blue-700"
-        >
-          Send
-        </button>
-      </div>
+          </div>
+        );
+      })}
+      <div ref={endRef} />
     </div>
-  );
+
+    {/* Input area */}
+    <div className="flex items-center p-3 bg-[#bb5b45] border-t">
+      <input
+        type="text"
+        placeholder="Type a message"
+        className="flex-1 px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-1 focus:ring-green-500 bg-white"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && handleSend()}
+      />
+      <button
+        onClick={handleSend}
+        className="ml-2 bg-[#d1a76e] hover:bg-green-600 text-black px-4 py-2 rounded-full"
+      >
+        Send
+      </button>
+    </div>
+  </div>
+);
+
 }
