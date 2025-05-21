@@ -36,7 +36,7 @@ const TYPING_SPEED = 150; // Milliseconds per word/token for visual typing
 // Removed CLEAR_DELAY
 const AUTOPLAY_ADVANCE_DELAY = 2000; // Delay before auto-advancing to the next submodule AFTER content is ready
 const PREFERRED_LANG_STORAGE_KEY = "preferredLang"; // Key for localStorage
-const DEFAULT_TARGET_LANG = "hi"; // Set default language to 'hi'
+const DEFAULT_TARGET_LANG = localStorage.getItem("preferredLanguage"); // Set default language to 'hi'
 
 // --- Custom Styled Components (Keep as before) ---
 const PageContainer = styled(Box)(() => ({
@@ -2350,13 +2350,7 @@ export default function ClassroomComponent({ TranslateText }) {
               {/* Keep CSS string literal */}
               {TranslateText["ui.startScreen.title"]} {/* Replaced string */}
             </Typography>
-            <Typography variant="body1" sx={{ mb: 4, maxWidth: "600px" }}>
-              {TranslateText["ui.startScreen.body"]} {/* Replaced string */}
-              {targetLang &&
-                targetLang !== "en" &&
-                `${TranslateText["ui.startScreen.bodyTranslationHint"]}${targetLang})`}{" "}
-              {/* Replaced string and concatenation */}
-            </Typography>
+        
             <StartButton
               startIcon={<School />}
               onClick={startLearningJourney}
