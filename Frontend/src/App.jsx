@@ -22,6 +22,7 @@ import Assistant from "./pages/Assistant";
 import Community from "./pages/Community/Community";
 import Groups from "./pages/ChatRoom/Group";
 import Guide from "./components/common/Guide";
+import NotFound from "./pages/Notfound";
 
 // import LanguageSelector from "./pages/AskLang/view";
 
@@ -75,6 +76,7 @@ function App() {
         {/* <Route path="/call/:roomId" element={<VideoCall />} /> */}
          <Route path="/samadhan-meet/:roomId" element={<Groups/>} />
          <Route path="/samadhan-community" element={<Community/>} />
+         <Route path="*" element={<NotFound />} />
       </Routes>
       </Box> 
       <Footer />

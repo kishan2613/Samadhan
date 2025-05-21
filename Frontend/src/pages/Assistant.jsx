@@ -430,7 +430,7 @@ const VoiceAssistant = () => {
       </h1>
 
       {/* Two-column layout container */}
-      <div className="border-4 border-[#87311e] transition duration-pulse ease-in-out  flex flex-col lg:flex-row w-full gap-6 bg-[#f5f0eb] rounded-2xl  justify-center items-center">
+      <div className="border-4 border-[#87311e] transition duration-pulse ease-in-out  flex flex-col lg:flex-row w-full gap-6 bg-[#f5f0eb] bg-[url('/assets/images/Assistan-Bg.png')] bg-cover rounded-2xl  justify-center items-center">
 
         {/* left Column for Voice Assistant */}
         <div className="w-full lg:w-1/2 flex flex-col items-center justify-center">
@@ -443,12 +443,20 @@ const VoiceAssistant = () => {
 
           {/* Start Session Button */}
           {!activeSession && (
+            <div className="flex flex-col items-center justify-center h-full text-center">
+            {/* Typewriter animated text */}
+            <p className="mb-8 text-3xl font-bold text-[#bb5b45] animate-typing overflow-hidden whitespace-nowrap border-r-4 border-r-black pr-4">
+            Welcome to AI Samadhan
+            </p>
+
+            {/* Centered button */}
             <button
-              onClick={() => setActiveSession(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full text-lg shadow-lg transition"
+            onClick={() => setActiveSession(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full text-lg shadow-lg transition"
             >
-              {AssistantDataMock.buttons?.startConversation || "Start Conversation"}
+            {AssistantDataMock.buttons?.startConversation || "Start Conversation"}
             </button>
+            </div>
           )}
 
           {activeSession && (
@@ -542,7 +550,7 @@ const VoiceAssistant = () => {
           )}
         </div>
 
-      {/* Left Column for Image (placeholder for your image) */}
+      {/* Right Column for Image (placeholder for your image) */}
          <div className="w-full lg:w-1/2 flex justify-center items-center">
           <div className=" rounded-lg  overflow-hidden w-full  max-w-md">
             <img
@@ -552,8 +560,10 @@ const VoiceAssistant = () => {
             />
           </div>
         </div>
-
       </div>
+      <p className="italic text-center text-[#bb5b45] p-2 mt-4">
+      "In the middle of every conflict lies an opportunity — mediation turns that opportunity into resolution."
+    </p>
     </div>
   );
 };

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Pagination from "@mui/material/Pagination";
+import CircularProgress from '@mui/material/CircularProgress';
+import Box from '@mui/material/Box';
 import Mediatorcont from "../../WebData/MediConnect.json"
 
 const fixedcache = {}
@@ -159,9 +161,16 @@ const MediatorConnect = () => {
 
   if (loading)
     return (
-      <div className="text-center mt-16 text-lg font-medium text-gray-600">
-        {MediatorPag.loadingMessage}
-      </div>
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "80vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
     );
 
   if (error)

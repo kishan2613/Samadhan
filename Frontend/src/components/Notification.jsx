@@ -102,8 +102,15 @@ const Notification = () => {
   </div>
 
   {/* Right side with internal scrolling */}
+  
   <div className="flex-1 bg-[#bb5b45]  h-full overflow-y-auto p-6 space-y-6">
-    {suggestions.map((s) => (
+    {suggestions.length === 0 ?(
+      <div className="bg-[#f5f0eb] text-center py-10 rounded-xl shadow-md">
+      <p className="text-gray-700 text-lg font-semibold">No New Notifications</p>
+      <p className="text-gray-500 text-sm mt-2">You're all caught up!</p>
+    </div>
+    ):(
+      suggestions.map((s) => (
       <div
         key={s._id}
         className="bg-white shadow-md rounded-xl flex items-center justify-between p-4 hover:shadow-lg transition"
@@ -129,7 +136,8 @@ const Notification = () => {
           View Details
         </button>
       </div>
-    ))}
+      ))
+    )}
   </div>
 </div>
 
