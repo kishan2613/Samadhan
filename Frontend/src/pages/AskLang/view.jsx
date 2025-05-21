@@ -1,11 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Volume2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 
-export default function LanguageSelector({ onSelect }) {
+export default function LanguageSelector({ onLanguageSelected }) {
   const [selectedLanguage, setSelectedLanguage] = useState('');
-  const [audioPlaying, setAudioPlaying] = useState(false);
-  const navigate = useNavigate();
   
   // Language options with native names
   const languages = {
@@ -24,12 +20,6 @@ export default function LanguageSelector({ onSelect }) {
     te: { code: 'te', name: 'Telugu', nativeName: 'తెలుగు' }
   };
 
-  // Welcome messages
-  const welcomeMessages = {
-    en: "Welcome to Samadhan. Please let us know your native language to guide you better.",
-    hi: "समाधान में आपका स्वागत है। आपको बेहतर मार्गदर्शन के लिए कृपया अपनी मातृभाषा बताएं।"
-  };
-
   // Check if language is already stored in localStorage on component mount
    useEffect(() => {
     const stored = localStorage.getItem('preferredLanguage');
@@ -39,25 +29,9 @@ export default function LanguageSelector({ onSelect }) {
   const handleLanguageSelect = (langCode) => {
     setSelectedLanguage(langCode);
     localStorage.setItem('preferredLanguage', langCode);
-    if (onSelect) onSelect();  // Notify parent
-    navigate("/");          // Navigate home
+    onLanguageSelected()
   };
-
-
-  // Simulate audio playback for welcome message
-  const playAudio = (language) => {
-    console.log(language)
-    setAudioPlaying(true);
     
-    // Simulate audio playback time
-    setTimeout(() => {
-      setAudioPlaying(false);
-    }, 3000);
-    
-    // In a real implementation, you would use actual audio files:
-    // const audio = new Audio(`/assets/audio/welcome-${language}.mp3`);
-    // audio.play();
-  };
 
   return (
     <div className="max-w-2xl mt-3 mx-auto p-6 bg-[url('/assets/images/LanguageSelectBG.png')] bg-cover rounded-lg shadow-lg">

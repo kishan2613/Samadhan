@@ -1,5 +1,5 @@
 // App.jsx
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Box } from '@mui/material';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
@@ -21,6 +21,7 @@ import Footer from "./components/common/Footer";
 import Assistant from "./pages/Assistant";
 import Chat from "./pages/ChatRoom/Chat";
 import Groups from "./pages/ChatRoom/Group";
+import EducationMain from "./pages/Education/main";
 
 // import LanguageSelector from "./pages/AskLang/view";
 
@@ -48,6 +49,7 @@ function App() {
   return (
     <Router>
       <Navbar />
+      <Box sx={{height:"60px"}}/>
       <Box sx={{ minHeight: '100vh',padding: 0 }}>
         <Routes>
         <Route path="/" element={<Home />} />
@@ -68,6 +70,7 @@ function App() {
         <Route path="/Ask-Samadhan" element={<Assistant />} />
         {/* <Route path="/call/:roomId" element={<VideoCall />} /> */}
          <Route path="/samadhan-meet/:roomId" element={<Groups/>} />
+         <Route path="/educate" element={<EducationMain/>} />
       </Routes>
       </Box>    
       <Footer />
