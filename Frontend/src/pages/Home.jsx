@@ -14,6 +14,7 @@ const Home = () => {
   //Language selector
    const [languageSet, setLanguageSet] = useState(false);
    const [showLangModal, setShowLangModal] = useState(false);
+   console.log(languageSet)
   
     useEffect(() => {
     const stored = localStorage.getItem('preferredLanguage');
