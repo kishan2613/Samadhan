@@ -60,7 +60,7 @@ const Footer = () => {
   }, [FooterData]);
 
   return (
-    <div className="bg-gradient-to-r from-[#f5f0eb] via-[#e8dfd6] to-[#d6c6b8] px-[4vw] md:px-[6vw] pt-[8vh] relative overflow-hidden">
+    <div className="bg-gradient-to-r from-[#f5f0eb] via-[#e8dfd6] to-[#d6c6b8] px-[4vw] md:px-[6vw] pt-[8vh] relative overflow-hidden z-0">
       <img
         src="/assets/images/lady-justice..png"
         alt={FooterData.altText}

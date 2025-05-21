@@ -2,11 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import io from "socket.io-client";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Video,User } from "lucide-react";
+import ConsentFormModal from "./ConsentFormModal";
 
 const SERVER_URL = "http://localhost:5000";
 
-export default function Chat({ callroomID , setUsernamenew, roomTitle }) {
+export default function Chat({ callroomID, setUsernamenew }) {
   const { roomId } = useParams();
   const user = JSON.parse(localStorage.getItem("user"));
   const [message, setMessage] = useState("");
@@ -14,6 +14,8 @@ export default function Chat({ callroomID , setUsernamenew, roomTitle }) {
   const socketRef = useRef(null);
   const endRef = useRef(null);
   const hasAnnouncedCall = useRef(false);
+  const [isConsentOpen, setConsentOpen] = useState(false);
+  const navigate = useNavigate();
 
   // Load previous chat history
   useEffect(() => {
@@ -55,7 +57,6 @@ export default function Chat({ callroomID , setUsernamenew, roomTitle }) {
         },
       ]);
     });
-   setUsernamenew(user.name);
 
     socket.on("userLeft", ({ userName }) => {
       setMessages((prev) => [
@@ -69,12 +70,14 @@ export default function Chat({ callroomID , setUsernamenew, roomTitle }) {
       ]);
     });
 
+    setUsernamenew(user.name);
+
     return () => {
       socket.disconnect();
     };
   }, [roomId, user._id, user.name]);
 
-  // Announce video call once if callroomID is available
+  // Announce video call
   useEffect(() => {
     if (!callroomID || hasAnnouncedCall.current || !socketRef.current) return;
 
@@ -82,9 +85,9 @@ export default function Chat({ callroomID , setUsernamenew, roomTitle }) {
 
     const tempId = `call-${Date.now()}`;
     const content = `${user.name} started a video call with room ID: ${callroomID}`;
-   
+
     const messagePayload = {
-      roomId, // send to room that users joined
+      roomId,
       senderId: user._id,
       content,
       tempId,
@@ -106,7 +109,7 @@ export default function Chat({ callroomID , setUsernamenew, roomTitle }) {
     });
   }, [callroomID, roomId, user._id, user.name]);
 
-  // Auto scroll to bottom
+  // Auto-scroll
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -134,68 +137,86 @@ export default function Chat({ callroomID , setUsernamenew, roomTitle }) {
     setMessage("");
   };
 
-  const navigate = useNavigate();
-
   const startMeeting = () => {
     navigate(`/samadhan-meet/${roomId}`);
   };
 
-return (
-  <div className="flex flex-col h-[calc(100vh-4rem)] mt-16">
-    {/* Header */}
-    <div className="flex items-center justify-between bg-[#bb5b45] px-4 py-2 border-b shadow-sm">
-      <div className="flex gap-2">
-        <User className="w-8 h-8 p-1 rounded-full bg-white text-gray-700" />
-        <h2 className="text-lg font-semibold text-white">{roomTitle || "Chat Room"}</h2>
-      </div>  
-      <button
-        onClick={startMeeting}
-        className="bg-[#d1a76e] text-white p-2 rounded-full hover:bg-[#20c15d]"
-        title="Start Video Call"
-      >
-        <Video className="w-5 h-5" />
-      </button>
-    </div>
+  return (
+    <div className="max-w-2xl mx-auto mt-10 p-4 border rounded flex flex-col h-[80vh]">
+      <div className="flex justify-between items-center mb-4 gap-2">
+        <h2 className="text-lg font-semibold">Chat</h2>
+        <button
+          onClick={startMeeting}
+          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+        >
+          Start Meeting
+        </button>
+        <button
+          onClick={() => setConsentOpen(true)}
+          className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
+        >
+          Consent Form
+        </button>
+      </div>
 
-    {/* Chat messages area */}
-    <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-[url('/assets/images/LanguageSelectBG.png')]  bg-cover">
-      {messages.map((msg, index) => {
-        const isMe = msg.sender?._id === user._id;
-        const alignment = isMe ? "items-end" : "items-start";
-        const bubbleColor = isMe ? "bg-[#d1a76e]" : "bg-white";
-        const textAlign = isMe ? "text-right" : "text-left";
-
-        return (
-          <div key={msg._id || index} className={`flex flex-col ${alignment}`}>
-            <div className={`max-w-[80%] px-4 py-2 rounded-lg shadow-sm ${bubbleColor} ${textAlign}`}>
-              <p className="text-xs text-black">{msg.sender.name}</p> 
-              <p className="text-sm text-black">{msg.content}</p>
-              <p className="text-xs text-grey-800">{new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
-            </div>
-          </div>
-        );
-      })}
-      <div ref={endRef} />
-    </div>
-
-    {/* Input area */}
-    <div className="flex items-center p-3 bg-[#bb5b45] border-t">
-      <input
-        type="text"
-        placeholder="Type a message"
-        className="flex-1 px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-1 focus:ring-green-500 bg-white"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && handleSend()}
+      <ConsentFormModal
+        isOpen={isConsentOpen}
+        onClose={() => setConsentOpen(false)}
+        roomId={roomId}
+        userId={user._id}
       />
-      <button
-        onClick={handleSend}
-        className="ml-2 bg-[#d1a76e] hover:bg-green-600 text-black px-4 py-2 rounded-full"
-      >
-        Send
-      </button>
-    </div>
-  </div>
-);
 
+      <div className="flex-1 overflow-y-auto space-y-2 pr-2">
+        {messages.map((msg, index) => {
+          const isMe = msg.sender?._id === user._id;
+          const style = isMe
+            ? "bg-blue-100 text-right"
+            : "bg-gray-100 text-left";
+
+          const messageKey =
+            msg._id || `${msg.content}-${msg.timestamp || index}`;
+
+          return (
+            <div key={messageKey} className={`mb-2 p-2 rounded ${style}`}>
+              <div className="font-semibold text-sm">{msg.sender.name}</div>
+              <div>
+                {msg.content}
+                {msg.content.includes("started a video call") &&
+                  msg.sender._id !== user._id && (
+                    <button
+                      className="ml-2 text-blue-600 underline hover:text-blue-800"
+                      onClick={() => {
+                        const roomMatch = msg.content.match(/room ID: (\w+)/);
+                        const joinRoomId = roomMatch ? roomMatch[1] : null;
+                        if (joinRoomId) {
+                          navigate(`/samadhan-meet/${roomId}?roomID=${joinRoomId}`);
+                        }
+                      }}
+                    >
+                      Join Call
+                    </button>
+                  )}
+              </div>
+            </div>
+          );
+        })}
+        <div ref={endRef} />
+      </div>
+
+      <div className="flex items-center mt-4">
+        <input
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          placeholder="Type your message..."
+          className="flex-1 border px-4 py-2 rounded-l focus:outline-none"
+        />
+        <button
+          onClick={handleSend}
+          className="bg-blue-600 text-white px-4 py-2 rounded-r hover:bg-blue-700"
+        >
+          Send
+        </button>
+      </div>
+    </div>
+  );
 }
