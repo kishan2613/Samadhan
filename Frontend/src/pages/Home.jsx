@@ -6,6 +6,7 @@ import businessIcon from "/assets/images/business.png";
 import criminalIcon from "/assets/images/criminal.png";
 import familyIcon from "/assets/images/business.png";
 import LanguageSelector from "../pages/AskLang/view";
+import CaseStats from "./Graph";
 
 const homeCache = {};
 
@@ -193,7 +194,7 @@ const Home = () => {
           </div>
         </div>
       </div>
-
+        <CaseStats/>
       {/* Learning Section */}
        <section
       ref={ref}

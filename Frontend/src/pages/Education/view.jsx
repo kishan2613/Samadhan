@@ -583,7 +583,7 @@ export default function ClassroomComponent({ TranslateText }) {
 
   // Get module keys from the imported data
   const moduleKeys = Object.keys(educationData);
-
+  // console.log(moduleKeys)
   // --- Helper Functions (useCallback for stability) ---
 
   // Clean up the current audio object URL
@@ -1209,6 +1209,7 @@ export default function ClassroomComponent({ TranslateText }) {
       }
 
       const moduleData = educationData[moduleKey];
+      console.log(moduleData , moduleKey);
       const submoduleData = moduleData?.submodule?.[submoduleIndex];
 
       if (!moduleData || !submoduleData || !submoduleData.content) {
