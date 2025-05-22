@@ -108,7 +108,7 @@ const Signup = () => {
   return (
     <div className="flex flex-col md:flex-row min-h-screen text-[#2f2f2f]">
       
-  {/* Left Video + Content */}
+  {/* Left Video + Content
 <div className="w-full md:w-1/2 flex flex-col justify-center items-center p-8 bg-gradient-to-b from-[#f4ede4] via-[#efe2d3] to-[#e3d3c2] relative">
   <div className="relative w-full max-w-2xl aspect-video rounded-xl overflow-hidden shadow-lg border-4 border-[#c97e5a] ">
     <video
@@ -129,12 +129,12 @@ const Signup = () => {
             understanding.
           </p>
    </div>
-</div>
+</div> */}
 
 
       {/* Right Signup Form */}
       <div
-        className="w-full md:w-1/2 relative bg-cover bg-center"
+        className="w-full md:w-full relative bg-cover bg-center"
         style={{ backgroundImage: "url('/assets/images/LanguageSelectBG.png')" }}
       >
         <div className="h-full w-full flex items-center justify-center p-8">
