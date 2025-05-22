@@ -6,8 +6,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import SignUp from "./pages/SignUp";
 import Login from "./pages/Login";
-// import Lobby from "./pages/Lobby";
-// import RoomPage from "./pages/Room";
+import Quiz from "./pages/Quiz/Quiz";
 import Navbar from "./components/common/Navbar";
 import MediatorDetailsForm from "./pages/UserAdditional";
 import MediatorConnect from "./pages/MediatorConnect/page";
@@ -74,6 +73,7 @@ function App() {
          <Route path="/samadhan-meet/:roomId" element={<Groups/>} />
          <Route path="/educate" element={<EducationMain/>} />
          <Route path="/samadhan-community" element={<Community/>} />
+         <Route path="/quiz" element={<Quiz/>} />
          <Route path="*" element={<NotFound/>}/>
       </Routes>
       </Box> 

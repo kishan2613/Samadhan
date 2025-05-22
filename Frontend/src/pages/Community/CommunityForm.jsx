@@ -53,13 +53,13 @@ function CommunityForm({ selectedTopic, setSelectedTopic, onPostSubmit }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-md mx-auto bg-white rounded-2xl shadow-lg overflow-hidden"
+      className="max-w-md mx-auto bg-white rounded-2xl shadow-lg h-[80vh] overflow-hidden"
     >
-      <div className="w-full h-40 bg-cover bg-center">
+      <div >
         <img
-          src="/assets/images/Learning.png"
+          src="/assets/images/Community.jpg"
           alt="Banner"
-          className="w-48 h-40 object-cover ml-6 mt-2"
+          className="w-full h-40 object-cover p-2 rounded-t-2xl"
         />
       </div>
 
@@ -91,7 +91,7 @@ function CommunityForm({ selectedTopic, setSelectedTopic, onPostSubmit }) {
 
         <button
           type="submit"
-          className="w-full bg-green-500 text-white py-2 rounded-lg hover:bg-green-600 transition"
+          className="w-full bg-[#d1a76e] text-black py-2 rounded-lg hover:scale-105 hover:shadow-xl transition"
         >
           Submit
         </button>

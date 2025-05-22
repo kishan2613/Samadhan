@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Loaders from './common/Loader';
 
 const Notification = () => {
   const [suggestions, setSuggestions] = useState([]);
@@ -78,7 +79,7 @@ const Notification = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen text-lg text-gray-500">
-        Loading notifications...
+        <Loaders/>
       </div>
     );
   }

@@ -166,13 +166,23 @@ const Navbar = () => {
           {/* Dropdown */}
           {dropdownOpen && token && user && (
             <div className="absolute right-0 top-14 bg-white shadow-lg rounded-lg overflow-hidden w-48 text-sm font-medium text-gray-800 z-50">
-              <Link
-                to="/Chat"
-                className="block px-4 py-3 hover:bg-gray-100 transition-colors"
-                onClick={() => setDropdownOpen(false)}
-              >
-                {Navigation.labels.chatRooms}
-              </Link>
+            
+            <Link
+              to="#" // prevent default behavior; we'll handle navigation manually
+              className="block px-4 py-3 hover:bg-gray-100 transition-colors"
+              onClick={(e) => {
+                e.preventDefault();
+                setDropdownOpen(false);
+
+                if (window.innerWidth < 768) {
+                  navigate('/Chat');
+                } else {
+                  navigate('/Groups');
+                }
+              }}
+            >
+              Chat Rooms
+            </Link>
 
               {user.role === "mediator" &&(
                 <Link

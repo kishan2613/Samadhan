@@ -9,22 +9,6 @@ function formatTimestamp(ts) {
   return new Date(ts).toLocaleString();
 }
 
-// function MeditationFact() {
-//   return (
-//     <div
-//       className="w-full h-[870px] flex items-center justify-center bg-cover bg-center"
-//       style={{ backgroundImage: `url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1350&q=80')` }}
-//     >
-//       <div className="bg-black bg-opacity-60 p-6 rounded-lg max-w-xl text-center">
-//         <h2 className="text-white text-2xl font-semibold mb-4">Meditation Fact</h2>
-//         <p className="text-white text-lg italic">
-//           “Regular meditation can reduce stress, enhance concentration, and improve overall emotional well-being.”
-//         </p>
-//       </div>
-//     </div>
-//   );
-// }
-
 function CommunityList({ posts, selectedTopic }) {
   const [activePostId, setActivePostId] = useState(null);
   const [comments, setComments] = useState({});
@@ -78,7 +62,7 @@ function CommunityList({ posts, selectedTopic }) {
     : posts;
 
   return (
-    <div className="flex flex-col gap-6 max-h-[870px] overflow-y-auto">
+    <div className="flex flex-col gap-6 h-[80vh] overflow-y-auto">
       {selectedTopic === null || selectedTopic === undefined ? (
         <MeditationFact />
       ) : filteredPosts.length === 0 ? (
@@ -90,7 +74,7 @@ function CommunityList({ posts, selectedTopic }) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="bg-[#15202b] text-white p-4 rounded-xl shadow-lg max-w-xl w-full mx-auto relative"
+            className="bg-white text-black p-4 rounded-xl shadow-lg max-w-xl w-full mx-auto relative"
           >
             {/* Timestamp */}
             <p className="text-xs text-gray-400 absolute top-3 right-4">
@@ -118,7 +102,7 @@ function CommunityList({ posts, selectedTopic }) {
             </div>
 
             <div className="mt-4">
-              <p className="text-sm text-green-400 font-semibold">{post.topic}</p>
+              <p className="text-sm text-[#bb5b45] font-semibold">{post.topic}</p>
               <p className="text-sm mt-1">{post.content}</p>
             </div>
 
@@ -126,7 +110,7 @@ function CommunityList({ posts, selectedTopic }) {
               <button onClick={() => toggleComments(post._id)}>
                 <MessageCircle
                   className={`w-5 h-5 transition ${
-                    commentToggle[post._id] ? "text-red-500" : "text-green-400"
+                    commentToggle[post._id] ? "text-grey-500" : "text-red-500"
                   }`}
                 />
               </button>

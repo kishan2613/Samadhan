@@ -47,7 +47,7 @@ const ChatRooms = ({setRoomTitle}) => {
   }
 
   return (
-  <div className="w-full h-full mt-16 mb-4 pt-2 ">
+  <div className="w-full h-full  mb-4  ">
     <div className="max-w-md mx-auto  ">
       {chatRooms.map((room) => {
         const mediator = room.members.find((member) => member.role === "mediator");

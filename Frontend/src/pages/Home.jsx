@@ -6,6 +6,7 @@ import businessIcon from "/assets/images/business.png";
 import criminalIcon from "/assets/images/criminal.png";
 import familyIcon from "/assets/images/business.png";
 import LanguageSelector from "../pages/AskLang/view";
+import CaseStats from "./Graph";
 
 const homeCache = {};
 
@@ -108,7 +109,7 @@ const Home = () => {
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-[#f5f0eb] via-[#e8dfd6] to-[#d6c6b8] text-[#2b2b2b] relative">
         {/* Hero Section */}
-        <section className="flex flex-col md:flex-row items-center justify-between px-8 md:px-16 py-6 gap-0 relative overflow-hidden">
+        <section className="flex flex-col md:flex-row items-center justify-between px-8 md:px-16  gap-0 relative overflow-hidden">
           <div className="mobile">
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
@@ -193,7 +194,7 @@ const Home = () => {
           </div>
         </div>
       </div>
-
+        <CaseStats/>
       {/* Learning Section */}
        <section
       ref={ref}
