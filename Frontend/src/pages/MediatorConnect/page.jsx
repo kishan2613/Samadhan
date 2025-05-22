@@ -159,7 +159,7 @@ const MediatorConnect = () => {
 
   if (loading)
     return (
-      <div className="text-center mt-16 text-lg font-medium text-gray-600">
+      <div className="text-center text-lg font-medium text-gray-600">
         {MediatorPag.loadingMessage}
       </div>
     );
@@ -170,7 +170,7 @@ const MediatorConnect = () => {
     );
 
   return (
-    <div className="bg-gradient-to-r from-[#f5f0eb] via-[#e8dfd6] to-[#d6c6b8] min-h-screen bg-gray-50 pt-20 px-4 md:px-8">
+    <div className="bg-gradient-to-r from-[#f5f0eb] via-[#e8dfd6] to-[#d6c6b8] min-h-screen bg-gray-50 pt-4 px-4 md:px-8">
       <h1 className="text-3xl md:text-4xl font-serif font-bold text-center text-gray-800 mb-6">
         {MediatorPag.pageTitle}
       </h1>

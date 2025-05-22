@@ -174,7 +174,7 @@ const Navbar = () => {
                 {Navigation.labels.chatRooms}
               </Link>
 
-              {user.role === "mediator" ? (
+              {user.role === "mediator" &&(
                 <Link
                   to="/active-proposal"
                   className="block px-4 py-3 hover:bg-gray-100 transition-colors"
@@ -182,15 +182,7 @@ const Navbar = () => {
                 >
                   {Navigation.labels.proposals}
                 </Link>
-              ) : (
-                <Link
-                  to="/look-suggest"
-                  className="block px-4 py-3 hover:bg-gray-100 transition-colors"
-                  onClick={() => setDropdownOpen(false)}
-                >
-                  {Navigation.labels.suggestions}
-                </Link>
-              )}
+              ) }
 
               <button
                 onClick={handleLogout}
