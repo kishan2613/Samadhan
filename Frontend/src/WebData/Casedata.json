@@ -1,0 +1,103 @@
+[
+  {
+    "category": "Civil Disputes",
+    "cases": [
+      "Contract Disputes",
+      "Property Disputes",
+      "Personal Injury Claims",
+      "Insurance Claims",
+      "Consumer Disputes",
+      "Employment Disputes",
+      "Intellectual Property Disputes"
+    ]
+  },
+  {
+    "category": "Family Law Matters",
+    "cases": [
+      "Divorce",
+      "Child Custody and Visitation",
+      "Prenuptial and Postnuptial Agreements",
+      "Contested Wills and Estates",
+      "Domestic Violence",
+      "Adoption"
+    ]
+  },
+  {
+    "category": "Business Conflicts",
+    "cases": [
+      "Partnership Disputes",
+      "Shareholder Disputes",
+      "Commercial Transactions",
+      "Franchise Disputes",
+      "Corporate Governance",
+      "Antitrust and Competition"
+    ]
+  },
+  {
+    "category": "Community Issues",
+    "cases": [
+      "Environmental Disputes",
+      "Zoning and Land Use",
+      "Nuisance Complaints",
+      "Public Policy Development",
+      "Neighborhood Disputes"
+    ]
+  },
+  {
+    "category": "Criminal Cases",
+    "cases": [
+      "Restorative Justice Cases",
+      "Victim-Offender Mediation",
+      "Community Service Agreements"
+    ]
+  },
+  {
+    "category": "School and University Disputes",
+    "cases": [
+      "Peer-to-Peer Conflicts",
+      "Disciplinary Cases",
+      "Special Education",
+      "Academic Disputes"
+    ]
+  },
+  {
+    "category": "Healthcare Disputes",
+    "cases": [
+      "Medical Malpractice",
+      "Healthcare Provider Disputes",
+      "Patient-Provider Conflicts"
+    ]
+  },
+  {
+    "category": "Labor and Employment Disputes",
+    "cases": [
+      "Union-Management Disputes",
+      "Workplace Harassment",
+      "Wrongful Termination",
+      "Wage and Hour Claims"
+    ]
+  },
+  {
+    "category": "International Disputes",
+    "cases": [
+      "Cross-Border Commercial Disputes",
+      "Diplomatic Conflicts",
+      "Human Rights Issues"
+    ]
+  },
+  {
+    "category": "Small Claims Cases",
+    "cases": [
+      "Minor Financial Disputes",
+      "Neighbor Disputes"
+    ]
+  },
+  {
+    "category": "Other Cases",
+    "cases": [
+      "Estate and Probate Disputes",
+      "Arbitration Alternatives",
+      "Professional Malpractice"
+    ]
+  }
+]
