@@ -3,6 +3,7 @@ import { Mic, Square, Volume2, Loader } from "lucide-react";
 import AssistantData from "../WebData/Assistant.json";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
+import Loaders from "../components/common/Loader";
 
 /**
  * AI Voice Assistant Component
@@ -408,16 +409,7 @@ const VoiceAssistant = () => {
 
   if (loading) {
     return (
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: "80vh",
-        }}
-      >
-        <CircularProgress />
-      </Box>
+      <Loaders/>
     );
   }
 

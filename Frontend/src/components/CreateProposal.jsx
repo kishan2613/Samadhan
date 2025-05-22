@@ -62,17 +62,17 @@ const Proposal = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-10 px-4 flex justify-center items-start">
-      <div className="bg-white shadow-xl rounded-xl p-8 w-full max-w-3xl">
-        <h2 className="text-2xl font-bold text-center text-blue-800 mb-6">
+    <div className="min-h-screen bg-[url('/assets/images/Assistant-Bg.png')] bg-cover py-10 px-4 flex justify-center items-start">
+      <div className="bg-white shadow-xl rounded-xl p-4 w-full ">
+        <h2 className="text-2xl font-bold text-center text-[#bb5b45] ">
           Submit Your Proposal
         </h2>
 
         {proposalId ? (
           <>
-            <p className="text-sm text-gray-600 mb-4">
+            {/* <p className="text-sm text-gray-600 mb-4">
               Proposal ID: <span className="font-medium">{proposalId}</span>
-            </p>
+            </p> */}
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
@@ -81,7 +81,7 @@ const Proposal = () => {
                 </label>
                 <textarea
                   rows={8}
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#bb5b45]"
                   placeholder="Describe your case in detail..."
                   value={summary}
                   onChange={(e) => setSummary(e.target.value)}
@@ -95,7 +95,7 @@ const Proposal = () => {
                 </label>
                 <input
                   type="url"
-                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#bb5b45]"
                   placeholder="Paste your document link here"
                   value={documentLink}
                   onChange={(e) => setDocumentLink(e.target.value)}
@@ -107,7 +107,7 @@ const Proposal = () => {
 
               <button
                 type="submit"
-                className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
+                className="w-full bg-[#d1a76e] text-white py-2 rounded-lg shadow-lg  hover:shadow-xl transition"
               >
                 Submit Proposal
               </button>

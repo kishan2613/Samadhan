@@ -36,17 +36,12 @@ export default function Community() {
   };
 
   return (
-    <div className="mt-20 flex flex-col items-center text-center">
-      <h1 className="text-4xl font-bold text-gray-900">{title}</h1>
-      <h2 className="mt-4 text-lg text-gray-700 max-w-2xl">{subTitle}</h2>
-      <div className="flex flex-row justify-start">
-        <div className="mt-8 w-1/3 ">
-          <Hero />
-        </div>
-        <div className="mt-8 w-2/3 mr-8">
-          <MessageBar selectedTopic={selectedTopic} setSelectedTopic={setSelectedTopic} />
-          <div className="flex flex-row w-full  h-3/4 mx-auto shadow-lg rounded-lg overflow-hidden">
-            <div className="flex-1 h-3/4 w-2/3 overflow-y-auto bg-[#e5ddd5] p-3">
+    <div className="flex flex-col  text-center">  
+      <div>
+          <MessageBar selectedTopic={selectedTopic} setSelectedTopic={setSelectedTopic} />        
+      </div>             
+        <div className="flex flex-row w-full  mx-auto shadow-lg rounded-lg overflow-hidden">
+            <div className="flex-1   w-2/3 overflow-y-auto bg-[url('/assets/images/Assistant-Bg.png')] bg-cover p-3">
               <CommunityList selectedTopic={selectedTopic} posts={posts} />
             </div>
             <div className="border-t w-1/3 bg-gray-100 p-2">
@@ -56,9 +51,7 @@ export default function Community() {
                 onPostSubmit={handlePostSubmit}  // <-- pass callback here
               />
             </div>
-          </div>
-        </div>
-      </div>
+        </div>   
     </div>
   );
 }

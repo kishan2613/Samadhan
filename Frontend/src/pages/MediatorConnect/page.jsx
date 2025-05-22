@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Pagination from "@mui/material/Pagination";
 import Mediatorcont from "../../WebData/MediConnect.json"
+import Loader from "../../components/common/Loader";
 
 const fixedcache = {}
 
@@ -159,9 +160,7 @@ const MediatorConnect = () => {
 
   if (loading)
     return (
-      <div className="text-center text-lg font-medium text-gray-600">
-        {MediatorPag.loadingMessage}
-      </div>
+      <Loader/>
     );
 
   if (error)
