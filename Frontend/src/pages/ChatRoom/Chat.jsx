@@ -28,6 +28,39 @@ export default function Chat({ callroomID, setUsernamenew, roomTitle }) {
 
   const navigate = useNavigate();
 
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef(null);
+
+  useEffect(() => {
+    // Initialize SpeechRecognition once on mount
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = true;
+      recognitionRef.current.interimResults = true;
+      recognitionRef.current.lang = "en-US";
+
+      recognitionRef.current.onresult = (event) => {
+        let finalTranscript = "";
+        for (let i = event.resultIndex; i < event.results.length; ++i) {
+          if (event.results[i].isFinal) {
+            finalTranscript += event.results[i][0].transcript;
+          }
+        }
+        if (finalTranscript) {
+          setMessage((prev) => prev + finalTranscript.trim() + " ");
+        }
+      };
+
+      recognitionRef.current.onend = () => {
+        setIsListening(false);
+      };
+    } else {
+      alert("Speech Recognition is not supported in this browser.");
+    }
+  }, []);
+
   /****************************
    *  Fetch historic messages *
    ***************************/
@@ -56,7 +89,9 @@ export default function Chat({ callroomID, setUsernamenew, roomTitle }) {
     });
 
     socket.on("messageSaved", ({ _id, tempId }) => {
-      setMessages((prev) => prev.map((m) => (m._id === tempId ? { ...m, _id } : m)));
+      setMessages((prev) =>
+        prev.map((m) => (m._id === tempId ? { ...m, _id } : m))
+      );
     });
 
     socket.on("userJoined", ({ userName }) => {
@@ -237,9 +272,7 @@ export default function Chat({ callroomID, setUsernamenew, roomTitle }) {
                 <p className="text-xs text-black font-semibold">
                   {msg.sender?.name}
                 </p>
-                <p className="text-sm text-black inline-block">
-                  {msg.content}
-                </p>
+                <p className="text-sm text-black inline-block">{msg.content}</p>
                 {showJoin && (
                   <button
                     onClick={() => joinCall(msg.content)}
@@ -271,6 +304,31 @@ export default function Chat({ callroomID, setUsernamenew, roomTitle }) {
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
         />
+        {/* Mic Button */}
+        <button
+          onClick={() => {
+            if (!recognitionRef.current) return;
+
+            if (isListening) {
+              recognitionRef.current.stop();
+            } else {
+              setMessage(""); // optional: reset previous message
+              recognitionRef.current.start();
+            }
+            setIsListening((prev) => !prev);
+          }}
+          className={`relative ml-2 p-3 rounded-full ${
+            isListening ? "bg-red-600" : "bg-green-600"
+          } text-white flex items-center justify-center`}
+          title={isListening ? "Stop Recording" : "Start Voice Input"}
+        >
+          🎤
+          {isListening && (
+            <span className="absolute animate-ping inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+          )}
+        </button>
+
+        {/* Send Button */}
         <button
           onClick={handleSend}
           className="ml-2 bg-[#d1a76e] hover:bg-green-600 text-black px-4 py-2 rounded-full"
