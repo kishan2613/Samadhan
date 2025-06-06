@@ -9,7 +9,8 @@
     "chatRooms": "Chat Rooms",
     "proposals": "Proposals",
     "education": "Education",
-    "suggestions": "Suggestions",
-    "logout": "Log Out"
+    "communitySuggestions": "Community",
+    "logout": "Log Out",
+    "ChangeLang": "Change Language"
   }
 }

@@ -2,41 +2,18 @@ import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
 import content from "../WebData/Home.json";
-import businessIcon from "/assets/images/business.png"; 
+import businessIcon from "/assets/images/business.png";
 import criminalIcon from "/assets/images/criminal.png";
-import familyIcon from "/assets/images/business.png";
-import LanguageSelector from "../pages/AskLang/view";
+import familyIcon from "/assets/images/business.png"; // Consider fixing this icon duplication
 
 const homeCache = {};
 
 const Home = () => {
-
-  //Language selector
-   const [languageSet, setLanguageSet] = useState(false);
-   const [showLangModal, setShowLangModal] = useState(false);
-   console.log(languageSet)
-  
-    useEffect(() => {
-    const stored = localStorage.getItem('preferredLanguage');
-    if (stored) {
-      setLanguageSet(true);
-    } else {
-      setShowLangModal(true);
-    }
-  }, []);
-
-  const handleLanguageSelected = () => {
-    setLanguageSet(true);
-    setShowLangModal(false);
-  };
-
-
   const location = useLocation();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
-  const icon = [businessIcon,criminalIcon,familyIcon]
-
+  const icon = [businessIcon, criminalIcon, familyIcon];
   const [translatedContent, setTranslatedContent] = useState(content);
 
   useEffect(() => {
@@ -47,32 +24,29 @@ const Home = () => {
     const lang = localStorage.getItem("preferredLanguage");
     if (!lang) return;
 
-    // if we already did this language, pull from cache
     if (homeCache[lang]) {
       setTranslatedContent(homeCache[lang]);
       return;
     }
 
-    // otherwise translate once
     (async () => {
       try {
-        const res = await fetch(
-          "http://localhost:5000/translate/translate",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              jsonObject: content,
-              targetLang: lang,
-            }),
-          }
-        );
+        const res = await fetch("http://localhost:5000/translate/translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            jsonObject: content,
+            targetLang: lang,
+          }),
+        });
+
         const data = await res.json();
         const outputs = data.pipelineResponse?.[0]?.output || [];
         const map = {};
         outputs.forEach(({ source, target }) => {
           map[source] = target;
         });
+
         const translateJSON = (obj) => {
           if (typeof obj === "string") return map[obj] || obj;
           if (Array.isArray(obj)) return obj.map(translateJSON);
@@ -83,6 +57,7 @@ const Home = () => {
           }
           return obj;
         };
+
         const translated = translateJSON(content);
         homeCache[lang] = translated;
         setTranslatedContent(translated);
@@ -92,19 +67,10 @@ const Home = () => {
     })();
   }, []);
 
-
   const { hero, quote, laws, learning } = translatedContent;
 
   return (
     <div>
-       {/* ✅ Language Selector Modal */}
-      {showLangModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-md z-50 flex justify-center items-center">
-          <div >
-            <LanguageSelector onLanguageSelected={handleLanguageSelected} />
-          </div>
-        </div>
-      )}
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-[#f5f0eb] via-[#e8dfd6] to-[#d6c6b8] text-[#2b2b2b] relative">
         {/* Hero Section */}

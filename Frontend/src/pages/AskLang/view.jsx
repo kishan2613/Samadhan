@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export default function LanguageSelector({ onLanguageSelected }) {
   const [selectedLanguage, setSelectedLanguage] = useState('');
@@ -19,19 +19,6 @@ export default function LanguageSelector({ onLanguageSelected }) {
     ta: { code: 'ta', name: 'Tamil', nativeName: 'தமிழ்' },
     te: { code: 'te', name: 'Telugu', nativeName: 'తెలుగు' }
   };
-
-  // Check if language is already stored in localStorage on component mount
-   useEffect(() => {
-    const stored = localStorage.getItem('preferredLanguage');
-    if (stored) setSelectedLanguage(stored);
-  }, []);
-
-  const handleLanguageSelect = (langCode) => {
-    setSelectedLanguage(langCode);
-    localStorage.setItem('preferredLanguage', langCode);
-    onLanguageSelected()
-  };
-    
 
   return (
     <div className="max-w-2xl mt-3 mx-auto p-6 bg-[url('/assets/images/LanguageSelectBG.png')] bg-cover rounded-lg shadow-lg">
@@ -78,7 +65,7 @@ export default function LanguageSelector({ onLanguageSelected }) {
           {Object.values(languages).map((lang) => (
             <button
               key={lang.code}
-              onClick={() => handleLanguageSelect(lang.code)}
+              onClick={() => onLanguageSelected(lang.code)}
               className={`p-4 rounded-lg transition-colors  hover:bg-blue-50 shadow-sm flex flex-col items-center justify-center min-h-24 ${
                 selectedLanguage === lang.code ? 'bg-blue-100 ring-2 ring-blue-500' : 'bg-white'
               }`}

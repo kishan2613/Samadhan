@@ -5,7 +5,7 @@ import NavigationText from "../../WebData/Navigation.json"
 
 const navCache = {};
 
-const Navbar = () => {
+const Navbar = ({handleLangChange}) => {
   const navigate = useNavigate();
   const dropdownRef = useRef();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -184,14 +184,20 @@ const Navbar = () => {
                 </Link>
               ) : (
                 <Link
-                  to="/look-suggest"
+                  to="/samadhan-community"
                   className="block px-4 py-3 hover:bg-gray-100 transition-colors"
                   onClick={() => setDropdownOpen(false)}
                 >
-                  {Navigation.labels.suggestions}
+                  {Navigation.labels.communitySuggestions}
                 </Link>
               )}
 
+              <button
+                onClick={handleLangChange}
+                className="w-full text-left px-4 py-3 hover:bg-gray-100 transition-colors"
+              >
+                {Navigation.labels.ChangeLang}
+              </button>
               <button
                 onClick={handleLogout}
                 className="w-full text-left px-4 py-3 hover:bg-gray-100 transition-colors"

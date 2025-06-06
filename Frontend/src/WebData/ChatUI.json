@@ -1,0 +1,10 @@
+{
+  "chatTitle": "Chat",
+  "startMeeting": "Start Meeting",
+  "consentForm": "Consent Form",
+  "systemLabel": "System",
+  "startedCallLabel": "started a video call with room ID:",
+  "joinCall": "Join Call",
+  "placeholder": "Type your message...",
+  "sendButton": "Send"
+}

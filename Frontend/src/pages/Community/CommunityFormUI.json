@@ -1,0 +1,7 @@
+{
+  "selectTopicPlaceholder": "Select a topic",
+  "contentPlaceholder": "Write your message...",
+  "submitText": "Submit",
+  "successAlert": "Post submitted successfully!",
+  "failureAlert": "Failed to submit post"
+}
