@@ -1,0 +1,24 @@
+{
+  "summary": {
+    "totalCases": 6107,
+    "settledCases": 1686,
+    "unsettledCases": 4020
+  },
+  "yearlyData": [
+    { "year": 2009, "received": 28, "settled": 10, "unsettled": 18 },
+    { "year": 2010, "received": 196, "settled": 60, "unsettled": 136 },
+    { "year": 2011, "received": 256, "settled": 65, "unsettled": 150 },
+    { "year": 2012, "received": 322, "settled": 83, "unsettled": 191 },
+    { "year": 2013, "received": 420, "settled": 124, "unsettled": 218 },
+    { "year": 2014, "received": 437, "settled": 108, "unsettled": 222 },
+    { "year": 2015, "received": 416, "settled": 102, "unsettled": 235 },
+    { "year": 2016, "received": 314, "settled": 92, "unsettled": 190 },
+    { "year": 2017, "received": 312, "settled": 68, "unsettled": 202 },
+    { "year": 2018, "received": 307, "settled": 76, "unsettled": 196 },
+    { "year": 2019, "received": 539, "settled": 141, "unsettled": 304 },
+    { "year": 2020, "received": 220, "settled": 60, "unsettled": 124 },
+    { "year": 2021, "received": 276, "settled": 63, "unsettled": 156 },
+    { "year": 2022, "received": 891, "settled": 242, "unsettled": 625 },
+    { "year": 2023, "received": 1163, "settled": 222, "unsettled": 840 }
+  ]
+}

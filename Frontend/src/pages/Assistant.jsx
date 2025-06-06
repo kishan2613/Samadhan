@@ -3,6 +3,7 @@ import { Mic, Square, Volume2, Loader } from "lucide-react";
 import AssistantData from "../WebData/Assistant.json";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
+import Loaders from "../components/common/Loader";
 
 /**
  * AI Voice Assistant Component
@@ -408,16 +409,7 @@ const VoiceAssistant = () => {
 
   if (loading) {
     return (
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          minHeight: "80vh",
-        }}
-      >
-        <CircularProgress />
-      </Box>
+      <Loaders/>
     );
   }
 
@@ -430,7 +422,7 @@ const VoiceAssistant = () => {
       </h1>
 
       {/* Two-column layout container */}
-      <div className="border-4 border-[#87311e] transition duration-pulse ease-in-out  flex flex-col lg:flex-row w-full gap-6 bg-[#f5f0eb] rounded-2xl  justify-center items-center">
+      <div className="border-4 border-[#87311e] transition duration-pulse ease-in-out  flex flex-col lg:flex-row w-full gap-6 bg-[#f5f0eb] bg-[url('/assets/images/Assistant-Bg.png')] bg-cover rounded-2xl  justify-center items-center">
 
         {/* left Column for Voice Assistant */}
         <div className="w-full lg:w-1/2 flex flex-col items-center justify-center">
@@ -443,12 +435,20 @@ const VoiceAssistant = () => {
 
           {/* Start Session Button */}
           {!activeSession && (
+            <div className="flex flex-col items-center justify-center h-full text-center">
+            {/* Typewriter animated text */}
+            <p className="mb-8 text-2xl font-bold text-[#bb5b45] animate-typing overflow-hidden whitespace-nowrap border-r-4 border-r-black pr-4">
+            {AssistantDataMock.welcome || "Start Conversation"}
+            </p>
+
+            {/* Centered button */}
             <button
-              onClick={() => setActiveSession(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full text-lg shadow-lg transition"
+            onClick={() => setActiveSession(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full text-lg shadow-lg transition"
             >
-              {AssistantDataMock.buttons?.startConversation || "Start Conversation"}
+            {AssistantDataMock.buttons?.startConversation || "Start Conversation"}
             </button>
+            </div>
           )}
 
           {activeSession && (
@@ -542,7 +542,7 @@ const VoiceAssistant = () => {
           )}
         </div>
 
-      {/* Left Column for Image (placeholder for your image) */}
+      {/* Right Column for Image (placeholder for your image) */}
          <div className="w-full lg:w-1/2 flex justify-center items-center">
           <div className=" rounded-lg  overflow-hidden w-full  max-w-md">
             <img
@@ -552,8 +552,10 @@ const VoiceAssistant = () => {
             />
           </div>
         </div>
-
       </div>
+      <p className="italic text-center text-[#bb5b45] p-2 mt-4">
+      {AssistantDataMock.Outsell || "Your AI Assistant is here to help you with your queries. Just click the microphone button and start speaking!"}
+    </p>
     </div>
   );
 };

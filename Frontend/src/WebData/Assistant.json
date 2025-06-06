@@ -7,6 +7,8 @@
     "stopAll": "Stop all activities",
     "AiAlt": "AI Assistant"
     },
+    "welcome": "Welcome to AI Samadhan",
+    "Outsell": "In the middle of every conflict lies an opportunity — mediation turns that opportunity into resolution.",
     "statusMessages": {
     "listening": "Listening... Click mic to stop",
     "processing": "Processing your request...",

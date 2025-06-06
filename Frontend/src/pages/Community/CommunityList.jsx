@@ -159,7 +159,7 @@ function CommunityList({ posts: rawPosts, selectedTopic }) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="bg-[#15202b] text-white p-4 rounded-xl shadow-lg max-w-xl w-full mx-auto relative"
+            className="bg-white text-black p-4 rounded-xl shadow-lg max-w-xl w-full mx-auto relative"
           >
             <p className="text-xs text-gray-400 absolute top-3 right-4">
               {formatTimestamp(post.timestamp)}

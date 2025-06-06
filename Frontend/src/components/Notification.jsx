@@ -57,6 +57,7 @@ const Notification = () => {
       try {
         const userData = localStorage.getItem('user');
         const parsedUser = userData ? JSON.parse(userData) : null;
+
         if (!parsedUser?.email) {
           console.error('Email not found in localStorage user object');
           setLoading(false);
@@ -68,6 +69,7 @@ const Notification = () => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: parsedUser.email }),
         });
+
 
         const data = await res.json();
         setSuggestions(data.suggestions || []);
@@ -81,13 +83,11 @@ const Notification = () => {
     fetchSuggestions();
   }, []);
 
-  // Open the modal with full suggestion data
   const handleViewDetails = (suggestion) => {
     setSelectedSuggestion(suggestion);
     setModalOpen(true);
   };
 
-  // Accept or decline the suggestion
   const handleAction = async (action) => {
     if (!selectedSuggestion) return;
 
@@ -103,12 +103,14 @@ const Notification = () => {
         body: JSON.stringify({ userId, suggestionId, action }),
       });
 
+
       const result = await res.json();
 
       if (res.ok) {
         if (action === 'accepted') {
           navigate('/proposal', { state: { proposalId: result._id } });
         } else {
+          setSuggestions((prev) => prev.filter((s) => s._id !== suggestionId));
           setSuggestions((prev) => prev.filter((s) => s._id !== suggestionId));
           setModalOpen(false);
         }

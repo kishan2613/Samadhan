@@ -16,7 +16,7 @@ export default function Groups() {
    
 
   return (
-    <div className="relative flex pt-0  min-h-screen bg-cover border-[2px] ">
+    <div className="relative flex min-h-screen bg-cover border-[2px] ">
       {/* Main Content */}
       <div className={`flex w-full ${isMeetingRoute ? "blur-sm pointer-events-none" : ""}`}>
         <div className="w-6/12 hidden md:block">

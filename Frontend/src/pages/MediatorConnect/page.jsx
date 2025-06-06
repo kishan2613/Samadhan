@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Pagination from "@mui/material/Pagination";
 import Mediatorcont from "../../WebData/MediConnect.json"
+import Loader from "../../components/common/Loader";
 
 const fixedcache = {}
 
@@ -159,9 +160,7 @@ const MediatorConnect = () => {
 
   if (loading)
     return (
-      <div className="text-center mt-16 text-lg font-medium text-gray-600">
-        {MediatorPag.loadingMessage}
-      </div>
+      <Loader/>
     );
 
   if (error)
@@ -170,7 +169,7 @@ const MediatorConnect = () => {
     );
 
   return (
-    <div className="bg-gradient-to-r from-[#f5f0eb] via-[#e8dfd6] to-[#d6c6b8] min-h-screen bg-gray-50 pt-20 px-4 md:px-8">
+    <div className="bg-gradient-to-r from-[#f5f0eb] via-[#e8dfd6] to-[#d6c6b8] min-h-screen bg-gray-50 pt-4 px-4 md:px-8">
       <h1 className="text-3xl md:text-4xl font-serif font-bold text-center text-gray-800 mb-6">
         {MediatorPag.pageTitle}
       </h1>
