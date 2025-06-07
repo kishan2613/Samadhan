@@ -46,14 +46,11 @@ function CommunityList({ posts: rawPosts, selectedTopic }) {
 
     (async () => {
       try {
-        const res = await fetch(
-          "http://localhost:5000/translate/translate",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ jsonObject: UI, targetLang: lang }),
-          }
-        );
+        const res = await fetch("http://localhost:5000/translate/translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ jsonObject: UI, targetLang: lang }),
+        });
         const data = await res.json();
         const outputs = data.pipelineResponse?.[0]?.output || [];
         const map = {};
@@ -147,11 +144,13 @@ function CommunityList({ posts: rawPosts, selectedTopic }) {
     : posts;
 
   return (
-    <div className="flex flex-col gap-6 max-h-[870px] overflow-y-auto">
+    <div className="flex flex-col gap-6 max-h-[870px] overflow-y-auto px-4 py-2">
       {selectedTopic == null ? (
         <MeditationFact />
       ) : filtered.length === 0 ? (
-        <p className="text-center text-gray-400">{uiText.noPosts}</p>
+        <p className="text-center text-gray-500 italic mt-10">
+          {uiText.noPosts}
+        </p>
       ) : (
         filtered.map((post) => (
           <motion.div
@@ -159,69 +158,74 @@ function CommunityList({ posts: rawPosts, selectedTopic }) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="bg-white text-black p-4 rounded-xl shadow-lg max-w-xl w-full mx-auto relative"
+            className="bg-white rounded-xl shadow-sm max-w-xl w-full mx-auto relative border border-gray-200 hover:shadow-md transition-shadow duration-300"
           >
-            <p className="text-xs text-gray-400 absolute top-3 right-4">
+           
+            <p className="text-xs text-gray-400 absolute top-3 right-4 font-mono select-none">
               {formatTimestamp(post.timestamp)}
             </p>
 
-            <div className="flex items-start gap-3">
+            <div className="flex items-start gap-3 p-4">
               {post.sender?.profileImageUrl ? (
                 <img
                   src={post.sender.profileImageUrl}
                   alt="user"
-                  className="w-10 h-10 rounded-full object-cover"
+                  className="w-12 h-12 rounded-full object-cover border border-gray-300"
                 />
               ) : (
-                <UserCircle className="w-10 h-10 text-gray-400" />
+                <UserCircle className="w-12 h-12 text-gray-400" />
               )}
-              <div>
-                <h3 className="font-semibold text-base">
+              <div className="flex flex-col">
+                <h3 className="font-semibold text-gray-900 text-base leading-tight hover:underline cursor-pointer">
                   {post.sender?.name || "Anonymous"}
                 </h3>
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-gray-500 font-sans select-text">
                   {post.sender?.email || "unknown"}
                 </p>
               </div>
             </div>
 
-            <div className="mt-4">
-              <p className="text-sm text-green-400 font-semibold">
+            <div className="px-4 pb-4">
+              <p className="inline-block text-sm text-green-600 font-semibold mb-2 rounded-full px-2 py-0.5 border border-green-300 bg-green-50">
                 {post.topic}
               </p>
-              <p className="text-sm mt-1">{post.content}</p>
+              <p className="text-gray-800 text-sm leading-relaxed whitespace-pre-wrap">
+                {post.content}
+              </p>
             </div>
 
-            <div className="flex gap-6 items-center mt-4">
-              <button onClick={() => toggleComments(post._id)}>
+            <div className="flex gap-6 items-center px-4 pb-4 border-t border-gray-100">
+              <button
+                onClick={() => toggleComments(post._id)}
+                aria-label="Toggle comments"
+                className="flex items-center text-green-600 hover:text-green-700 transition-colors duration-200"
+              >
                 <MessageCircle
-                  className={`w-5 h-5 transition ${
-                    commentToggle[post._id]
-                      ? "text-red-500"
-                      : "text-green-400"
+                  className={`w-5 h-5 transition-colors ${
+                    commentToggle[post._id] ? "text-red-500" : "text-green-600"
                   }`}
                 />
               </button>
             </div>
 
             {activePostId === post._id && (
-              <div className="mt-4 bg-[#1e2a38] p-3 rounded-xl">
-                <div className="space-y-2 mb-3">
+              <div className="mt-1 px-4 pb-4 bg-[#f5f0eb] rounded-b-xl border-t border-green-200">
+                <div className="space-y-2 mb-3 max-h-40 overflow-y-auto">
                   {comments[post._id]?.length > 0 ? (
                     comments[post._id].map((c) => (
                       <div
                         key={c._id}
-                        className="text-sm bg-gray-800 p-2 rounded"
+                        className="text-sm bg-white p-3 rounded-lg shadow-sm border border-gray-200"
                       >
-                        <p>{c.commentText}</p>
-                        <span className="text-xs text-gray-400 block mt-1">
+                        <p className="text-gray-900">{c.commentText}</p>
+                        <span className="text-xs text-gray-500 block mt-1 select-text">
                           {c.commenter?.name || "Anonymous"} (
-                          {c.commenter?.email})
+                          {c.commenter?.email || "unknown"})
                         </span>
                       </div>
                     ))
                   ) : (
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-gray-400 italic">
                       {uiText.noComments}
                     </p>
                   )}
@@ -231,11 +235,12 @@ function CommunityList({ posts: rawPosts, selectedTopic }) {
                   placeholder={uiText.writeComment}
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
-                  className="border px-3 py-2 w-full text-sm rounded bg-gray-900 text-white resize-none"
+                  className="border border-gray-300 px-3 py-2 w-full text-sm rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-green-400 bg-white text-gray-900"
+                  rows={3}
                 />
                 <button
                   onClick={() => handleCommentSubmit(post._id)}
-                  className="bg-green-600 text-white px-4 py-1 text-sm rounded mt-2 hover:bg-green-700"
+                  className="bg-green-600 text-white px-5 py-2 text-sm rounded-full mt-3 hover:bg-green-700 transition-colors duration-200 font-semibold shadow"
                 >
                   {uiText.postComment}
                 </button>

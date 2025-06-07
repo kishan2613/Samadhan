@@ -59,42 +59,41 @@ export default function MessageBar({ selectedTopic, setSelectedTopic }) {
     })();
   }, [rawSearchData, rawTopics]);
 
-  return (
-    <div className="p-4 bg-[#d6c6b8] shadow rounded-md">
-      {/* Search Bar */}
-      <div>
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder={searchData.placeholder}
-          className="flex-1 mr-4 px-10 py-2 border rounded-3xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <button className="px-4 py-2 text-black bg-[#d1a76e] hover:scale-105 hover:shadow-xl rounded-3xl ">
-          {searchData.buttonText}
-        </button>
-      </div>
+ return (
+  <div className="p-6 bg-white/60 backdrop-blur-md border border-[#d1bfae] shadow-xl rounded-xl max-w-6xl mx-auto">
+    {/* Search Bar */}
+    <div className="flex flex-col sm:flex-row items-center gap-4">
+      <input
+        type="text"
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        placeholder={searchData.placeholder}
+        className="flex-1 w-full px-6 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-[#d1a76e] bg-white shadow-sm transition"
+      />
+      <button className="px-6 py-2 bg-[#d1a76e] text-white font-medium rounded-full shadow-md hover:scale-105 hover:shadow-xl transition-all duration-200">
+        {searchData.buttonText}
+      </button>
+    </div>
 
-      {/* Scrollable Topics Buttons */}
-      <div className="mt-4 overflow-x-auto scrollbar-hide">
-        <div className="flex justify-around space-x-2 w-full">
-          {topics.map((topic, index) => (
-            <button
-              key={index}
-              onClick={() => setSelectedTopic(topic)}
-              className={`whitespace-nowrap px-4 py-1 rounded-full text-sm  transition
-                ${
-                  selectedTopic === topic
-                    ? "bg-[#87311e] text-white"
-                    : "bg-[#d1a76e] text-grey-50 hover:scale-105 hover:shadow-xl"
-                }
-              `}
-            >
-              {topic}
-            </button>
-          ))}
-        </div>
+    {/* Scrollable Topics Buttons */}
+    <div className="mt-6 overflow-x-auto scrollbar-hide">
+      <div className="flex gap-3 min-w-max py-2 px-1">
+        {topics.map((topic, index) => (
+          <button
+            key={index}
+            onClick={() => setSelectedTopic(topic)}
+            className={`whitespace-nowrap px-5 py-2 text-sm font-medium rounded-full transition-all duration-200 shadow-sm ${
+              selectedTopic === topic
+                ? "bg-[#87311e] text-white"
+                : "bg-[#e3c6a0] text-gray-800 hover:bg-[#d9b78f] hover:shadow-md hover:scale-105"
+            }`}
+          >
+            {topic}
+          </button>
+        ))}
       </div>
     </div>
-  );
+  </div>
+);
+
 }

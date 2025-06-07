@@ -5,19 +5,16 @@ import MessageBar from "./MessageBar";
 import CommunityForm from "./CommunityForm";
 import CommunityList from "./CommunityList";
 import axios from "axios";
+import { motion } from "framer-motion";
 
 const SERVER_URL = "http://localhost:5000";
 
 export default function Community() {
-  // UI text (title & subtitle) and translation map
   const [uiText, setUiText] = useState(content.page);
   const [translationMap, setTranslationMap] = useState(null);
-
-  // Selected topic & fetched posts
   const [selectedTopic, setSelectedTopic] = useState("");
   const [posts, setPosts] = useState([]);
 
-  // Helper to deep‐translate any object/array of strings
   const translateJSON = (obj, map) => {
     if (typeof obj === "string") return map[obj] || obj;
     if (Array.isArray(obj)) return obj.map((o) => translateJSON(o, map));
@@ -29,7 +26,6 @@ export default function Community() {
     return obj;
   };
 
-  // 1️⃣ On mount: translate static UI text (title & subtitle)
   useEffect(() => {
     const lang = localStorage.getItem("preferredLanguage");
     if (!lang) return;
@@ -55,19 +51,16 @@ export default function Community() {
     })();
   }, []);
 
-  // 2️⃣ Whenever selectedTopic or translationMap changes: fetch & translate posts
   useEffect(() => {
     const lang = localStorage.getItem("preferredLanguage");
     const fetchAndTranslate = async () => {
       try {
-        // fetch raw posts
         const url = selectedTopic
           ? `${SERVER_URL}/api/community?topic=${encodeURIComponent(selectedTopic)}`
           : `${SERVER_URL}/api/community`;
         const res = await axios.get(url);
         let fetched = res.data;
 
-        // if we have a translationMap and user chose a language, translate fetched posts
         if (lang && translationMap) {
           const translateRes = await fetch(`${SERVER_URL}/translate/translate`, {
             method: "POST",
@@ -95,38 +88,54 @@ export default function Community() {
     fetchAndTranslate();
   }, [selectedTopic, translationMap]);
 
-  // Handler for new post submissions
   const handlePostSubmit = (newPost) => {
     setPosts((prev) => [newPost, ...prev]);
   };
 
   return (
-    <div className="mt-20 flex flex-col items-center text-center">
-      <h1 className="text-4xl font-bold text-gray-900">{uiText.title}</h1>
-      <h2 className="mt-4 text-lg text-gray-700 max-w-2xl">{uiText.subTitle}</h2>
-      <div className="flex flex-row justify-start w-full px-4 md:px-20">
-        <div className="mt-8 w-1/3">
-          <Hero />
-        </div>
-        <div className="mt-8 w-2/3 mr-8">
-          <MessageBar
-            selectedTopic={selectedTopic}
-            setSelectedTopic={setSelectedTopic}
-          />
-          <div className="flex flex-row w-full h-3/4 mx-auto shadow-lg rounded-lg overflow-hidden">
-            <div className="flex-1 h-3/4 w-2/3 overflow-y-auto bg-[#e5ddd5] p-3">
-              <CommunityList selectedTopic={selectedTopic} posts={posts} />
-            </div>
-            <div className="border-t w-1/3 bg-gray-100 p-2">
-              <CommunityForm
-                selectedTopic={selectedTopic}
-                setSelectedTopic={setSelectedTopic}
-                onPostSubmit={handlePostSubmit}
-              />
-            </div>
+    <div className="min-h-screen w-full bg-gradient-to-r from-[#f5f0eb] to-[#d7c7b9]
+ py-10 px-4 md:px-16">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="text-center mb-8"
+      >
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-800">
+          {uiText.title}
+        </h1>
+        <p className="mt-4 text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+          {uiText.subTitle}
+        </p>
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="mx-auto w-full max-w-7xl"
+      >
+        <MessageBar
+          selectedTopic={selectedTopic}
+          setSelectedTopic={setSelectedTopic}
+        />
+
+        <div className="mt-6 flex flex-col md:flex-row gap-6">
+          {/* Posts Section */}
+          <div className="flex-1 bg-white rounded-xl shadow-lg p-4 h-[70vh] overflow-y-auto border border-gray-200">
+            <CommunityList selectedTopic={selectedTopic} posts={posts} />
+          </div>
+
+          {/* Form Section */}
+          <div className="w-full md:w-1/3 bg-gray-50 rounded-xl shadow-md p-4 border border-gray-300">
+            <CommunityForm
+              selectedTopic={selectedTopic}
+              setSelectedTopic={setSelectedTopic}
+              onPostSubmit={handlePostSubmit}
+            />
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
