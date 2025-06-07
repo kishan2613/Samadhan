@@ -7,7 +7,7 @@ import criminalIcon from "/assets/images/criminal.png";
 import familyIcon from "/assets/images/business.png"; // Consider fixing this icon duplication
 import CaseStats from "./Graph";
 const homeCache = {};
-
+ 
 const Home = () => {
   const location = useLocation();
   const ref = useRef(null);
@@ -67,7 +67,7 @@ const Home = () => {
     })();
   }, []);
 
-  const { hero, quote, laws, learning } = translatedContent;
+  const { hero, quote, laws, learning , Graph} = translatedContent;
 
   return (
     <div>
@@ -160,7 +160,7 @@ const Home = () => {
         </div>
       </div>
 
-      <CaseStats />
+      <CaseStats datacontent = {Graph} />
       {/* Learning Section */}
       <section
         ref={ref}

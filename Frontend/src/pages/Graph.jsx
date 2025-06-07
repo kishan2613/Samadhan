@@ -21,7 +21,7 @@ ChartJS.register(
   Legend
 );
 
-const CaseStats = () => {
+const CaseStats = ({datacontent}) => {
   const [data, setData] = useState(null);
 
   useEffect(() => {
@@ -88,9 +88,9 @@ const CaseStats = () => {
         viewport={{ once: true }}
         variants={variants}
       >
-        Supreme Court Mediation Case Stats (2009–2023)
+        {datacontent.Title}
       </motion.h2>
-
+ 
       {/* Flex container for charts */}
       <div className="flex flex-col md:flex-row w-full max-w-6xl gap-8">
         {/* Bar chart container - scrollable horizontally */}
@@ -132,13 +132,13 @@ const CaseStats = () => {
           transition={{ delay: 0.3, duration: 1 }}
         >
           <h3 className="text-xl font-semibold text-white text-center mb-4">
-            Total Case Distribution
+             {datacontent.subone}
           </h3>
           <Pie data={pieChartData} />
           <div className="text-center mt-4 text-white font-medium">
-            <p>Total Cases: {data.summary.totalCases}</p>
-            <p>Settled: {data.summary.settledCases}</p>
-            <p>Unsettled: {data.summary.unsettledCases}</p>
+            <p> {datacontent.subtwo}: {data.summary.totalCases}</p>
+            <p> {datacontent.subthree}: {data.summary.settledCases}</p>
+            <p> {datacontent.subfour}: {data.summary.unsettledCases}</p>
           </div>
         </motion.div>
       </div>
