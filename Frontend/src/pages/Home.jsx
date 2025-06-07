@@ -5,9 +5,9 @@ import content from "../WebData/Home.json";
 import businessIcon from "/assets/images/business.png";
 import criminalIcon from "/assets/images/criminal.png";
 import familyIcon from "/assets/images/business.png"; // Consider fixing this icon duplication
-
+import CaseStats from "./Graph";
 const homeCache = {};
-
+ 
 const Home = () => {
   const location = useLocation();
   const ref = useRef(null);
@@ -67,7 +67,7 @@ const Home = () => {
     })();
   }, []);
 
-  const { hero, quote, laws, learning } = translatedContent;
+  const { hero, quote, laws, learning , Graph} = translatedContent;
 
   return (
     <div>
@@ -108,49 +108,49 @@ const Home = () => {
           </motion.div>
 
           {/* Centered Statue with animation */}
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 1, delay: 0.4 }}
-        >
-          <img
-            src="/assets/images/lady-justice..png"
-            alt="Lady Justice"
-            className="h-28.646vw ml-1.042vw w-[400px]  object-contain z-20 relative hidden md:block "
-          />
-        </motion.div>
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 1, delay: 0.4 }}
+          >
+            <img
+              src="/assets/images/lady-justice..png"
+              alt="Lady Justice"
+              className="h-28.646vw ml-1.042vw w-[400px]  object-contain z-20 relative hidden md:block "
+            />
+          </motion.div>
 
-           {/* Right Content */}
-        <motion.div
-          initial={{ x: 100, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
-          transition={{ duration: 0.8 }}
-          className="flex-1 relative flex items-center justify-between min-h-26.042vw z-0"
-        >
-          {/* "Our lawyers" text */}
-          <p className="absolute top-13 right-[-2.604vw] text-s text-gray-900 px-4 py-10 rounded-bl-lg max-w-xs z-20 hidden md:block">
-            {hero.subheading}
-          </p>
-        </motion.div>
-      </section>
-    </div>
+          {/* Right Content */}
+          <motion.div
+            initial={{ x: 100, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ duration: 0.8 }}
+            className="flex-1 relative flex items-center justify-between min-h-[26.042vw] z-0"
+          >
+            {/* "Our lawyers" text */}
+            <p className="absolute top-13 right-[-2.604vw] text-sm text-gray-900 px-6 py-10 rounded-bl-lg max-w-xs z-20 hidden md:block bg-white/40 backdrop-blur-sm shadow-lg border border-white/20">
+              {hero.subheading}
+            </p>
+          </motion.div>
+        </section>
+      </div>
 
       {/* Quote & Laws */}
-       <div className="bg-gradient-to-r from-[#f5f0eb] via-[#e8dfd6] to-[#d6c6b8] py-16 px-4 md:px-20 text-center">
-      <div className="rounded-[20px] p-[10px] bg-white">
-      <h2 className="text-2xl md:text-3xl font-serif font-semibold mb-12">
+      <div className="bg-gradient-to-r from-[#f5f0eb] via-[#e8dfd6] to-[#d6c6b8] py-16 px-4 md:px-20 text-center">
+        <div className="rounded-[20px] p-[10px] bg-white/60 backdrop-blur-md shadow-[0_10px_40px_rgba(0,0,0,0.1)]">
+          <h2 className="text-2xl md:text-3xl font-serif font-semibold mb-12">
             {quote.text}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
             {laws.map((law, index) => (
-               <div
-            key={index}
-            className="flex flex-col items-center text-center space-y-4"
-          >
+              <div
+                key={index}
+                className="flex flex-col items-center text-center space-y-4 bg-white/40 backdrop-blur-md rounded-xl shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 p-4"
+              >
                 <img
                   src={icon[index]}
                   alt={law.title}
-                  className="w-16 h-18"
+                  className="w-full h-64 object-cover rounded-lg transition-transform duration-300 hover:scale-105"
                 />
                 <h3 className="font-bold font-serif text-lg">{law.title}</h3>
                 <p className="text-gray-600 max-w-xs">{law.description}</p>
@@ -160,44 +160,45 @@ const Home = () => {
         </div>
       </div>
 
+      <CaseStats datacontent = {Graph} />
       {/* Learning Section */}
-       <section
-      ref={ref}
-      className="bg-gradient-to-r from-[#f5f0eb] via-[#e8dfd6] to-[#d6c6b8] py-10 px-6 md:px-20"
-    >
-      <motion.div
-        className="flex flex-col md:flex-row items-center gap-10 max-w-6xl mx-auto"
-        initial={{ opacity: 0, y: 50 }}
-        animate={isInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.8, ease: "easeOut" }}
+      <section
+        ref={ref}
+        className="bg-gradient-to-r from-[#f5f0eb] via-[#e8dfd6] to-[#d6c6b8] py-10 px-6 md:px-20"
       >
-        {/* Left Side Image */}
         <motion.div
-          initial={{ x: -50, opacity: 0 }}
-          animate={isInView ? { x: 0, opacity: 1 } : {}}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="w-full md:w-1/2"
+          className="flex flex-col md:flex-row items-center gap-10 max-w-6xl mx-auto"
+          initial={{ opacity: 0, y: 50 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          <img
-            src="/assets/images/Learning.png"
-            alt="Learning Mediation"
-            className="rounded-2xl w-full  h-auto object-cover"
-          />
-        </motion.div>
+          {/* Left Side Image */}
+          <motion.div
+            initial={{ x: -50, opacity: 0 }}
+            animate={isInView ? { x: 0, opacity: 1 } : {}}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="w-full md:w-1/2"
+          >
+            <img
+              src="/assets/images/Learning.png"
+              alt="Learning Mediation"
+              className="rounded-2xl w-full  h-auto object-cover"
+            />
+          </motion.div>
 
           <motion.div
-          initial={{ x: 50, opacity: 0 }}
-          animate={isInView ? { x: 0, opacity: 1 } : {}}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="w-full md:w-1/2 text-center md:text-left"
-        >
-          <h2 className="text-3xl md:text-4xl font-bold text-[#2b2b2b] mb-4 font-serif">
+            initial={{ x: 50, opacity: 0 }}
+            animate={isInView ? { x: 0, opacity: 1 } : {}}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="w-full md:w-1/2 text-center md:text-left"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold text-[#2b2b2b] mb-4 font-serif">
               {learning.heading}
             </h2>
-             <p className="text-gray-700 mb-6 text-sm md:text-base">
+            <p className="text-gray-700 mb-6 text-sm md:text-base">
               {learning.paragraph}
             </p>
-             <button className="bg-[#d1a76e] text-black px-10 py-3 font-semibold text-sm uppercase rounded-full shadow-md hover:scale-105 hover:shadow-xl transition-all duration-300">
+            <button className="bg-[#d1a76e] text-black px-10 py-3 font-semibold text-sm uppercase rounded-full shadow-md hover:scale-105 hover:shadow-xl transition-all duration-300">
               {learning.button}
             </button>
           </motion.div>

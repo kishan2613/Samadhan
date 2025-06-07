@@ -35,5 +35,12 @@
     "heading": "Begin Your Journey in Mediation",
     "paragraph": "Learn how to mediate conflicts and create meaningful resolutions. Our self-paced modules are perfect for beginners and professionals alike.",
     "button": "Start Learning"
+  },
+  "Graph" : {
+    "Title": "Supreme Court Mediation Case Stats (2009–2023)",
+    "subone": "Total Case Distribution",
+    "subtwo": "Total Cases",
+    "subthree": "Settled",
+    "subfour": "Unsettled"
   }
 }
