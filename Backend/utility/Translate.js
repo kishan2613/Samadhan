@@ -10,7 +10,7 @@ const fetch = require('node-fetch');
  */
 function flattenStrings(obj, basePath = []) {
   const entries = [];
-  if (typeof obj === "string") {
+  if (typeof obj === "string") { 
     entries.push({ path: basePath, text: obj });
   } else if (Array.isArray(obj)) {
     obj.forEach((item, index) => {
@@ -238,7 +238,11 @@ async function translateAndSpeak(jsonObject, targetLang, sourceLang = 'en') {
   // --- Process TTS Results ---
   let audioBuffer = null;
   // Check if the TTS task result exists and has audio content
-  const audioBase64Output = ttsTaskResult?.audio?.[1]?.audioContent;
+ const audioBase64Output =
+  ttsTaskResult?.audio?.[1]?.audioContent ??
+  ttsTaskResult?.audio?.[0]?.audioContent ??
+  null;
+
 
   if (audioBase64Output) {
      try {

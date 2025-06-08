@@ -25,6 +25,18 @@ body{
                 0 0 60px rgba(0, 132, 255, 0.4);
   }
 }
+@keyframes bubbleBounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.bubble-bounce {
+  animation: bubbleBounce 3s ease-in-out infinite;
+}
 
 .animate-heartbeat-glow {
   animation: heartbeat-glow 1.6s infinite;
