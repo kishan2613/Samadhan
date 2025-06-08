@@ -24,11 +24,13 @@
     import Groups from "./pages/ChatRoom/Group";
     import Guide from "./components/common/Guide";
     import EducationMain from "./pages/Education/main";
+    import Quiz from "./pages/Quiz/Quiz";
 
     // import LanguageSelector from "./pages/AskLang/view";
 
     // import Smeet from "./service/Smeet";
     import VideoConference from "../src/pages/ChatRoom/VideoConference";
+import QuizModules from "./pages/Quiz/QuizModules";
 
 
     function App() {
@@ -83,7 +85,7 @@
             {/* <Route path="/VideoCall" element={<Lobby />} /> */}
             <Route path="/proposal" element={<Proposal />} />
             <Route path="/notify" element={<Notification />} />
-            <Route path="/Chat" element={<ChatRooms />} />
+            <Route path="/Chat" element={<Groups />} />
             <Route path="/Groups" element={<Groups />} />
             <Route path="/chat/:roomId" element={<Groups />} />
             <Route path="/active-proposal" element={<ActiveProposal />} />
@@ -94,6 +96,8 @@
             <Route path="/samadhan-meet/:roomId" element={<Groups/>} />
             <Route path="/educate" element={<EducationMain/>} />
             <Route path="/samadhan-community" element={<Community/>} />
+            <Route path="/quiz" element={<QuizModules/>} />
+            <Route path="/quiz/:moduleId" element={<Quiz />} />
           </Routes>
           </Box> 
           <Footer />

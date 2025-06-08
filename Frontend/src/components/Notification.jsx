@@ -70,7 +70,6 @@ const Notification = () => {
           body: JSON.stringify({ email: parsedUser.email }),
         });
 
-
         const data = await res.json();
         setSuggestions(data.suggestions || []);
       } catch (err) {
@@ -103,14 +102,12 @@ const Notification = () => {
         body: JSON.stringify({ userId, suggestionId, action }),
       });
 
-
       const result = await res.json();
 
       if (res.ok) {
         if (action === 'accepted') {
           navigate('/proposal', { state: { proposalId: result._id } });
         } else {
-          setSuggestions((prev) => prev.filter((s) => s._id !== suggestionId));
           setSuggestions((prev) => prev.filter((s) => s._id !== suggestionId));
           setModalOpen(false);
         }
@@ -131,7 +128,7 @@ const Notification = () => {
   }
 
   return (
-    <div className="max-w-screen-xl h-[100vh] mt-16 mx-auto bg-white rounded-xl shadow-md flex">
+    <div className="max-w-screen-xl h-[100vh] mx-auto bg-white rounded-xl shadow-md flex relative">
       {/* Left side with fixed width */}
       <div className="w-1/2 bg-[#f5f0eb] flex flex-col hidden md:block">
         <img
@@ -174,6 +171,40 @@ const Notification = () => {
           </div>
         ))}
       </div>
+
+      {/* Modal */}
+      {modalOpen && selectedSuggestion && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+          <div className="bg-white p-6 rounded-xl max-w-md w-full relative shadow-lg">
+            <button
+              onClick={() => setModalOpen(false)}
+              className="absolute top-2 right-2 text-gray-500 hover:text-black text-lg"
+            >
+              ✕
+            </button>
+            <h2 className="text-xl font-bold mb-2 text-gray-800">
+              Mediator: {selectedSuggestion.mediator.name}
+            </h2>
+            <p className="text-gray-600 mb-4">
+              {selectedSuggestion.description || 'No additional details provided.'}
+            </p>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => handleAction('rejected')}
+                className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+              >
+                Reject
+              </button>
+              <button
+                onClick={() => handleAction('accepted')}
+                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+              >
+                Accept
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -80,7 +80,7 @@ const CaseStats = ({datacontent}) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#e2d8cd] p-6 flex flex-col items-center">
+    <div className="min-h-screen bg-gradient-to-r from-[#f5f0eb] via-[#e8dfd6] to-[#d6c6b8] p-6 flex flex-col items-center">
       <motion.h2
         className="text-3xl sm:text-4xl font-bold text-[#bb5b45] mb-10 text-center"
         initial="hidden"
@@ -95,7 +95,7 @@ const CaseStats = ({datacontent}) => {
       <div className="flex flex-col md:flex-row w-full max-w-6xl gap-8">
         {/* Bar chart container - scrollable horizontally */}
         <motion.div
-          className="flex-1 overflow-x-auto p-4 rounded-xl bg-gradient-to-r from-[#d1a76e] to-[#e2d8cd] shadow-lg"
+          className="flex-1 overflow-x-auto p-4 rounded-xl bg-gradient-to-r from-[#f5f0eb] via-[#e8dfd6] to-[#d6c6b8] shadow-lg"
           style={{ minWidth: "600px" }} // minimum width to trigger scroll on smaller screens
           initial={{ scale: 0 }}
           whileInView={{ scale: 1 }}
