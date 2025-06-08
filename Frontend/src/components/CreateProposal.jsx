@@ -1,15 +1,59 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+const UI_TEXT = {
+  op1: "Submit Your Proposal",
+  op2: "Case Summary",
+  op3: "Supporting Documents Link (Google Drive, etc.)",
+  op4: "Please upload your documents to Google Drive and paste the shared link here.",
+  op5: "Submit Proposal",
+  op6: "Proposal ID is missing. Please return to the previous step.",
+  op7: "Your proposal is submitted. Please wait for the mediator to accept it. You will be automatically added to the room along with the mediator and your opponent.",
+ 
+};
 
 const Proposal = () => {
   const location = useLocation();
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
   const { proposalId } = location.state || {};
 
   const [summary, setSummary] = useState('');
   const [documentLink, setDocumentLink] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [message, setMessage] = useState('');
+
+
+    const [uiText, setUiText] = useState(UI_TEXT);
+    // const [moddata,setModdata] = useState(moduleData);
+    useEffect(() => {
+      const lang = localStorage.getItem("preferredLanguage");
+      if (!lang) return;
+  
+      const translateText = async () => {
+        try {
+          const res = await fetch("http://localhost:5000/translate/translate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ jsonObject: UI_TEXT, targetLang: lang }),
+          });
+  
+          const data = await res.json();
+          const map = {};
+          (data?.pipelineResponse?.[0]?.output || []).forEach(
+            ({ source, target }) => (map[source] = target)
+          );
+  
+          const translated = Object.fromEntries(
+            Object.entries(UI_TEXT).map(([key, val]) => [key, map[val] || val])
+          );
+  
+          setUiText(translated);
+        } catch (err) {
+          console.error("Translation error:", err);
+        }
+      };
+  
+      translateText();
+    }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,7 +93,7 @@ const Proposal = () => {
       if (res.ok) {
         setSubmitted(true);
         setMessage(
-          'Your proposal is submitted. Please wait for the mediator to accept it. You will be automatically added to the room along with the mediator and your opponent.'
+          uiText.op7
         );
         setTimeout(() => navigate('/'), 2000);
       } else {
@@ -65,7 +109,7 @@ const Proposal = () => {
     <div className="min-h-screen bg-[url('/assets/images/Assistant-Bg.png')] bg-cover py-10 px-4 flex justify-center items-start">
       <div className="bg-white shadow-xl rounded-xl p-4 w-full ">
         <h2 className="text-2xl font-bold text-center text-[#bb5b45] ">
-          Submit Your Proposal
+          {uiText.op1}
         </h2>
 
         {proposalId ? (
@@ -77,7 +121,7 @@ const Proposal = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label className="block font-semibold text-gray-700 mb-2">
-                  Case Summary <span className="text-red-500">*</span>
+                  {uiText.op2}<span className="text-red-500">*</span>
                 </label>
                 <textarea
                   rows={8}
@@ -91,7 +135,7 @@ const Proposal = () => {
 
               <div>
                 <label className="block font-semibold text-gray-700 mb-2">
-                  Supporting Documents Link (Google Drive, etc.)
+                 {uiText.op3}
                 </label>
                 <input
                   type="url"
@@ -101,7 +145,7 @@ const Proposal = () => {
                   onChange={(e) => setDocumentLink(e.target.value)}
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Please upload your documents to Google Drive and paste the shared link here.
+                 {uiText.op4}
                 </p>
               </div>
 
@@ -109,7 +153,7 @@ const Proposal = () => {
                 type="submit"
                 className="w-full bg-[#d1a76e] text-white py-2 rounded-lg shadow-lg  hover:shadow-xl transition"
               >
-                Submit Proposal
+                {uiText.op5}
               </button>
 
               {submitted && (
@@ -121,7 +165,7 @@ const Proposal = () => {
           </>
         ) : (
           <p className="text-red-600 font-medium text-center">
-            Proposal ID is missing. Please return to the previous step.
+           {uiText.op6}
           </p>
         )}
       </div>
