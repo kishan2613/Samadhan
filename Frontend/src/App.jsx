@@ -90,7 +90,7 @@
             {/* <Route path="/VideoCall/:roomid" element={<RoomPage />} /> */}
             <Route path="/mediator/:id" element={<MediatorDetails />} />
             <Route path="/Ask-Samadhan" element={<Assistant />} />
-            {/* <Route path="/call/:roomId" element={<VideoCall />} /> */}
+             {/* <Route path="/call/:roomId" element={<VideoCall />} /> */}
             <Route path="/samadhan-meet/:roomId" element={<Groups/>} />
             <Route path="/educate" element={<EducationMain/>} />
             <Route path="/samadhan-community" element={<Community/>} />

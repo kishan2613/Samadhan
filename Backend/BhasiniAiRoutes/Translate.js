@@ -78,6 +78,6 @@ router.post('/translate-and-speak', async (req, res) => {
       message: error.message || "An unexpected error occurred."
     });
   }
-});
+}); 
 
 module.exports = router;
