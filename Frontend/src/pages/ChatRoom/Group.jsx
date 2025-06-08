@@ -19,7 +19,7 @@ export default function Groups() {
     <div className="relative flex min-h-screen bg-cover border-[2px] ">
       {/* Main Content */}
       <div className={`flex w-full ${isMeetingRoute ? "blur-sm pointer-events-none" : ""}`}>
-        <div className="w-6/12 hidden md:block">
+        <div className="w-7/12 hidden md:block">
           <ChatRooms  />
         </div>
         <div className="w-full ">

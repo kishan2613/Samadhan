@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import quizData from "../../WebData/Quize.json";
 import {
   Card,
@@ -17,7 +18,11 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const Quiz = () => {
-  const [selectedModule] = useState("module 3");
+  // const [selectedModule] = useState("module 3");
+  const { moduleId } = useParams();
+const selectedModule = moduleId.replace("-", " ");
+
+
   const [userAnswers, setUserAnswers] = useState({});
   const [showResult, setShowResult] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);

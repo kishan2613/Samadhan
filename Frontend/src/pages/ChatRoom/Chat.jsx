@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import ConsentFormModal from "./ConsentFormModal";
 import ChatUI from "../../WebData/ChatUI.json";
+import { Video, User, FileSignature } from "lucide-react";
 
 const SERVER_URL = "http://localhost:5000";
 
@@ -197,6 +198,7 @@ export default function Chat({ callroomID, setUsernamenew }) {
       roomId,
       senderId: userId,
       content: raw,
+       timestamp: new Date().toISOString(),
       tempId
     };
     setMessages(prev => [...prev, { _id: tempId, sender: user, content: raw, timestamp: new Date().toISOString() }]);
@@ -209,21 +211,26 @@ export default function Chat({ callroomID, setUsernamenew }) {
 
   // Render
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-4 border rounded flex flex-col h-[80vh]">
-      <div className="flex justify-between items-center mb-4 gap-2">
-        <h2 className="text-lg font-semibold">{uiText.chatTitle}</h2>
+    <div className="flex flex-col h-[calc(100vh-4rem)] ">
+      {/* Header */}
+      <div className="flex items-center justify-between bg-[#bb5b45]  p-2 border-b shadow-sm">
+        <h2 className="text-lg text-white font-semibold">{uiText.chatTitle}</h2>
+        <div className="flex gap-3">
         <button
           onClick={() => navigate(`/samadhan-meet/${roomId}`)}
           className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
         >
-          {uiText.startMeeting}
+          {/* {uiText.startMeeting} */}
+          <Video className="w-5 h-5" />
         </button>
         <button
           onClick={() => setConsentOpen(true)}
           className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700"
         >
-          {uiText.consentForm}
+          {/* {uiText.consentForm} */}
+          <FileSignature className="w-5 h-5" />
         </button>
+        </div>
       </div>
 
       <ConsentFormModal
@@ -233,19 +240,36 @@ export default function Chat({ callroomID, setUsernamenew }) {
         userId={userId}
       />
 
-      <div className="flex-1 overflow-y-auto space-y-2 pr-2">
+      <div className="flex-1 overflow-y-auto space-y-2 p-4 bg-[url('/assets/images/LanguageSelectBG.png')] bg-cover">
         {messages.map((msg, i) => {
           const isMe = msg.sender._id === userId;
-          const style = isMe ? "bg-blue-100 text-right" : "bg-gray-100 text-left";
+          const alignment = isMe ? "items-end" : "items-start";
+           const textAlign = isMe ? "text-right" : "text-left";
+            const bubbleColor = isMe ? "bg-[#d1a76e]" : "bg-white";
+          const style = isMe ? "bg-white-50 text-right" : "bg-gray-100 text-left";
           const key = msg._id || `${msg.content}-${i}`;
 
           return (
-            <div key={key} className={`mb-2 p-2 rounded ${style}`}>
-              <div className="font-semibold text-sm">
-                {msg.sender.name}
+           <div key={msg._id || idx} className={`flex flex-col ${alignment}`}>
+              <div
+                className={`max-w-[80%] px-4 py-2 rounded-lg shadow-sm ${bubbleColor} ${textAlign}`}
+              >
+                <p className="text-sm text-black font-semibold">
+                  {msg.sender.name}
+                </p>
+                <p className="text-sm text-black inline-block">
+                  {msg.content}
+                </p>
+                {/* <p className="text-xs text-gray-800 mt-1">
+                  {new Date(msg.timestamp).toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}
+                </p> */}
+
               </div>
               <div>
-                {msg.content}
+                
                 {msg.meta?.isCallInvite && !isMe && (
                   <button
                     className="ml-2 text-blue-600 underline hover:text-blue-800"
@@ -263,16 +287,16 @@ export default function Chat({ callroomID, setUsernamenew }) {
         <div ref={endRef} />
       </div>
 
-      <div className="flex items-center mt-4">
+      <div className="flex items-center p-3 bg-[#bb5b45] border-t">
         <input
           value={message}
           onChange={e => setMessage(e.target.value)}
           placeholder={uiText.placeholder}
-          className="flex-1 border px-4 py-2 rounded-l focus:outline-none"
+          className="flex-1 px-4 py-2 rounded-full border border-gray-300 focus:outline-none focus:ring-1 focus:ring-green-500 bg-white"
         />
         <button
           onClick={handleSend}
-          className="bg-blue-600 text-white px-4 py-2 rounded-r hover:bg-blue-700"
+          className="ml-2 bg-[#d1a76e] hover:bg-green-600 text-black px-4 py-2 rounded-full"
         >
           {uiText.sendButton}
         </button>
