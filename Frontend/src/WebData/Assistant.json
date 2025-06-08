@@ -1,5 +1,10 @@
 {
     "heading": "Samadhan AI Assistant",
+    "PdfTitle": "Upload PDF Document",
+    "LoadingPdf": "Extracting PDF...",
+    "fileInfo": "Click to select a PDF file (Max 10MB)",
+    "SuccessFile": "PDF loaded - Ask questions about the document",
+    "downloadingPdftext":"Download",
     "buttons": {
     "startConversation": "Start Conversation",
     "startRecording": "Start recording",

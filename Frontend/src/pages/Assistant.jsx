@@ -1,14 +1,26 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Mic, Square, Volume2, Loader } from "lucide-react";
+import {
+  Mic,
+  Square,
+  Volume2,
+  Loader,
+  Upload,
+  X,
+  FileText,
+  Download,
+} from "lucide-react";
 import AssistantData from "../WebData/Assistant.json";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
+import html2pdf from "html2pdf.js";
+
 import Loaders from "../components/common/Loader";
 
 /**
  * AI Voice Assistant Component
  * A multilingual voice interface for interacting with an AI assistant.
  * Modified with a two-column layout - image on left, assistant on right
+ * Enhanced with PDF upload functionality and PDF download with April Fool message
  */
 
 const assistantcache = {};
@@ -24,11 +36,293 @@ const VoiceAssistant = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // =============== PDF UPLOAD STATE ===============
+  const [uploadedPdf, setUploadedPdf] = useState(null);
+  const [pdfContent, setPdfContent] = useState("");
+  const [extractingPdf, setExtractingPdf] = useState(false);
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
+
   // =============== REFS ===============
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
   const audioStreamRef = useRef(null);
   const audioPlayerRef = useRef(new Audio());
+  const fileInputRef = useRef(null);
+
+  // =============== PDF UPLOAD HANDLERS ===============
+  const handleFileSelect = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    // Validate file type
+    if (file.type !== "application/pdf") {
+      showError("Please select a valid PDF file.");
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      showError("PDF file size should be less than 10MB.");
+      return;
+    }
+
+    try {
+      setExtractingPdf(true); // Optional: show loading state
+
+      const formData = new FormData();
+      formData.append("pdf", file);
+
+      const response = await fetch(
+        "http://localhost:5000/api/auth/extract-pdf",
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok || !result.text) {
+        throw new Error(result.message || "Failed to extract text from PDF.");
+      }
+
+      setUploadedPdf({
+        name: file.name,
+        size: file.size,
+        content: result.text,
+      });
+
+      setPdfContent(result.text);
+      console.log("Extracted PDF content:", result.text);
+
+      // Clear the file input
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    } catch (error) {
+      showError(
+        error.message || "An error occurred while extracting text from the PDF."
+      );
+    } finally {
+      setExtractingPdf(false); // Optional: hide loading state
+    }
+  };
+
+  // =============== PDF DOWNLOAD HANDLER ===============
+
+   // =============== LANGUAGE TO FONT MAPPING ===============
+  const getLanguageFont = (language) => {
+    const fontMap = {
+      hi: 'Noto Sans Devanagari', // Hindi
+      mr: 'Noto Sans Devanagari', // Marathi
+      ne: 'Noto Sans Devanagari', // Nepali
+      sa: 'Noto Sans Devanagari', // Sanskrit
+      ta: 'Noto Sans Tamil',      // Tamil
+      te: 'Noto Sans Telugu',     // Telugu
+      kn: 'Noto Sans Kannada',    // Kannada
+      ml: 'Noto Sans Malayalam',  // Malayalam
+      gu: 'Noto Sans Gujarati',   // Gujarati
+      pa: 'Noto Sans Gurmukhi',   // Punjabi
+      bn: 'Noto Sans Bengali',    // Bengali
+      as: 'Noto Sans Bengali',    // Assamese
+      or: 'Noto Sans Oriya',      // Odia
+      ur: 'Noto Sans Arabic',     // Urdu
+      en: 'Noto Sans',            // English
+    };
+    return fontMap[language] || 'Noto Sans';
+  };
+
+  // =============== FONT LOADING UTILITY ===============
+  const loadGoogleFont = (fontFamily) => {
+    return new Promise((resolve) => {
+      // Check if font is already loaded
+      if (document.fonts.check(`12px "${fontFamily}"`)) {
+        resolve();
+        return;
+      }
+
+      // Create font link if not exists
+      const fontId = `font-${fontFamily.replace(/\s+/g, '-').toLowerCase()}`;
+      if (!document.getElementById(fontId)) {
+        const link = document.createElement('link');
+        link.id = fontId;
+        link.href = `https://fonts.googleapis.com/css2?family=${fontFamily.replace(/\s+/g, '+')}:wght@400;500;600;700&display=swap`;
+        link.rel = 'stylesheet';
+        document.head.appendChild(link);
+      }
+
+      // Wait for font to load
+      const fontFace = new FontFace(fontFamily, `url(https://fonts.googleapis.com/css2?family=${fontFamily.replace(/\s+/g, '+')})`);
+      
+      fontFace.load().then(() => {
+        document.fonts.add(fontFace);
+        resolve();
+      }).catch(() => {
+        // Fallback to system fonts if Google Fonts fail
+        resolve();
+      });
+
+      // Fallback timeout
+      setTimeout(resolve, 3000);
+    });
+  };
+
+   // =============== ENHANCED PDF DOWNLOAD HANDLER ===============
+  const handleDownloadPdf = async () => {
+  if (!target_lang) {
+    showError("Language preference not found.");
+    return;
+  }
+  if (!pdfContent) {
+    showError("No content to download.");
+    return;
+  }
+
+  try {
+    setDownloadingPdf(true);
+
+    // 1) Translate the text
+    const translateRes = await fetch(
+      "http://localhost:5000/translate/translate",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          jsonObject: pdfContent,
+          targetLang: target_lang,
+        }),
+      }
+    );
+    
+    if (!translateRes.ok) throw new Error("Translation failed");
+    
+    const { pipelineResponse } = await translateRes.json();
+    const segments = pipelineResponse?.[0]?.output;
+    
+    if (!Array.isArray(segments)) throw new Error("Bad translation format");
+    
+    const translatedText = segments.map((s) => s.target).join("");
+
+    // 2) Get appropriate font for the language
+    const fontFamily = getLanguageFont(target_lang);
+    
+    // 3) Load the font
+    await loadGoogleFont(fontFamily);
+
+    // 4) Create styled container with proper font support
+    const container = document.createElement("div");
+    container.style.position = "fixed";
+    container.style.top = "-10000px";
+    container.style.left = "0";
+    container.style.width = "800px";
+    container.style.padding = "40px";
+    container.style.fontFamily = `"${fontFamily}", "Noto Sans", Arial, sans-serif`;
+    container.style.fontSize = "14px";
+    container.style.lineHeight = "1.6";
+    container.style.color = "#333";
+    container.style.backgroundColor = "#fff";
+    container.style.wordWrap = "break-word";
+    container.style.overflowWrap = "break-word";
+    
+    // Ensure container is visible for rendering
+    container.style.visibility = "visible";
+    container.style.opacity = "1";
+    container.style.zIndex = "9999";
+
+    // 5) Add title and content with proper formatting
+    const titleDiv = document.createElement("div");
+    titleDiv.style.fontSize = "18px";
+    titleDiv.style.fontWeight = "bold";
+    titleDiv.style.marginBottom = "20px";
+    titleDiv.style.textAlign = "center";
+    titleDiv.style.borderBottom = "2px solid #333";
+    titleDiv.style.paddingBottom = "10px";
+    titleDiv.textContent = `Translated Document (${target_lang.toUpperCase()})`;
+
+    const contentDiv = document.createElement("div");
+    contentDiv.style.textAlign = "justify";
+    contentDiv.style.whiteSpace = "pre-wrap";
+    
+    // Format the text with proper paragraphs
+    const formattedText = translatedText
+      .split('\n')
+      .map(line => line.trim())
+      .filter(line => line.length > 0)
+      .join('\n\n');
+    
+    contentDiv.textContent = formattedText;
+
+    container.appendChild(titleDiv);
+    container.appendChild(contentDiv);
+    document.body.appendChild(container);
+
+    // 6) Wait for rendering to complete
+    await new Promise(resolve => {
+      // Double requestAnimationFrame ensures proper rendering
+      requestAnimationFrame(() => {
+        requestAnimationFrame(resolve);
+      });
+    });
+
+    // 7) Generate PDF with enhanced options
+    const opt = {
+      margin: [15, 15, 15, 15],
+      filename: `translated_${target_lang}_${Date.now()}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { 
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        letterRendering: true,
+        logging: false
+      },
+      jsPDF: { 
+        unit: 'mm', 
+        format: 'a4', 
+        orientation: 'portrait',
+        compress: true
+      },
+      pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+    };
+
+    // Generate PDF and wait for completion
+    const worker = html2pdf()
+      .set(opt)
+      .from(container)
+      .save();
+    
+    // Wait for PDF generation to complete
+    await worker;
+
+    // Add slight delay before cleanup
+    await new Promise(resolve => setTimeout(resolve, 300));
+    
+  } catch (err) {
+    console.error("Error downloading PDF:", err);
+    showError(err.message || "Failed to generate PDF. Please try again.");
+  } finally {
+    // Clean up container after all operations
+    const container = document.querySelector('div[style*="top: -10000px"]');
+    if (container && container.parentNode) {
+      document.body.removeChild(container);
+    }
+    setDownloadingPdf(false);
+  }
+};
+
+  const removePDF = () => {
+    setUploadedPdf(null);
+    setPdfContent("");
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const triggerFileSelect = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  };
 
   // =============== WELCOME MESSAGE ===============
   useEffect(() => {
@@ -303,7 +597,9 @@ const VoiceAssistant = () => {
 
     try {
       // Create blob from audio chunks
-      const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+      const audioBlob = new Blob(audioChunksRef.current, {
+        type: "audio/webm",
+      });
 
       if (audioBlob.size === 0) {
         throw new Error(AssistantDataMock.processingErrors.audio);
@@ -312,6 +608,12 @@ const VoiceAssistant = () => {
       // Create form data
       const formData = new FormData();
       formData.append("audio", audioBlob, "recording.webm");
+
+      // Add PDF content if available
+      if (pdfContent) {
+        formData.append("fileContent", pdfContent);
+        formData.append("fileName", uploadedPdf?.name || "uploaded.pdf");
+      }
 
       // Send to server
       const response = await fetch(
@@ -323,7 +625,9 @@ const VoiceAssistant = () => {
       );
 
       if (!response.ok) {
-        throw new Error(`Server error: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `Server error: ${response.status} ${response.statusText}`
+        );
       }
 
       // Get response as array buffer
@@ -408,23 +712,20 @@ const VoiceAssistant = () => {
   };
 
   if (loading) {
-    return (
-      <Loaders/>
-    );
+    return <Loaders />;
   }
 
   // =============== RENDER COMPONENT ===============
   return (
-    <div className="min-h-screen flex flex-col bg-[#d6c6b8]  p-6">
+    <div className="min-h-screen flex flex-col bg-[#d6c6b8] p-6">
       {/* Title */}
       <h1 className="text-3xl font-bold text-center text-[#bb5b45] mb-8">
         {AssistantDataMock.heading}
       </h1>
 
       {/* Two-column layout container */}
-      <div className="border-4 border-[#87311e] transition duration-pulse ease-in-out  flex flex-col lg:flex-row w-full gap-6 bg-[#f5f0eb] bg-[url('/assets/images/Assistant-Bg.png')] bg-cover rounded-2xl  justify-center items-center">
-
-        {/* left Column for Voice Assistant */}
+      <div className="border-4 border-[#87311e] transition duration-pulse ease-in-out flex flex-col lg:flex-row w-full gap-6 bg-[#f5f0eb] bg-[url('/assets/images/Assistant-Bg.png')] bg-cover rounded-2xl justify-center items-center">
+        {/* Left Column for Voice Assistant */}
         <div className="w-full lg:w-1/2 flex flex-col items-center justify-center">
           {/* Error Message Display */}
           {error && (
@@ -433,21 +734,117 @@ const VoiceAssistant = () => {
             </div>
           )}
 
+          {/* PDF Upload Section - Always visible when session is active */}
+          {activeSession && (
+            <div className="w-full max-w-md mb-6">
+              {/* Hidden file input */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf"
+                onChange={handleFileSelect}
+                className="hidden"
+                disabled={extractingPdf || recording || processing || playing}
+              />
+
+              {/* PDF Upload Area */}
+              {!uploadedPdf ? (
+                <div
+                  onClick={!extractingPdf ? triggerFileSelect : undefined}
+                  className={`border-2 border-dashed border-[#bb5b45] rounded-lg p-4 mt-2 text-center cursor-pointer hover:bg-[#f5f0eb] transition-colors ${
+                    extractingPdf ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
+                >
+                  <Upload className="mx-auto mb-2 text-[#bb5b45]" size={32} />
+                  <p className="text-[#bb5b45] font-semibold">
+                    {extractingPdf
+                      ? AssistantDataMock.PdfTitle || "Extracting PDF..."
+                      : AssistantDataMock.PdfTitle || "Upload PDF"}
+                  </p>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {AssistantDataMock.fileInfo ||
+                      "Click to select a PDF file (Max 10MB)"}
+                  </p>
+                  {extractingPdf && (
+                    <div className="mt-2">
+                      <Loader
+                        className="animate-spin mx-auto text-[#bb5b45]"
+                        size={20}
+                      />
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4 mt-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center flex-1">
+                      <FileText className="text-green-600 mr-2" size={20} />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-green-800 truncate">
+                          {uploadedPdf.name}
+                        </p>
+                        <p className="text-xs text-green-600">
+                          {(uploadedPdf.size / 1024).toFixed(1)} KB • Text
+                          extracted
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={removePDF}
+                      className="ml-2 text-red-500 hover:text-red-700 transition-colors"
+                      disabled={recording || processing || playing}
+                    >
+                      <X size={18} />
+                    </button>
+                  </div>
+
+                  {/* PDF Download Button */}
+                  <div className="mt-3 pt-3 border-t border-green-200">
+                    <button
+                      onClick={handleDownloadPdf}
+                      disabled={
+                        downloadingPdf || recording || processing || playing
+                      }
+                      className={`w-full flex items-center justify-center gap-2 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                        downloadingPdf || recording || processing || playing
+                          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                          : "bg-blue-600 hover:bg-blue-700 text-white"
+                      }`}
+                    >
+                      {downloadingPdf ? (
+                        <>
+                          <Loader className="animate-spin" size={16} />
+                          Generating PDF...
+                        </>
+                      ) : (
+                        <>
+                          {AssistantDataMock.downloadingPdftext}
+                          <Download size={16} />
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Start Session Button */}
           {!activeSession && (
             <div className="flex flex-col items-center justify-center h-full text-center">
-            {/* Typewriter animated text */}
-            <p className="mb-8 text-2xl font-bold text-[#bb5b45] animate-typing overflow-hidden whitespace-nowrap border-r-4 border-r-black pr-4">
-            {AssistantDataMock.welcome || "Start Conversation"}
-            </p>
+              {/* Typewriter animated text */}
+              <p className="mb-8 text-2xl font-bold text-[#bb5b45] animate-typing overflow-hidden whitespace-nowrap border-r-4 border-r-black pr-4">
+                {AssistantDataMock.welcome || "Start Conversation"}
+              </p>
 
-            {/* Centered button */}
-            <button
-            onClick={() => setActiveSession(true)}
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full text-lg shadow-lg transition"
-            >
-            {AssistantDataMock.buttons?.startConversation || "Start Conversation"}
-            </button>
+              {/* Centered button */}
+              <button
+                onClick={() => setActiveSession(true)}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-full text-lg shadow-lg transition"
+              >
+                {AssistantDataMock.buttons?.startConversation ||
+                  "Start Conversation"}
+              </button>
             </div>
           )}
 
@@ -475,7 +872,8 @@ const VoiceAssistant = () => {
                     alt={AssistantDataMock.AiAlt || "AI Assistant"}
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      e.target.src = "https://via.placeholder.com/200?text=AI+Assistant";
+                      e.target.src =
+                        "https://via.placeholder.com/200?text=AI+Assistant";
                     }}
                   />
                 </div>
@@ -484,13 +882,19 @@ const VoiceAssistant = () => {
                 <div className="absolute inset-0 flex items-center justify-center">
                   {processing && (
                     <div className="bg-black bg-opacity-40 rounded-full p-4">
-                      <Loader className="text-yellow-400 animate-spin" size={32} />
+                      <Loader
+                        className="text-yellow-400 animate-spin"
+                        size={32}
+                      />
                     </div>
                   )}
 
                   {playing && !processing && (
                     <div className="bg-black bg-opacity-40 rounded-full p-4">
-                      <Volume2 className="text-blue-400 animate-pulse" size={32} />
+                      <Volume2
+                        className="text-blue-400 animate-pulse"
+                        size={32}
+                      />
                     </div>
                   )}
                 </div>
@@ -501,7 +905,7 @@ const VoiceAssistant = () => {
                 {/* Record/Stop Button */}
                 <button
                   onClick={recording ? stopRecording : startRecording}
-                  disabled={processing || playing}
+                  disabled={processing || playing || extractingPdf}
                   aria-label={
                     recording
                       ? AssistantDataMock.stopRecording || "Stop Recording"
@@ -510,7 +914,7 @@ const VoiceAssistant = () => {
                   className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-colors ${
                     recording
                       ? "bg-red-600 hover:bg-red-700"
-                      : processing || playing
+                      : processing || playing || extractingPdf
                       ? "bg-gray-700 cursor-not-allowed opacity-70"
                       : "bg-blue-600 hover:bg-blue-700"
                   }`}
@@ -529,22 +933,35 @@ const VoiceAssistant = () => {
               </div>
 
               {/* Status Text */}
-              <div className="text-[#bb5b45] text-center mt-4 font-medium">
-                {recording
-                  ? AssistantDataMock.statusMessages?.listening || "Listening..."
+              <div className="text-[#bb5b45] text-center mt-4 mb-2 font-medium">
+                {extractingPdf
+                  ? "Extracting PDF content..."
+                  : downloadingPdf
+                  ? "Generating PDF..."
+                  : recording
+                  ? AssistantDataMock.statusMessages?.listening ||
+                    "Listening..."
                   : processing
-                  ? AssistantDataMock.statusMessages?.processing || "Processing..."
+                  ? AssistantDataMock.statusMessages?.processing ||
+                    "Processing..."
                   : playing
                   ? AssistantDataMock.statusMessages?.playing || "Speaking..."
                   : AssistantDataMock.statusMessages?.idle || "Ready to help"}
               </div>
+
+              {/* PDF Status Indicator */}
+              {uploadedPdf && (
+                <div className="text-sm text-green-600 mt-2 text-center">
+                  📄 {AssistantDataMock.SuccessFile}
+                </div>
+              )}
             </div>
           )}
         </div>
 
-      {/* Right Column for Image (placeholder for your image) */}
-         <div className="w-full lg:w-1/2 flex justify-center items-center">
-          <div className=" rounded-lg  overflow-hidden w-full  max-w-md">
+        {/* Right Column for Image (placeholder for your image) */}
+        <div className="w-full lg:w-1/2 flex justify-center items-center">
+          <div className="rounded-lg overflow-hidden w-full max-w-md">
             <img
               src="/assets/images/Assistant-page.png"
               alt="Your image will go here"
@@ -553,9 +970,11 @@ const VoiceAssistant = () => {
           </div>
         </div>
       </div>
+
       <p className="italic text-center text-[#bb5b45] p-2 mt-4">
-      {AssistantDataMock.Outsell || "Your AI Assistant is here to help you with your queries. Just click the microphone button and start speaking!"}
-    </p>
+        {AssistantDataMock.Outsell ||
+          "Your AI Assistant is here to help you with your queries. Upload a PDF document and ask questions about it, or just click the microphone button and start speaking!"}
+      </p>
     </div>
   );
 };

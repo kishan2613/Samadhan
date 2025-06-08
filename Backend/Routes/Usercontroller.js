@@ -2,11 +2,14 @@ const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../Models/User');
-const router = express.Router();
+const pdfParse = require('pdf-parse');
+const multer = require('multer');
 const auth = require('../Middleware/Auth');
 const Mediator = require('../Models/Mediator');
 const { translateJsonWithRawResponse } = require('../utility/Translate');
 
+const router = express.Router();
+const upload = multer();
 // Register
 router.post('/register', async (req, res) => {
   const { name, email, password, role } = req.body;
@@ -178,5 +181,16 @@ router.post('/get-mediator-by-id', async (req, res) => {
     return res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
+
+router.post('/extract-pdf', upload.single('pdf'), async (req, res) => {
+  try {
+    const data = await pdfParse(req.file.buffer);
+    res.json({ text: data.text });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Failed to extract text from PDF' });
+  }
+});
+
 
 module.exports = router;

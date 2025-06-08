@@ -114,12 +114,17 @@ const TTS_SERVICE_ID = "ai4bharat/indic-tts-coqui-indo_aryan-gpu--t4";
 const ASR_SERVICE_ID_FOR_TARGET_LANG = "ai4bharat/conformer-hi-gpu--t4"; // <<<--- REPLACE THIS - ENSURE THIS ASR SERVICE SUPPORTS FLAC@16kHz
 
 // Helper function to call your existing /ask route
-async function askEnglish(question) {
+async function askEnglish(question, fileContent = null) {
   console.log("Asking local /ask route with question:", question);
+  let enhancedQuestion = question;
+  if (fileContent && fileContent.trim()) {
+    enhancedQuestion = `${question}\n\nUser has provided this reference file content:\n${fileContent}`;
+    console.log("Enhanced question with file content, total length:", enhancedQuestion.length);
+  }
   try {
     const resp = await axios.post(
       "http://localhost:5000/ask", // Make sure this is your actual /ask route
-      { question },
+      { question: enhancedQuestion },
       { headers: { "Content-Type": "application/json" } }
     );
     console.log("/ask response status:", resp.status);
@@ -143,6 +148,47 @@ router.post("/", upload.single("audio"), async (req, res) => {
   if (!targetLang) {
     return res.status(400).json({ error: "Missing target language code ('lang' query parameter)" });
   }
+
+  let fileContent = null;
+
+
+  try {
+    // Check if file content is provided in the request body
+    if (req.body && req.body.fileContent) {
+      fileContent = req.body.fileContent;
+      console.log("File content received in request body, length:", fileContent.length);
+    } else if (req.body && typeof req.body === 'string') {
+      // In case the entire body is the file content as a string
+      try {
+        const parsedBody = JSON.parse(req.body);
+        if (parsedBody.fileContent) {
+          fileContent = parsedBody.fileContent;
+          console.log("File content extracted from JSON body, length:", fileContent.length);
+        }
+      } catch (parseError) {
+        // If parsing fails, treat the entire body as file content
+        fileContent = req.body;
+        console.log("Entire request body treated as file content, length:", fileContent.length);
+      }
+    }
+    
+    // Additional check for multipart form data with text field
+    if (!fileContent && req.body && req.body.text) {
+      fileContent = req.body.text;
+      console.log("File content extracted from 'text' field, length:", fileContent.length);
+    }
+    
+    if (fileContent) {
+      console.log("File content preview (first 200 chars):", fileContent.substring(0, 200) + "...");
+    } else {
+      console.log("No file content provided in request");
+    }
+  } catch (error) {
+    console.warn("Error processing file content from request body:", error.message);
+    fileContent = null;
+  }
+  // --- End file content extraction ---
+
 
   // --- Log the original file type (MIME type) ---
   let inputMimeType = file.mimetype || 'unknown'; 
@@ -219,7 +265,7 @@ router.post("/", upload.single("audio"), async (req, res) => {
     console.log("Translated English Text from Bhashini:", englishText);
 
     // 3. Use your /ask route to get the answer
-    const answerPayload = await askEnglish(englishText);
+    const answerPayload = await askEnglish(englishText, fileContent);
 
     // 4. Format the answer for TTS
     let answerTextEnglish;
