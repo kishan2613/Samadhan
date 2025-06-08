@@ -1,10 +1,10 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import moduleData from "../../WebData/Quizmodules.json";
+// import moduleData from "../../WebData/Quizmodules.json";
 
 export default function QuizModules() {
   const navigate = useNavigate();
-  const [moddata,setModdata] = useState(moduleData);
+  // const [moddata,setModdata] = useState(moduleData);
 
   const handleModuleClick = (moduleNum) => {
     navigate(`/quiz/module-${moduleNum}`);
@@ -14,7 +14,8 @@ export default function QuizModules() {
     <div className="min-h-screen bg-[url('/assets/images/Assistant-Bg.png')] bg-cover py-10 px-4">
       {/* Heading */}
       <h1 className="text-4xl font-extrabold text-center mb-10 text-[#bb5b45] drop-shadow">
-        Test Yourself - Quiz Modules
+        {/* {moddata.title} */}
+        Test yourself
       </h1>
 
       {/* Content Layout */}

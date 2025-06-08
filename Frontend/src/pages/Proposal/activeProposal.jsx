@@ -8,7 +8,7 @@ const UI_TEXT = {
   errorFetching: "Error fetching proposals.",
   errorNoMediator: "No mediator ID found in localStorage.",
   acceptBtn: "Accept Proposal",
-  success: "Successfully accepted the proposal! A common chat room for you and the clients has been created. Kindly check the Chat Room section.",
+  success: "Successfully accepted the proposal! A common chat room has been created. Check the Chat Room section.",
   proposalId: "Proposal ID",
   status: "Status",
   summary: "Summary",
@@ -24,7 +24,6 @@ const ActiveProposal = () => {
   const [uiText, setUiText] = useState(UI_TEXT);
   const [translationMap, setTranslationMap] = useState(null);
 
-  // Helper to translate string/object recursively
   const translateJSON = (obj, map) => {
     if (typeof obj === "string") return map[obj] || obj;
     if (Array.isArray(obj)) return obj.map((o) => translateJSON(o, map));
@@ -36,7 +35,6 @@ const ActiveProposal = () => {
     return obj;
   };
 
-  // Fetch translations on mount
   useEffect(() => {
     const lang = localStorage.getItem("preferredLanguage");
     if (!lang) return;
@@ -81,7 +79,6 @@ const ActiveProposal = () => {
             (proposal) => proposal.mediatorDecision === "pending"
           );
 
-          // Translate dynamic summary text if applicable
           const translated = translationMap
             ? translateJSON(pending, translationMap)
             : pending;
@@ -123,56 +120,53 @@ const ActiveProposal = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
+    <div className="min-h-screen px-4 py-8 bg-[url('/assets/images/Assistant-Bg.png')] bg-cover">
+      <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">
         {uiText.heading}
       </h1>
 
-      {loading ? (
-        <p className="text-center text-gray-600">{uiText.loading}</p>
-      ) : error ? (
-        <p className="text-center text-red-600">{error}</p>
-      ) : proposals.length === 0 ? (
+      {loading && <p className="text-center text-gray-600">{uiText.loading}</p>}
+      {error && <p className="text-center text-red-600 font-semibold">{error}</p>}
+      {!loading && !error && proposals.length === 0 && (
         <p className="text-center text-gray-500">{uiText.noProposals}</p>
-      ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {proposals.map((proposal) => (
-            <div
-              key={proposal._id}
-              className="bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition-all"
-            >
-              <h2 className="text-lg font-semibold text-gray-800 mb-2">
-                {uiText.proposalId}: {proposal._id}
-              </h2>
-              <p className="text-sm text-gray-600 mb-2">
-                <strong>{uiText.status}:</strong>{" "}
-                <span className="text-yellow-500">
-                  {proposal.mediatorDecision}
-                </span>
-              </p>
-              <p className="text-sm text-gray-600 mb-2">
-                <strong>{uiText.summary}:</strong>{" "}
-                {proposal.summaryText || uiText.noSummary}
-              </p>
-              <p className="text-sm text-gray-600 mb-2">
-                <strong>{uiText.created}:</strong>{" "}
-                {new Date(proposal.createdAt).toLocaleString()}
-              </p>
-              <div className="text-center mt-4">
-                <button
-                  onClick={() => acceptProposal(proposal._id)}
-                  className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition duration-300"
-                >
-                  {uiText.acceptBtn}
-                </button>
-              </div>
-            </div>
-          ))}
-        </div>
       )}
 
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {proposals.map((proposal) => (
+          <div
+            key={proposal._id}
+            className="bg-white rounded-xl shadow-md p-6 border border-gray-200 hover:shadow-xl transition-all duration-300"
+          >
+            <h2 className="text-lg font-bold text-gray-800 mb-2">
+              {uiText.proposalId}:{" "}
+              <span className="text-[#bb5b45] break-words">{proposal._id}</span>
+            </h2>
+            <p className="text-sm text-gray-600 mb-1">
+              <strong>{uiText.status}:</strong>{" "}
+              <span className="text-yellow-600 capitalize">
+                {proposal.mediatorDecision}
+              </span>
+            </p>
+            <p className="text-sm text-gray-600 mb-1">
+              <strong>{uiText.summary}:</strong>{" "}
+              <span>{proposal.summaryText || uiText.noSummary}</span>
+            </p>
+            <p className="text-sm text-gray-600 mb-3">
+              <strong>{uiText.created}:</strong>{" "}
+              {new Date(proposal.createdAt).toLocaleString()}
+            </p>
+            <button
+              onClick={() => acceptProposal(proposal._id)}
+              className="w-full bg-[#bb5b45] text-white font-semibold py-2 rounded-md  transition"
+            >
+              {uiText.acceptBtn}
+            </button>
+          </div>
+        ))}
+      </div>
+
       {successMessage && (
-        <div className="mt-4 p-4 bg-green-100 text-green-700 rounded-md shadow-lg">
+        <div className="mt-6 mx-auto max-w-xl p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg shadow-md animate-fadeIn">
           {successMessage}
         </div>
       )}
