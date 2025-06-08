@@ -4,7 +4,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import LoginMock from "../WebData/Login.json";
 
 const LoginCache = {};
-
+ 
 const Login = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [LoginData, setLoginData] = useState(LoginMock);
@@ -112,12 +112,9 @@ const Login = () => {
           />
         </div>
         <div className="mt-6 text-left px-4 max-w-2xl bg-white/70 backdrop-blur-md p-4 rounded-xl border border-[#d9a376] shadow-lg">
-          <h2 className="text-3xl font-bold font-serif mb-4 text-[#2f2f2f]">Welcome to SamaDhan</h2>
+          <h2 className="text-3xl font-bold font-serif mb-4 text-[#2f2f2f]"> {LoginData.titlemain}</h2>
           <p className="text-sm leading-relaxed text-[#3c3c3c]">
-            SamaDhan is your trusted digital mediation platform. We help resolve conflicts peacefully,
-            confidentially, and legally — without going to court. Whether it's a family matter, a business
-            dispute, or a civil disagreement, our trained mediators are here to assist you through dialogue and
-            understanding.
+            {LoginData.para}
           </p>
         </div>
       </div>

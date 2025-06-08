@@ -1,11 +1,45 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 // import moduleData from "../../WebData/Quizmodules.json";
-
+const UI_TEXT = {
+  helpLabel: "Test yourself",
+  op1: "Module",
+};
 export default function QuizModules() {
   const navigate = useNavigate();
+  const [uiText, setUiText] = useState(UI_TEXT);
   // const [moddata,setModdata] = useState(moduleData);
+  useEffect(() => {
+    const lang = localStorage.getItem("preferredLanguage");
+    if (!lang) return;
 
+    const translateText = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/translate/translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ jsonObject: UI_TEXT, targetLang: lang }),
+        });
+
+        const data = await res.json();
+        const map = {};
+        (data?.pipelineResponse?.[0]?.output || []).forEach(
+          ({ source, target }) => (map[source] = target)
+        );
+
+        const translated = Object.fromEntries(
+          Object.entries(UI_TEXT).map(([key, val]) => [key, map[val] || val])
+        );
+
+        setUiText(translated);
+      } catch (err) {
+        console.error("Translation error:", err);
+      }
+    };
+
+    translateText();
+  }, []);
   const handleModuleClick = (moduleNum) => {
     navigate(`/quiz/module-${moduleNum}`);
   };
@@ -15,7 +49,7 @@ export default function QuizModules() {
       {/* Heading */}
       <h1 className="text-4xl font-extrabold text-center mb-10 text-[#bb5b45] drop-shadow">
         {/* {moddata.title} */}
-        Test yourself
+        {uiText.helpLabel}
       </h1>
 
       {/* Content Layout */}
@@ -28,7 +62,21 @@ export default function QuizModules() {
               onClick={() => handleModuleClick(num)}
               className="bg-[#bb5b45]  text-white font-semibold py-3 rounded-xl shadow-lg hover:scale-105 transition-all duration-300"
             >
-              📘 Module {num}
+              <span>
+                <img
+                  src="/favicon.png"
+                  alt="icon"
+                  style={{
+                    width: "18px",
+                    height: "20px",
+                    display: "inline",
+                    marginRight: "4px",
+                    marginBottom: "4px",
+                    verticalAlign: "middle",
+                  }}
+                />
+                {uiText.op1} {num}
+              </span>
             </button>
           ))}
         </div>

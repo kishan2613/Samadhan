@@ -16,7 +16,19 @@ import { motion } from "framer-motion";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
-
+const UI_TEXT = {
+  op1: "Submit Quiz",
+  op2: "Quiz Results",
+  op3: "Score",
+  op4: "Correct",
+  op5: "View Correct Answers",
+  op6: "Attempted",
+  op7: "See Attempted Questions",
+  op8: "Coins Earned",
+  op9: "Redeem Coins",
+  op10: "Close",
+  op11: "Incorrect",
+};
 const Quiz = () => {
   // const [selectedModule] = useState("module 3");
   const { moduleId } = useParams();
@@ -26,10 +38,83 @@ const selectedModule = moduleId.replace("-", " ");
   const [userAnswers, setUserAnswers] = useState({});
   const [showResult, setShowResult] = useState(false);
   const [correctCount, setCorrectCount] = useState(0);
-
+  
   const module = quizData[selectedModule];
-  const quiz = module.quiz;
+  
+  const [uiText, setUiText] = useState(module);
+  const [uiTextstable, setUiTextstable] = useState(UI_TEXT);
+   
+  useEffect(() => {
+  const lang = localStorage.getItem("preferredLanguage");
+  if (!lang) return;
 
+  const translateText = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/translate/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jsonObject: module, targetLang: lang }),
+      });
+
+      const data = await res.json();
+      const map = {};
+      (data?.pipelineResponse?.[0]?.output || []).forEach(
+        ({ source, target }) => (map[source] = target)
+      );
+
+      const translatedQuiz = module.quiz.map((q) => ({
+        question: map[q.question] || q.question,
+        options: q.options.map((opt) => map[opt] || opt),
+        answer: map[q.answer] || q.answer,
+      }));
+
+      const translated = {
+        ...module,
+        name: map[module.name] || module.name,
+        quiz: translatedQuiz,
+      };
+
+      setUiText(translated);
+    } catch (err) {
+      console.error("Translation error:", err);
+    }
+  };
+
+  translateText();
+}, []);
+
+
+ useEffect(() => {
+    const lang = localStorage.getItem("preferredLanguage");
+    if (!lang) return;
+
+    const translateText = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/translate/translate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ jsonObject: UI_TEXT, targetLang: lang }),
+        });
+
+        const data = await res.json();
+        const map = {};
+        (data?.pipelineResponse?.[0]?.output || []).forEach(
+          ({ source, target }) => (map[source] = target)
+        );
+
+        const translated = Object.fromEntries(
+          Object.entries(UI_TEXT).map(([key, val]) => [key, map[val] || val])
+        );
+
+        setUiTextstable(translated);
+      } catch (err) {
+        console.error("Translation error:", err);
+      }
+    };
+
+    translateText();
+  }, []);
+  const quiz = uiText.quiz;
   const handleOptionChange = (index, value) => {
     setUserAnswers((prev) => ({ ...prev, [index]: value }));
   };
@@ -44,7 +129,8 @@ const selectedModule = moduleId.replace("-", " ");
   };
 
   const chartData = {
-    labels: ["Correct", "Incorrect"],
+   labels: [uiTextstable.op4, uiTextstable.op11],
+
     datasets: [
       {
         data: [correctCount, quiz.length - correctCount],
@@ -59,11 +145,11 @@ const selectedModule = moduleId.replace("-", " ");
   return (
     <div className="min-h-screen bg-beige flex flex-col items-center justify-center px-4 py-8">
       <h1 className="text-4xl font-bold text-center text-terra mb-8">
-        {module.name}
+        {uiText.name}
       </h1>
 
       <div className="w-full max-w-4xl space-y-6">
-        {quiz.map((q, i) => (
+        {uiText.quiz.map((q, i) => (
           <div
             key={i}
             className="p-5 rounded-2xl bg-white shadow-xl border-4 border-transparent 
@@ -72,6 +158,7 @@ const selectedModule = moduleId.replace("-", " ");
           >
             <Typography variant="h6" className="text-terra font-semibold mb-2">
               {i + 1}. {q.question}
+
             </Typography>
             <RadioGroup
               value={userAnswers[i] || ""}
@@ -96,16 +183,16 @@ const selectedModule = moduleId.replace("-", " ");
             className="!bg-terra !text-white font-semibold rounded-full shadow-md hover:scale-105 transition-transform"
             disabled={Object.keys(userAnswers).length < quiz.length}
           >
-            Submit Quiz
+             {uiTextstable.op1}
           </Button>
         </div>
       </div>
-
+ 
       {/* Result Dialog */}
       <Dialog open={showResult} onClose={() => setShowResult(false)}>
         <div className="bg-gradient-to-br from-beige via-gold to-bronze p-6 rounded-2xl shadow-2xl w-[95vw] max-w-md text-center text-gray-800">
           <Typography variant="h5" className="font-bold text-terra mb-4">
-            Quiz Results
+            {uiTextstable.op2}
           </Typography>
 
           {/* Pie Chart */}
@@ -124,7 +211,7 @@ const selectedModule = moduleId.replace("-", " ");
               className="absolute top-0 left-0 h-full bg-terra text-white text-sm flex items-center justify-center rounded-full"
               style={{ width: `${percentage}%` }}
             >
-              Score: {percentage}%
+               {uiTextstable.op3}: {percentage}%
             </div>
           </motion.div>
 
@@ -132,29 +219,29 @@ const selectedModule = moduleId.replace("-", " ");
           <div className="space-y-4 text-lg">
             <div className="flex flex-col items-center">
               <p>
-                ✅ Correct:{" "}
+                ✅{uiTextstable.op4}:{" "}
                 <span className="font-bold text-terra">{correctCount}</span>
               </p>
               <button className="mt-1 px-4 py-1 text-sm rounded-full bg-terra text-white hover:scale-105 transition">
-                View Correct Answers
+                 {uiTextstable.op5}
               </button>
             </div>
 
             <div className="flex flex-col items-center">
               <p>
-                📝 Attempted:{" "}
+                📝{uiTextstable.op6}:{" "}
                 <span className="font-bold text-terra">
                   {Object.keys(userAnswers).length}
                 </span>
               </p>
               <button className="mt-1 px-4 py-1 text-sm rounded-full bg-terra text-white hover:scale-105 transition">
-                See Attempted Questions
+                {uiTextstable.op7}
               </button>
             </div>
 
             <div className="flex flex-col items-center">
               <p>
-                🏆 Coins Earned:
+                🏆{uiTextstable.op8}
                 <motion.span
                   className="font-bold text-terra ml-1"
                   initial={{ scale: 0, opacity: 0 }}
@@ -165,7 +252,7 @@ const selectedModule = moduleId.replace("-", " ");
                 </motion.span>
               </p>
               <button className="mt-1 px-4 py-1 text-sm rounded-full bg-terra text-white hover:scale-105 transition">
-                Redeem Coins
+                {uiTextstable.op9}
               </button>
             </div>
           </div>
@@ -176,7 +263,7 @@ const selectedModule = moduleId.replace("-", " ");
             variant="contained"
             onClick={() => setShowResult(false)}
           >
-            Close
+            {uiTextstable.op10}
           </Button>
         </div>
       </Dialog>

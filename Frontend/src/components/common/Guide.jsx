@@ -49,6 +49,7 @@ export default function Guide() {
   } = useSpeechRecognition();
 
   const navigate = useNavigate();
+ 
 
   if (!browserSupportsSpeechRecognition) {
     return <div>Your browser does not support speech recognition.</div>;
@@ -217,7 +218,7 @@ export default function Guide() {
           >
             {uiText.op6}
           </button>
-           
+
           <button
             onClick={async () => {
               setFeatureOpen(true);
@@ -305,4 +306,6 @@ export default function Guide() {
       )}
     </div>
   );
+ 
+
 }

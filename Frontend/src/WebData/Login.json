@@ -1,11 +1,13 @@
 {
+    "titlemain" : "Welcome to SamaDhan",
+    "para":"SamaDhan is your trusted digital mediation platform. We help resolve conflicts peacefully,confidentially, and legally — without going to court. Whether it's a family matter, a business dispute, or a civil disagreement, our trained mediators are here to assist you through dialogue and understanding.",
     "title": "Log In",
     "fields": {
       "email": {
         "placeholder": "Email Address"
       },
       "password": {
-        "placeholder": "Password"
+        "placeholder": "Password" 
       }
     },
     "buttons": {
