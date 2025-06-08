@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import SignUp from "../WebData/Signup.json";
+import SignUp from "../WebData/Signup.json"; 
 
 const SignUpCache = {};
 

@@ -217,280 +217,307 @@ const NextButton = styled(Button)(({ theme }) => ({
 }));
 
 // Teacher character SVG component (Keep as before)
+// const TeacherCharacter = () => (
+//   <Box
+//     sx={{
+//       width: "150px",
+//       height: "200px",
+//       position: "relative",
+//       display: "flex",
+//       flexDirection: "column",
+//       alignItems: "center",
+//       "@media (max-width: 600px)": {
+//         width: "100px",
+//         height: "150px",
+//       },
+//     }}
+//   >
+//     {/* Head */}
+//     <Box
+//       sx={{
+//         width: "70px",
+//         height: "70px",
+//         borderRadius: "50%",
+//         backgroundColor: "#ffdbac",
+//         position: "relative",
+//         zIndex: 2,
+//         "@media (max-width: 600px)": {
+//           width: "50px",
+//           height: "50px",
+//         },
+//       }}
+//     >
+//       {/* Eyes */}
+//       <Box
+//         sx={{
+//           width: "10px",
+//           height: "10px",
+//           borderRadius: "50%",
+//           backgroundColor: "#000",
+//           position: "absolute",
+//           top: "25px",
+//           left: "20px",
+//           "@media (max-width: 600px)": {
+//             width: "8px",
+//             height: "8px",
+//             top: "20px",
+//             left: "15px",
+//           },
+//         }}
+//       />
+//       <Box
+//         sx={{
+//           width: "10px",
+//           height: "10px",
+//           borderRadius: "50%",
+//           backgroundColor: "#000",
+//           position: "absolute",
+//           top: "25px",
+//           right: "20px",
+//           "@media (max-width: 600px)": {
+//             width: "8px",
+//             height: "8px",
+//             top: "20px",
+//             right: "15px",
+//           },
+//         }}
+//       />
+
+//       {/* Smile */}
+//       <Box
+//         sx={{
+//           width: "30px",
+//           height: "15px",
+//           borderBottomLeftRadius: "30px",
+//           borderBottomRightRadius: "30px",
+//           border: "2px solid #000",
+//           borderTop: "none",
+//           position: "absolute",
+//           bottom: "15px",
+//           left: "50%",
+//           transform: "translateX(-50%)",
+//           "@media (max-width: 600px)": {
+//             width: "25px",
+//             height: "12px",
+//             bottom: "10px",
+//           },
+//         }}
+//       />
+
+//       {/* Hair */}
+//       <Box
+//         sx={{
+//           width: "80px",
+//           height: "25px",
+//           borderTopLeftRadius: "40px",
+//           borderTopRightRadius: "40px",
+//           backgroundColor: "#6a4126",
+//           position: "absolute",
+//           top: "-5px",
+//           left: "-5px",
+//           "@media (max-width: 600px)": {
+//             width: "60px",
+//             height: "20px",
+//             top: "-5px",
+//             left: "-5px",
+//           },
+//         }}
+//       />
+
+//       {/* Glasses */}
+//       <Box
+//         sx={{
+//           width: "20px",
+//           height: "20px",
+//           border: "2px solid #666",
+//           borderRadius: "50%",
+//           position: "absolute",
+//           top: "22px",
+//           left: "15px",
+//           backgroundColor: "transparent",
+//           "@media (max-width: 600px)": {
+//             width: "16px",
+//             height: "16px",
+//             top: "18px",
+//             left: "12px",
+//           },
+//         }}
+//       />
+//       <Box
+//         sx={{
+//           width: "20px",
+//           height: "20px",
+//           border: "2px solid #666",
+//           borderRadius: "50%",
+//           position: "absolute",
+//           top: "22px",
+//           right: "15px",
+//           backgroundColor: "transparent",
+//           "@media (max-width: 600px)": {
+//             width: "16px",
+//             height: "16px",
+//             top: "18px",
+//             right: "12px",
+//           },
+//         }}
+//       />
+//       <Box
+//         sx={{
+//           width: "10px",
+//           height: "2px",
+//           backgroundColor: "#666",
+//           position: "absolute",
+//           top: "32px",
+//           left: "35px",
+//           transform: "translateX(-50%)",
+//           "@media (max-width: 600px)": {
+//             width: "6px",
+//             top: "26px",
+//             left: "25px",
+//           },
+//         }}
+//       />
+//     </Box>
+
+//     {/* Body */}
+//     <Box
+//       sx={{
+//         width: "90px",
+//         height: "120px",
+//         borderRadius: "20px 20px 0 0",
+//         backgroundColor: "#3f51b5",
+//         marginTop: "-10px",
+//         position: "relative",
+//         zIndex: 1,
+//         "@media (max-width: 600px)": {
+//           width: "70px",
+//           height: "100px",
+//         },
+//       }}
+//     >
+//       {/* Collar */}
+//       <Box
+//         sx={{
+//           width: "60px",
+//           height: "20px",
+//           borderTopLeftRadius: "10px",
+//           borderTopRightRadius: "10px",
+//           backgroundColor: "#fff",
+//           position: "absolute",
+//           top: "10px",
+//           left: "50%",
+//           transform: "translateX(-50%)",
+//           "@media (max-width: 600px)": {
+//             width: "50px",
+//             height: "15px",
+//           },
+//         }}
+//       />
+
+//       {/* Tie */}
+//       <Box
+//         sx={{
+//           width: "20px",
+//           height: "50px",
+//           backgroundColor: "#ff5252",
+//           position: "absolute",
+//           top: "25px",
+//           left: "50%",
+//           transform: "translateX(-50%)",
+//           clipPath: "polygon(50% 0%, 100% 0%, 50% 100%, 0% 0%)",
+//           "@media (max-width: 600px)": {
+//             width: "16px",
+//             height: "40px",
+//             top: "20px",
+//           },
+//         }}
+//       />
+
+//       {/* Arms */}
+//       <Box
+//         sx={{
+//           width: "20px",
+//           height: "80px",
+//           backgroundColor: "#3f51b5",
+//           position: "absolute",
+//           top: "20px",
+//           left: "-15px",
+//           borderRadius: "10px",
+//           transform: "rotate(20deg)",
+//           "@media (max-width: 600px)": {
+//             width: "15px",
+//             height: "70px",
+//             left: "-12px",
+//           },
+//         }}
+//       />
+//       <Box
+//         sx={{
+//           width: "20px",
+//           height: "80px",
+//           backgroundColor: "#3f51b5",
+//           position: "absolute",
+//           top: "20px",
+//           right: "-15px",
+//           borderRadius: "10px",
+//           transform: "rotate(-20deg)",
+//           "@media (max-width: 600px)": {
+//             width: "15px",
+//             height: "70px",
+//             right: "-12px",
+//           },
+//         }}
+//       />
+//     </Box>
+
+//     {/* Chalk/Pointer */}
+//     <Box
+//       sx={{
+//         width: "80px",
+//         height: "8px",
+//         backgroundColor: "#fff",
+//         position: "absolute",
+//         top: "130px",
+//         left: "5px",
+//         borderRadius: "4px",
+//         transform: "rotate(-45deg)",
+//         transformOrigin: "left center",
+//         "@media (max-width: 600px)": {
+//           width: "60px",
+//           height: "6px",
+//           top: "100px",
+//         },
+//       }}
+//     />
+//   </Box>
+// );
+
 const TeacherCharacter = () => (
   <Box
     sx={{
-      width: "150px",
-      height: "200px",
-      position: "relative",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      "@media (max-width: 600px)": {
-        width: "100px",
-        height: "150px",
-      },
+      position: "absolute",
+      bottom: 0,
+      right: 0,
+      width: { xs: "120px", sm: "180px", md: "220px" },
+      height: "auto",
+      zIndex: 1,
+      pointerEvents: "none", // optional: so it doesn't interfere with buttons
     }}
   >
-    {/* Head */}
-    <Box
-      sx={{
-        width: "70px",
-        height: "70px",
-        borderRadius: "50%",
-        backgroundColor: "#ffdbac",
-        position: "relative",
-        zIndex: 2,
-        "@media (max-width: 600px)": {
-          width: "50px",
-          height: "50px",
-        },
-      }}
-    >
-      {/* Eyes */}
-      <Box
-        sx={{
-          width: "10px",
-          height: "10px",
-          borderRadius: "50%",
-          backgroundColor: "#000",
-          position: "absolute",
-          top: "25px",
-          left: "20px",
-          "@media (max-width: 600px)": {
-            width: "8px",
-            height: "8px",
-            top: "20px",
-            left: "15px",
-          },
-        }}
-      />
-      <Box
-        sx={{
-          width: "10px",
-          height: "10px",
-          borderRadius: "50%",
-          backgroundColor: "#000",
-          position: "absolute",
-          top: "25px",
-          right: "20px",
-          "@media (max-width: 600px)": {
-            width: "8px",
-            height: "8px",
-            top: "20px",
-            right: "15px",
-          },
-        }}
-      />
-
-      {/* Smile */}
-      <Box
-        sx={{
-          width: "30px",
-          height: "15px",
-          borderBottomLeftRadius: "30px",
-          borderBottomRightRadius: "30px",
-          border: "2px solid #000",
-          borderTop: "none",
-          position: "absolute",
-          bottom: "15px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          "@media (max-width: 600px)": {
-            width: "25px",
-            height: "12px",
-            bottom: "10px",
-          },
-        }}
-      />
-
-      {/* Hair */}
-      <Box
-        sx={{
-          width: "80px",
-          height: "25px",
-          borderTopLeftRadius: "40px",
-          borderTopRightRadius: "40px",
-          backgroundColor: "#6a4126",
-          position: "absolute",
-          top: "-5px",
-          left: "-5px",
-          "@media (max-width: 600px)": {
-            width: "60px",
-            height: "20px",
-            top: "-5px",
-            left: "-5px",
-          },
-        }}
-      />
-
-      {/* Glasses */}
-      <Box
-        sx={{
-          width: "20px",
-          height: "20px",
-          border: "2px solid #666",
-          borderRadius: "50%",
-          position: "absolute",
-          top: "22px",
-          left: "15px",
-          backgroundColor: "transparent",
-          "@media (max-width: 600px)": {
-            width: "16px",
-            height: "16px",
-            top: "18px",
-            left: "12px",
-          },
-        }}
-      />
-      <Box
-        sx={{
-          width: "20px",
-          height: "20px",
-          border: "2px solid #666",
-          borderRadius: "50%",
-          position: "absolute",
-          top: "22px",
-          right: "15px",
-          backgroundColor: "transparent",
-          "@media (max-width: 600px)": {
-            width: "16px",
-            height: "16px",
-            top: "18px",
-            right: "12px",
-          },
-        }}
-      />
-      <Box
-        sx={{
-          width: "10px",
-          height: "2px",
-          backgroundColor: "#666",
-          position: "absolute",
-          top: "32px",
-          left: "35px",
-          transform: "translateX(-50%)",
-          "@media (max-width: 600px)": {
-            width: "6px",
-            top: "26px",
-            left: "25px",
-          },
-        }}
-      />
-    </Box>
-
-    {/* Body */}
-    <Box
-      sx={{
-        width: "90px",
-        height: "120px",
-        borderRadius: "20px 20px 0 0",
-        backgroundColor: "#3f51b5",
-        marginTop: "-10px",
-        position: "relative",
-        zIndex: 1,
-        "@media (max-width: 600px)": {
-          width: "70px",
-          height: "100px",
-        },
-      }}
-    >
-      {/* Collar */}
-      <Box
-        sx={{
-          width: "60px",
-          height: "20px",
-          borderTopLeftRadius: "10px",
-          borderTopRightRadius: "10px",
-          backgroundColor: "#fff",
-          position: "absolute",
-          top: "10px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          "@media (max-width: 600px)": {
-            width: "50px",
-            height: "15px",
-          },
-        }}
-      />
-
-      {/* Tie */}
-      <Box
-        sx={{
-          width: "20px",
-          height: "50px",
-          backgroundColor: "#ff5252",
-          position: "absolute",
-          top: "25px",
-          left: "50%",
-          transform: "translateX(-50%)",
-          clipPath: "polygon(50% 0%, 100% 0%, 50% 100%, 0% 0%)",
-          "@media (max-width: 600px)": {
-            width: "16px",
-            height: "40px",
-            top: "20px",
-          },
-        }}
-      />
-
-      {/* Arms */}
-      <Box
-        sx={{
-          width: "20px",
-          height: "80px",
-          backgroundColor: "#3f51b5",
-          position: "absolute",
-          top: "20px",
-          left: "-15px",
-          borderRadius: "10px",
-          transform: "rotate(20deg)",
-          "@media (max-width: 600px)": {
-            width: "15px",
-            height: "70px",
-            left: "-12px",
-          },
-        }}
-      />
-      <Box
-        sx={{
-          width: "20px",
-          height: "80px",
-          backgroundColor: "#3f51b5",
-          position: "absolute",
-          top: "20px",
-          right: "-15px",
-          borderRadius: "10px",
-          transform: "rotate(-20deg)",
-          "@media (max-width: 600px)": {
-            width: "15px",
-            height: "70px",
-            right: "-12px",
-          },
-        }}
-      />
-    </Box>
-
-    {/* Chalk/Pointer */}
-    <Box
-      sx={{
-        width: "80px",
-        height: "8px",
-        backgroundColor: "#fff",
-        position: "absolute",
-        top: "130px",
-        left: "5px",
-        borderRadius: "4px",
-        transform: "rotate(-45deg)",
-        transformOrigin: "left center",
-        "@media (max-width: 600px)": {
-          width: "60px",
-          height: "6px",
-          top: "100px",
-        },
+    <img
+      src="/assets/images/masterji.png" // Your image path
+      alt="Teacher"
+      style={{
+        width: "100%",
+        height: "auto",
+        objectFit: "contain",
       }}
     />
   </Box>
 );
+
+
+
 
 // Basic markdown formatter
 const formatMarkdown = (text) => {
@@ -2513,6 +2540,7 @@ export default function ClassroomComponent({ TranslateText }) {
                     </Typography>
                   </Box>
                 )}
+                 
               </GreenBoard>
             </BoardContainer>
             <Box
