@@ -213,7 +213,7 @@ export default function Chat({ callroomID, setUsernamenew }) {
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] ">
       {/* Header */}
-      <div className="flex items-center justify-between bg-[#bb5b45]  p-2 border-b shadow-sm">
+      <div className="flex items-center justify-between bg-[#bb5b45] bg-[url('/assets/images/Assistant-Bg.png')] bg-cover  p-2 border-b shadow-sm">
         <h2 className="text-lg text-white font-semibold">{uiText.chatTitle}</h2>
         <div className="flex gap-3">
         <button
