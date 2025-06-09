@@ -5,8 +5,10 @@ const User = require('../Models/User');
 const pdfParse = require('pdf-parse');
 const multer = require('multer');
 const auth = require('../Middleware/Auth');
+const PDFDocument = require("pdfkit");
 const Mediator = require('../Models/Mediator');
 const { translateJsonWithRawResponse } = require('../utility/Translate');
+const path = require("path");
 
 const router = express.Router();
 const upload = multer();
@@ -190,6 +192,69 @@ router.post('/extract-pdf', upload.single('pdf'), async (req, res) => {
     console.error(err);
     res.status(500).json({ message: 'Failed to extract text from PDF' });
   }
+});
+
+const FONT_MAP = {
+      hi: 'Hindi-file.ttf', // Hindi
+      mr: 'Noto Sans Devanagari', // Marathi
+      ne: 'Noto Sans Devanagari', // Nepali
+      sa: 'Noto Sans Devanagari', // Sanskrit
+      ta: 'Noto Sans Tamil',      // Tamil
+      te: 'Noto Sans Telugu',     // Telugu
+      kn: 'Noto Sans Kannada',    // Kannada
+      ml: 'Noto Sans Malayalam',  // Malayalam
+      gu: 'Noto Sans Gujarati',   // Gujarati
+      pa: 'Punjabi-file.ttf',   // Punjabi
+      bn: 'Noto Sans Bengali',    // Bengali
+      as: 'Noto Sans Bengali',    // Assamese
+      or: 'Noto Sans Oriya',      // Odia
+      ur: 'Noto Sans Arabic',     // Urdu
+      en: 'Noto Sans',            // English
+    };
+
+router.post("/download-pdf", (req, res) => {
+  const { content, language } = req.body;
+  if (!content || !language) {
+    return res.status(400).json({ error: "Missing content or language" });
+  }
+
+  const fontFile = FONT_MAP[language];
+  if (!fontFile) {
+    return res.status(400).json({ error: "Unsupported language" });
+  }
+
+  // set headers so browser treats this as a download
+  res.setHeader("Content-Type", "application/pdf");
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename=translated_${language}.pdf`
+  );
+
+  // create PDFKit document, pipe directly to response
+  const doc = new PDFDocument({ margin: 40, size: "A4" });
+  doc.pipe(res);
+
+  // embed the correct Unicode font
+  doc.registerFont(
+    "UnicodeFont",
+    path.join(__dirname, "../fonts", fontFile)
+  );
+  doc.font("UnicodeFont").fontSize(12);
+
+  // simple line-wrapping at 80 chars per line
+  const words = content.split(/\s+/);
+  let line = "";
+  words.forEach((word) => {
+    if ((line + " " + word).length > 80) {
+      doc.text(line.trim());
+      line = word;
+    } else {
+      line = line + " " + word;
+    }
+  });
+  if (line) doc.text(line.trim());
+
+  doc.end();
 });
 
 
