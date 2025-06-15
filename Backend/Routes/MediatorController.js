@@ -1,6 +1,6 @@
 const express = require('express');
 const Proposal = require('../Models/Proposal');
-const ChatRoom = require('../Models/ChatRoom');
+const ChatRoom = require('../Models/Chatroom');
 const auth = require('../Middleware/Auth');
 const router = express.Router();
 
