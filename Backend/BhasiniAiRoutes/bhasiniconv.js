@@ -123,7 +123,7 @@ async function askEnglish(question, fileContent = null) {
   }
   try {
     const resp = await axios.post(
-      "http://localhost:5000/ask", // Make sure this is your actual /ask route
+      "http://localhost:5000/ask/azure", // Make sure this is your actual /ask route
       { question: enhancedQuestion },
       { headers: { "Content-Type": "application/json" } }
     );

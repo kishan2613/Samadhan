@@ -1,10 +1,82 @@
 // routes/ask.js
 const express = require("express");
+const dotenv = require("dotenv");
+const bodyParser = require("body-parser");
 const axios   = require("axios");
 const router  = express.Router();
 
+dotenv.config();
+
+
 const FLASK_FAISS_URL  = "http://localhost:5001/ask";
 const GEMINI_API_KEY   = "AIzaSyCQs64UYsU2XdNf3vB6U1JVNSPRL28rWIs";    // set in your env  
+
+const azureOaiEndpoint = process.env.AZURE_OAI_ENDPOINT;
+const azureOaiKey = process.env.AZURE_OAI_KEY;
+const azureOaiDeployment = process.env.AZURE_OAI_DEPLOYMENT;
+const azureSearchEndpoint = process.env.AZURE_SEARCH_ENDPOINT;
+const azureSearchKey = process.env.AZURE_SEARCH_KEY;
+const azureSearchIndex = process.env.AZURE_SEARCH_INDEX;
+
+router.post("/azure", async (req, res) => {
+  const question = req.body.question?.trim();
+
+  if (!question) {
+    return res.status(400).json({ error: "Empty question" });
+  }
+
+  const url = `${azureOaiEndpoint}/openai/deployments/${azureOaiDeployment}/extensions/chat/completions?api-version=2023-09-01-preview`;
+
+  const headers = {
+    "Content-Type": "application/json",
+    "api-key": azureOaiKey
+  };
+
+  const payload = {
+    model: azureOaiDeployment,
+    temperature: 0.5,
+    max_tokens: 1000,
+    messages: [
+      {
+        role: "system",
+        content: "You are a helpful mediation assistant that provides answers to questions based on the provided data source."
+      },
+      {
+        role: "user",
+        content: question
+      }
+    ],
+    dataSources: [
+      {
+        type: "AzureCognitiveSearch",
+        parameters: {
+          endpoint: azureSearchEndpoint,
+          key: azureSearchKey,
+          indexName: azureSearchIndex
+        }
+      }
+    ]
+  };
+
+  try {
+    const response = await axios.post(url, payload, { headers });
+    const answer = response.data.choices[0].message.content;
+
+    res.json({
+      question: question,
+      results: [
+        {
+          score: null,
+          text: answer,
+          source: "Azure OpenAI + Azure Cognitive Search"
+        }
+      ]
+    });
+  } catch (error) {
+    console.error("Error from Azure OpenAI:", error.response?.data || error.message);
+    res.status(500).json({ error: error.response?.data?.error?.message || "Internal Server Error" });
+  }
+});
 
 // POST /ask
 router.post("/", async (req, res) => {
