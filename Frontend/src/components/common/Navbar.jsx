@@ -35,7 +35,7 @@ const Navbar = ({handleLangChange}) => {
     (async () => {
       try {
         const res = await fetch(
-          "http://localhost:5000/translate/translate",
+          "https://samadhan-zq8e.onrender.com/translate/translate",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },

@@ -39,7 +39,7 @@ const MediatorConnect = () => {
           const translateContent = async () => {
             try {
               const response = await fetch(
-                "http://localhost:5000/translate/translate",
+                "https://samadhan-zq8e.onrender.com/translate/translate",
                 {
                   method: "POST",
                   headers: {
@@ -98,7 +98,7 @@ const MediatorConnect = () => {
       const lang = localStorage.getItem("preferredLanguage");
       try {
         const response = await fetch(
-          `http://localhost:5000/api/auth/get-mediators?page_no=${page}&targetLang=${lang}`
+          `https://samadhan-zq8e.onrender.com/api/auth/get-mediators?page_no=${page}&targetLang=${lang}`
         );
         const data = await response.json();
         setMediators(data.mediators);
@@ -130,7 +130,7 @@ const MediatorConnect = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/suggestions", {
+      const res = await fetch("https://samadhan-zq8e.onrender.com/api/suggestions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

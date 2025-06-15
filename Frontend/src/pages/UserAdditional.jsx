@@ -33,7 +33,7 @@ const MediatorDetailsForm = () => {
     try {
       const token = localStorage.getItem('token');
 
-      const response = await fetch('http://localhost:5000/api/auth/update-mediator', {
+      const response = await fetch('https://samadhan-zq8e.onrender.com/api/auth/update-mediator', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

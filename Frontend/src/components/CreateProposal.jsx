@@ -30,7 +30,7 @@ const Proposal = () => {
   
       const translateText = async () => {
         try {
-          const res = await fetch("http://localhost:5000/translate/translate", {
+          const res = await fetch("https://samadhan-zq8e.onrender.com/translate/translate", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ jsonObject: UI_TEXT, targetLang: lang }),
@@ -79,7 +79,7 @@ const Proposal = () => {
     const summaryText = `${summary.trim()}\n\nSupportive links submitted by user:\n${documentLink}`;
 
     try {
-      const res = await fetch(`http://localhost:5000/api/proposals/${proposalId}/summary`, {
+      const res = await fetch(`https://samadhan-zq8e.onrender.com/api/proposals/${proposalId}/summary`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

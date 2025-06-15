@@ -6,7 +6,7 @@ import ConsentFormModal from "./ConsentFormModal";
 import ChatUI from "../../WebData/ChatUI.json";
 import { Video, User, FileSignature } from "lucide-react";
 
-const SERVER_URL = "http://localhost:5000";
+const SERVER_URL = "https://samadhan-zq8e.onrender.com";
 
 export default function Chat({ callroomID, setUsernamenew }) {
   const { roomId } = useParams();

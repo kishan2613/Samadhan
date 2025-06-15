@@ -40,7 +40,7 @@ const ChatRooms = () => {
           setText(translateJSON(ChatText, map));
         } else {
           try {
-            const res = await fetch("http://localhost:5000/translate/translate", {
+            const res = await fetch("https://samadhan-zq8e.onrender.com/translate/translate", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ jsonObject: ChatText, targetLang: lang }),
@@ -64,7 +64,7 @@ const ChatRooms = () => {
       }
       let rooms = [];
       try {
-        const res = await fetch("http://localhost:5000/api/chat/myRooms", {
+        const res = await fetch("https://samadhan-zq8e.onrender.com/api/chat/myRooms", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userId }),

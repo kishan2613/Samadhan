@@ -72,7 +72,7 @@ const VoiceAssistant = () => {
       formData.append("pdf", file);
 
       const response = await fetch(
-        "http://localhost:5000/api/auth/extract-pdf",
+        "https://samadhan-zq8e.onrender.com/api/auth/extract-pdf",
         {
           method: "POST",
           body: formData,
@@ -123,7 +123,7 @@ const VoiceAssistant = () => {
 
    // 1) Translate the text
     const translateRes = await fetch(
-      "http://localhost:5000/translate/translate",
+      "https://samadhan-zq8e.onrender.com/translate/translate",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -144,7 +144,7 @@ const VoiceAssistant = () => {
     const translatedText = segments.map((s) => s.target).join("");
 
     // 2) request PDF from your Node service
-    const pdfRes = await fetch("http://localhost:5000/api/auth/download-pdf", {
+    const pdfRes = await fetch("https://samadhan-zq8e.onrender.com/api/auth/download-pdf", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -200,7 +200,7 @@ const VoiceAssistant = () => {
         setLoading(true);
         try {
           const response = await fetch(
-            "http://localhost:5000/translate/translate",
+            "https://samadhan-zq8e.onrender.com/translate/translate",
             {
               method: "POST",
               headers: {
@@ -478,7 +478,7 @@ const VoiceAssistant = () => {
 
       // Send to server
       const response = await fetch(
-        `http://localhost:5000/audio?lang=${target_lang}`,
+        `https://samadhan-zq8e.onrender.com/audio?lang=${target_lang}`,
         {
           method: "POST",
           body: formData,

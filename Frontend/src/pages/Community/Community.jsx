@@ -7,7 +7,7 @@ import CommunityList from "./CommunityList";
 import axios from "axios";
 import { motion } from "framer-motion";
 
-const SERVER_URL = "http://localhost:5000";
+const SERVER_URL = "https://samadhan-zq8e.onrender.com";
 
 export default function Community() {
   const [uiText, setUiText] = useState(content.page);

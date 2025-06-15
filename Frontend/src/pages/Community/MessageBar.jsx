@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import content from "./Community.json";
 
-const SERVER_URL = "http://localhost:5000";
+const SERVER_URL = "https://samadhan-zq8e.onrender.com";
 
 export default function MessageBar({ selectedTopic, setSelectedTopic }) {
   // raw static UI text and topics

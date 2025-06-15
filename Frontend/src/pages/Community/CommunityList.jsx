@@ -46,7 +46,7 @@ function CommunityList({ posts: rawPosts, selectedTopic }) {
 
     (async () => {
       try {
-        const res = await fetch("http://localhost:5000/translate/translate", {
+        const res = await fetch("https://samadhan-zq8e.onrender.com/translate/translate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ jsonObject: UI, targetLang: lang }),
@@ -76,7 +76,7 @@ function CommunityList({ posts: rawPosts, selectedTopic }) {
   const fetchComments = async (postId) => {
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/comments/${postId}`
+        `https://samadhan-zq8e.onrender.com/api/comments/${postId}`
       );
       let rawComments = res.data;
 
@@ -84,7 +84,7 @@ function CommunityList({ posts: rawPosts, selectedTopic }) {
       const lang = localStorage.getItem("preferredLanguage");
       if (lang && rawComments.length) {
         const translateRes = await fetch(
-          "http://localhost:5000/translate/translate",
+          "https://samadhan-zq8e.onrender.com/translate/translate",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -126,7 +126,7 @@ function CommunityList({ posts: rawPosts, selectedTopic }) {
       return;
     }
     try {
-      await axios.post("http://localhost:5000/api/comments", {
+      await axios.post("https://samadhan-zq8e.onrender.com/api/comments", {
         communityId: postId,
         commenter: userId,
         commentText: newComment,

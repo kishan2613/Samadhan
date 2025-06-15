@@ -26,7 +26,7 @@ const Notification = () => {
 
     const translateText = async () => {
       try {
-        const res = await fetch('http://localhost:5000/translate/translate', {
+        const res = await fetch('https://samadhan-zq8e.onrender.com/translate/translate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ jsonObject: UI_TEXT, targetLang: lang }),
@@ -64,7 +64,7 @@ const Notification = () => {
           return;
         }
 
-        const res = await fetch('http://localhost:5000/api/suggestions/received', {
+        const res = await fetch('https://samadhan-zq8e.onrender.com/api/suggestions/received', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email: parsedUser.email }),
@@ -96,7 +96,7 @@ const Notification = () => {
     const suggestionId = selectedSuggestion._id;
 
     try {
-      const res = await fetch('http://localhost:5000/api/suggestions/respond', {
+      const res = await fetch('https://samadhan-zq8e.onrender.com/api/suggestions/respond', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, suggestionId, action }),

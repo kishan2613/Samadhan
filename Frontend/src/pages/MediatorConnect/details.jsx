@@ -27,7 +27,7 @@ const MediatorDetails = () => {
 
     const translateLabels = async () => {
       try {
-        const res = await fetch("http://localhost:5000/translate/translate", {
+        const res = await fetch("https://samadhan-zq8e.onrender.com/translate/translate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ jsonObject: UI_TEXT, targetLang: lang }),
@@ -58,7 +58,7 @@ const MediatorDetails = () => {
 
     const fetchMediatorDetails = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/auth/get-mediator-by-id", {
+        const res = await fetch("https://samadhan-zq8e.onrender.com/api/auth/get-mediator-by-id", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userId: id }),
@@ -83,7 +83,7 @@ const MediatorDetails = () => {
             chronicles: mediatorData.chronicles,
           };
 
-          const translationRes = await fetch("http://localhost:5000/translate/translate", {
+          const translationRes = await fetch("https://samadhan-zq8e.onrender.com/translate/translate", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ jsonObject: valuesToTranslate, targetLang: lang }),

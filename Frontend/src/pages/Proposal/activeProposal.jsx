@@ -41,7 +41,7 @@ const ActiveProposal = () => {
 
     (async () => {
       try {
-        const res = await fetch("http://localhost:5000/translate/translate", {
+        const res = await fetch("https://samadhan-zq8e.onrender.com/translate/translate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ jsonObject: UI_TEXT, targetLang: lang }),
@@ -70,7 +70,7 @@ const ActiveProposal = () => {
         }
 
         const response = await axios.post(
-          "http://localhost:5000/api/proposals/by-mediator",
+          "https://samadhan-zq8e.onrender.com/api/proposals/by-mediator",
           { mediatorId: storedUser._id }
         );
 
@@ -104,7 +104,7 @@ const ActiveProposal = () => {
     }
 
     try {
-      const res = await axios.post("http://localhost:5000/api/proposals/accept", {
+      const res = await axios.post("https://samadhan-zq8e.onrender.com/api/proposals/accept", {
         proposalId,
         mediatorId: storedUser._id,
       });

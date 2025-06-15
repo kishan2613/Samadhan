@@ -29,7 +29,7 @@ import educationData from "../../WebData/Education.json";
 import TranslateText from "../../WebData/EduText.json"; // Imported the translation text file
 
 // --- API Endpoint ---
-const TRANSLATE_API_URL = "http://localhost:5000/translate/translate-and-speak";
+const TRANSLATE_API_URL = "https://samadhan-zq8e.onrender.com/translate/translate-and-speak";
 
 // --- Constants ---
 const TYPING_SPEED = 150; // Milliseconds per word/token for visual typing

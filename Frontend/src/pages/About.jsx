@@ -20,7 +20,7 @@ function About() {
     // 2. Otherwise, call the API once, then store in the cache:
     (async () => {
       try {
-        const res = await fetch("http://localhost:5000/translate/translate", {
+        const res = await fetch("https://samadhan-zq8e.onrender.com/translate/translate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ jsonObject: AboutusDataMock, targetLang: lang })

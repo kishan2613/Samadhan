@@ -62,7 +62,7 @@ export default function Guide() {
 
     const translateText = async () => {
       try {
-        const res = await fetch("http://localhost:5000/translate/translate", {
+        const res = await fetch("https://samadhan-zq8e.onrender.com/translate/translate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ jsonObject: UI_TEXT, targetLang: lang }),
@@ -98,7 +98,7 @@ export default function Guide() {
 
     try {
       const res = await fetch(
-        "http://localhost:5000/translate/translate-and-speak",
+        "https://samadhan-zq8e.onrender.com/translate/translate-and-speak",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -240,7 +240,7 @@ export default function Guide() {
 
               try {
                 const res = await fetch(
-                  "http://localhost:5000/translate/translate-and-speak",
+                  "https://samadhan-zq8e.onrender.com/translate/translate-and-speak",
                   {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },

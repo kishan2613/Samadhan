@@ -13,7 +13,7 @@ const ConsentForm = ({ roomId, currentUserId }) => {
     const fetchChat = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/chat/consent/${roomId}`
+          `https://samadhan-zq8e.onrender.com/api/chat/consent/${roomId}`
         );
         setChatData(res.data);
         console.log("Fetched chat data:", res.data.members[0]);
@@ -52,7 +52,7 @@ const ConsentForm = ({ roomId, currentUserId }) => {
     setSignatures((prev) => ({ ...prev, [userId]: value }));
 
     try {
-      await axios.post(`http://localhost:5000/api/chat/${userId}/signature`, {
+      await axios.post(`https://samadhan-zq8e.onrender.com/api/chat/${userId}/signature`, {
         signatureUrl: value,
       });
       console.log("Signature saved successfully for user:", userId);

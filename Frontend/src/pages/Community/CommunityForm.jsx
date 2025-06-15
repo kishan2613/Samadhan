@@ -3,7 +3,7 @@ import axios from "axios";
 import pageData from "./Community.json";
 import UI from "./CommunityFormUI.json";
 
-const SERVER_URL = "http://localhost:5000";
+const SERVER_URL = "https://samadhan-zq8e.onrender.com";
 
 function CommunityForm({ selectedTopic, setSelectedTopic, onPostSubmit }) {
   // form state
