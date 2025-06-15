@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "cd Database && nodemon server.js"
+    "start": "cd Database && node server.js"
   },
   "dependencies": {
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
