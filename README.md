@@ -35,7 +35,7 @@
 |------------------|-------------------------------|
 | **Frontend**     | React, Tailwind CSS           |
 | **Backend**      | Node.js, Express              |
-| **Database**     | (Add your DB here – e.g., MongoDB or Firebase) |
+| **Database**     | MongoDB                       |
 | **AI Integration** | Azure AI                    |
 | **Language Support** | Bhashini APIs              |
 | **Voice Navigation** | Web Speech API or relevant library |
